@@ -1,0 +1,120 @@
+package com.ericg.neatflix.screens
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import com.ericg.neatflix.R
+import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
+import com.ericg.neatflix.ui.theme.ButtonColor
+
+@Composable
+fun SignUpOrLogInScreen() {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF180E36))
+    ) {
+        val (banner, logo, title, slogan, btnSignUp, btnLogIn) = createRefs()
+        Image(
+            painter = painterResource(id = R.drawable.movie_banner),
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(banner) {
+                    top.linkTo(parent.top)
+                }
+                .fillMaxHeight(fraction = 0.5F),
+            contentScale = ContentScale.Crop,
+            contentDescription = "Movie banner"
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ic_logo),
+            modifier = Modifier.constrainAs(logo) {
+                top.linkTo(banner.bottom)
+                bottom.linkTo(banner.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            },
+            contentDescription = "App logo"
+        )
+        Text(
+            text = "Neatflix",
+            modifier = Modifier.constrainAs(title) {
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                top.linkTo(logo.bottom, margin = 12.dp)
+            },
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White.copy(alpha = 0.78F)
+        )
+
+        val welcomeText = "Access unlimited movies, series & TV shows anywhere, anytime"
+        Text(
+            text = welcomeText,
+            modifier = Modifier
+                .padding(horizontal = 4.dp)
+                .constrainAs(slogan) {
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    top.linkTo(title.bottom, margin = 12.dp)
+                },
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Light,
+            color = Color.White.copy(alpha = 0.78F)
+        )
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .padding(horizontal = 28.dp)
+                .fillMaxWidth()
+                .height(46.dp)
+                .constrainAs(btnSignUp) {
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    top.linkTo(slogan.bottom, margin = 24.dp)
+                },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = ButtonColor
+            )
+        ) {
+            Text(text = "Sign up", color = AppOnPrimaryColor)
+        }
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .padding(horizontal = 28.dp)
+                .fillMaxWidth()
+                .height(46.dp)
+                .constrainAs(btnLogIn) {
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    top.linkTo(btnSignUp.bottom, margin = 24.dp)
+                },
+            colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor)
+        ) {
+            Text(text = "Log in", color = AppOnPrimaryColor)
+        }
+    }
+}
+
+@Preview(device = Devices.PIXEL)
+@Composable
+fun SignUpOrLogInPrev() {
+    SignUpOrLogInScreen()
+}
