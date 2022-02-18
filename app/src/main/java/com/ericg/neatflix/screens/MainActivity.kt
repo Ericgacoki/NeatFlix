@@ -1,4 +1,4 @@
-package com.ericg.neatflix
+package com.ericg.neatflix.screens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,7 +12,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             NeatFlixTheme {
-                SplashScreen()
+                LogInScreen()
             }
         }
     }
