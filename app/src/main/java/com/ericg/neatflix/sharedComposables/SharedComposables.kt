@@ -1,13 +1,11 @@
-package com.ericg.neatflix.composables
+package com.ericg.neatflix.SharedComposables
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,7 +16,7 @@ import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 
 @Composable
-fun IconNext(onClick: () -> Unit) {
+fun BackOrNextButton(onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -45,7 +43,8 @@ fun IconNext(onClick: () -> Unit) {
                             bottom.linkTo(parent.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                        }.clickable { onClick() }
+                        }
+                        .clickable { onClick() }
                 )
             }
 
