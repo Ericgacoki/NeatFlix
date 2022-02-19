@@ -134,7 +134,7 @@ fun LogInScreen() {
     }
 }
 
-@Preview(device = Devices.PIXEL)
+@Preview(device = Devices.DEFAULT)
 @Composable
 fun LogInScreenPrev() {
     LogInScreen()
