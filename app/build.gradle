@@ -61,4 +61,10 @@ dependencies {
 
     //Constraint Layout
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0"
+    // Landscapist image loader
+    implementation "com.github.skydoves:landscapist-coil:1.4.9"
+    // RatingBar
+    implementation 'com.github.a914-gowtham:compose-ratingbar:1.2.3'
+    // Timber
+    implementation 'com.jakewharton.timber:timber:5.0.1'
 }
