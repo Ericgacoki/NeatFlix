@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ericg.neatflix.R
-import com.ericg.neatflix.composables.IconNext
+import com.ericg.neatflix.sharedComposables.BackOrNextButton
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 
 @Composable
@@ -60,18 +60,12 @@ fun SignUpScreen() {
             modifier = Modifier.padding(vertical = 12.dp),
             contentDescription = "logo"
         )
-        var emailInput by remember {
-            mutableStateOf("")
-        }
-        var passwordInput by remember {
-            mutableStateOf("")
-        }
-        var confirmPasswordInput by remember {
-            mutableStateOf("")
-        }
-        var isPasswordVisible by remember {
-            mutableStateOf(false)
-        }
+
+        var emailInput by remember { mutableStateOf("") }
+        var passwordInput by remember { mutableStateOf("") }
+        var confirmPasswordInput by remember { mutableStateOf("") }
+        var isPasswordVisible by remember { mutableStateOf(false) }
+
         val textFieldColors = TextFieldDefaults.outlinedTextFieldColors(
             textColor = AppOnPrimaryColor,
             cursorColor = AppOnPrimaryColor,
@@ -159,7 +153,7 @@ fun SignUpScreen() {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             colors = textFieldColors
         )
-        IconNext {
+        BackOrNextButton {
 
         }
     }
