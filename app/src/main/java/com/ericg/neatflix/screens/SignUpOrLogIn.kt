@@ -3,11 +3,13 @@ package com.ericg.neatflix.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -34,6 +36,7 @@ fun SignUpOrLogInScreen() {
             painter = painterResource(id = R.drawable.movie_banner),
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
                 .constrainAs(banner) {
                     top.linkTo(parent.top)
                 }
@@ -51,17 +54,6 @@ fun SignUpOrLogInScreen() {
             },
             contentDescription = "App logo"
         )
-        Text(
-            text = "Neatflix",
-            modifier = Modifier.constrainAs(title) {
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                top.linkTo(logo.bottom, margin = 12.dp)
-            },
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White.copy(alpha = 0.78F)
-        )
 
         val welcomeText = "Access unlimited movies, series & TV shows anywhere, anytime"
         Text(
@@ -71,7 +63,7 @@ fun SignUpOrLogInScreen() {
                 .constrainAs(slogan) {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    top.linkTo(title.bottom, margin = 12.dp)
+                    top.linkTo(logo.bottom, margin = 12.dp)
                 },
             textAlign = TextAlign.Center,
             fontSize = 18.sp,
