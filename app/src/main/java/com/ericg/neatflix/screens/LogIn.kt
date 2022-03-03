@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ericg.neatflix.R
-import com.ericg.neatflix.composables.IconNext
+import com.ericg.neatflix.sharedComposables.BackOrNextButton
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 
 @Composable
@@ -128,7 +128,7 @@ fun LogInScreen() {
             colors = textFieldColors
         )
 
-        IconNext {
+        BackOrNextButton {
 
         }
     }
