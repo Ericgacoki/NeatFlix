@@ -3,7 +3,7 @@ package com.ericg.neatflix.screens
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.ericg.neatflix.screens.SplashScreen
+import androidx.compose.material.ExperimentalMaterialApi
 import com.ericg.neatflix.ui.theme.NeatFlixTheme
 
 class MainActivity : ComponentActivity() {
@@ -12,7 +12,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             NeatFlixTheme {
-                Home()
+                Favorites()
             }
         }
     }
