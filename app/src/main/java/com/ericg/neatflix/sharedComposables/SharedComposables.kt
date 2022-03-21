@@ -1,5 +1,6 @@
 package com.ericg.neatflix.sharedComposables
 
+import androidx.annotation.RawRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,9 +39,9 @@ import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.airbnb.lottie.compose.*
 import com.ericg.neatflix.R
 import com.ericg.neatflix.data.MovieGenre
-import com.ericg.neatflix.screens.MovieGenreChip
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
@@ -51,9 +52,10 @@ import com.gowtham.ratingbar.StepSize
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
+import timber.log.Timber
 
 @Composable
-fun BackOrNextButton(onClick: () -> Unit) {
+fun NextButton(onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -66,7 +68,7 @@ fun BackOrNextButton(onClick: () -> Unit) {
                 .clip(CircleShape)
                 .background(ButtonColor)
         ) {
-            ConstraintLayout() {
+            ConstraintLayout {
                 val (icon) = createRefs()
                 Icon(
                     imageVector = Icons.Rounded.ArrowForward,
@@ -81,14 +83,17 @@ fun BackOrNextButton(onClick: () -> Unit) {
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                         }
-                        .clickable { onClick() }
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) { onClick() }
                 )
             }
         }
     }
 }
 
-// Fixme: A very bad way to expose a state
+// Fixme: A very bad way to expose a state... but sina otherwise!
 var globalExposedSearchParam: String? = null
 
 @Composable
@@ -100,7 +105,7 @@ fun SearchBar(
         modifier = Modifier
             .padding(start = 12.dp, end = 12.dp, bottom = 8.dp)
             .clip(CircleShape)
-            .background(Color(0XFF423460))
+            .background(ButtonColor)
             .fillMaxWidth()
             .height(54.dp)
     ) {
@@ -148,7 +153,7 @@ fun SearchBar(
                         focusRequester.requestFocus()
                     }
                 }
-                Row() {
+                Row {
                     AnimatedVisibility(visible = searchInput.trim().isNotEmpty()) {
                         IconButton(onClick = {
                             focusManager.clearFocus()
@@ -185,7 +190,7 @@ fun BackButton(onClick: () -> Unit) {
         modifier = Modifier
             .size(42.dp)
             .clip(CircleShape)
-            .background(ButtonColor.copy(alpha = 0.78F))
+            .background(ButtonColor)
     ) {
         val (icon) = createRefs()
         IconButton(onClick = { onClick() }) {
@@ -223,9 +228,9 @@ fun SearchResultItem(
         modifier = Modifier
             .padding(start = 8.dp, end = 8.dp, bottom = 12.dp)
             .fillMaxWidth()
-            .height(140.dp)
+            .height(130.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(Color(0XFF423460))
+            .background(ButtonColor)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
@@ -233,22 +238,25 @@ fun SearchResultItem(
                 onClick()
             }
     ) {
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             CoilImage(
                 imageModel = posterImage,
                 circularReveal = CircularReveal(duration = 1000),
-                previewPlaceholder = R.drawable.dont_look_up_portrait,
+                previewPlaceholder = R.drawable.manifest,
                 shimmerParams = ShimmerParams(
                     baseColor = AppPrimaryColor,
-                    highlightColor = Color(0XFF423460),
+                    highlightColor = ButtonColor,
                     durationMillis = 350,
                     dropOff = 0.65F,
                     tilt = 20F
                 ),
                 modifier = Modifier
                     .fillMaxHeight()
-                    .width(93.33.dp)
-                    .clip(RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp)),
+                    .width(86.67.dp)
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop,
                 contentDescription = null
             )
@@ -266,9 +274,17 @@ fun SearchResultItem(
                     maxLines = 1,
                     overflow = Ellipsis,
                     fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.Center,
-                    fontSize = 18.sp,
+                    textAlign = TextAlign.Start,
+                    fontSize = 16.sp,
                     color = AppOnPrimaryColor
+                )
+
+                Text(
+                    text = releaseYear,
+                    fontWeight = FontWeight.Light,
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp,
+                    color = Color.LightGray
                 )
 
                 Row(
@@ -280,25 +296,17 @@ fun SearchResultItem(
                         value = rating,
                         modifier = Modifier.padding(end = 6.dp),
                         config = RatingBarConfig()
-                            .style(RatingBarStyle.HighLighted)
+                            .style(RatingBarStyle.Normal)
                             .isIndicator(true)
-                            .activeColor(AppOnPrimaryColor)
+                            .activeColor(Color(0XFFF5BD1F))
                             .hideInactiveStars(false)
-                            .inactiveColor(Color.LightGray)
+                            .inactiveColor(Color.LightGray.copy(alpha = 0.78F))
                             .stepSize(StepSize.HALF)
                             .numStars(5)
                             .size(16.dp)
-                            .padding(4.dp)
-                            .style(RatingBarStyle.HighLighted),
+                            .padding(4.dp),
                         onValueChange = {},
                         onRatingChanged = {}
-                    )
-                    Text(
-                        text = releaseYear,
-                        fontWeight = FontWeight.Light,
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp,
-                        color = AppOnPrimaryColor
                     )
 
                     AnimatedVisibility(visible = showFavorite) {
@@ -313,6 +321,7 @@ fun SearchResultItem(
                         }
                     }
                 }
+
                 LazyRow(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -326,4 +335,82 @@ fun SearchResultItem(
             }
         }
     }
+}
+
+@Composable
+fun MovieGenreChip(
+    genre: String,
+    background: Color = Color(0XFFF5BD1F).copy(alpha = 0.20F),
+    textColor: Color = Color(0XFFF5BD1F)
+) {
+    Box(
+        modifier = Modifier
+            .padding(end = 4.dp)
+            .widthIn(min = 80.dp)
+            .clip(CircleShape)
+            .background(background)
+            .padding(vertical = 4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Text(
+            text = genre,
+            color = textColor,
+            textAlign = TextAlign.Center,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Thin
+        )
+    }
+}
+
+@Composable
+fun LottieLoader(
+    modifier: Modifier,
+    @RawRes lottieFile: Int
+) {
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(lottieFile),
+        onRetry = { failCount, exception ->
+            Timber.e("Failed ${failCount}X with exception. Reason: ${exception.localizedMessage}")
+            // stop retrying
+            false
+        }
+    )
+    val progress by animateLottieCompositionAsState(composition)
+    LottieAnimation(
+        composition = composition,
+        progress = progress,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun LoopReverseLottieLoader(
+    modifier: Modifier = Modifier,
+    @RawRes lottieFile: Int,
+    alignment: Alignment = Alignment.Center,
+    enableMergePaths: Boolean = true,
+) {
+    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(lottieFile))
+    val shouldReverse = remember { mutableStateOf(false) }
+    val anim = rememberLottieAnimatable()
+    if (shouldReverse.value.not())
+        LaunchedEffect(composition) {
+            anim.animate(composition = composition, speed = 1f)
+            shouldReverse.value = true
+        }
+    if (shouldReverse.value) {
+        LaunchedEffect(composition) {
+            anim.animate(composition = composition, speed = -1f)
+            shouldReverse.value = false
+        }
+    }
+
+    LottieAnimation(
+        composition,
+        anim.value,
+        modifier = modifier,
+        enableMergePaths = remember { enableMergePaths },
+        alignment = alignment
+    )
 }
