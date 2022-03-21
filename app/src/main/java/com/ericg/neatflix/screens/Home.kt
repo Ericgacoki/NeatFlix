@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.ericg.neatflix.R
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import com.ericg.neatflix.ui.theme.ButtonColor
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
@@ -193,7 +194,7 @@ fun DropdownMenu() {
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .background(Color(0XFF423460))
+                .background(ButtonColor)
                 .clip(RoundedCornerShape(4.dp))
         ) {
             items.forEachIndexed { index, value ->
@@ -251,7 +252,7 @@ fun NestedScroll() {
                     .fillMaxWidth()
             ) {
                 items(count = genres.size) {
-                    GenreChip(
+                    SelectableGenreChip(
                         genre = genres[it],
                         selected = genres[it] == selectedGenre
                     ) {
@@ -355,7 +356,7 @@ fun MovieItem(
             imageModel = image,
             shimmerParams = ShimmerParams(
                 baseColor = AppPrimaryColor,
-                highlightColor = Color(0XFF423460),
+                highlightColor = ButtonColor,
                 durationMillis = 350,
                 dropOff = 0.65F,
                 tilt = 20F
@@ -384,8 +385,10 @@ fun MovieItem(
     }
 }
 
+/**This [SelectableGenreChip()] differs from [MovieGenreChip()] in that
+ * it is selectable while MovieGenreChip is not*/
 @Composable
-fun GenreChip(
+fun SelectableGenreChip(
     genre: String,
     selected: Boolean,
     onclick: () -> Unit
@@ -396,7 +399,7 @@ fun GenreChip(
             .clip(CircleShape)
             .background(
                 color = if (selected) Color(0XFF9495B1)
-                else Color(0XFF423460).copy(alpha = 0.5F)
+                else ButtonColor.copy(alpha = 0.5F)
             )
             .height(32.dp)
             .widthIn(min = 80.dp)
@@ -417,7 +420,7 @@ fun GenreChip(
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun HomePrev() {
     Home()
