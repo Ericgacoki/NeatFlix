@@ -32,7 +32,6 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.Light
 import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
@@ -40,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.ericg.neatflix.R
+import com.ericg.neatflix.sharedComposables.MovieGenreChip
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.gowtham.ratingbar.RatingBar
@@ -142,7 +142,7 @@ fun MovieDetails() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
         ) {
-            val t = "Money Heist: From Tokyo to Berlin through Kenya"
+            val t = "Money Heist: From Tokyo to Berlin"
             Text(
                 text = t,
                 modifier = Modifier.fillMaxWidth(0.5F),
@@ -253,7 +253,10 @@ fun MovieDetails() {
                 }
         ) {
             items(movieGenre) {
-                MovieGenreChip(genre = it)
+                MovieGenreChip(
+                    background = ButtonColor,
+                    textColor = AppOnPrimaryColor,
+                    genre = it)
             }
         }
 
@@ -388,7 +391,7 @@ fun ExpandableText(
 
     Box(modifier) {
         Text(
-            color = Color.White.copy(alpha = 0.78F),
+            color = AppOnPrimaryColor,
             text = cutText ?: text,
             modifier = Modifier
                 .clickable(
@@ -434,28 +437,6 @@ fun ExpandableText(
                     )
             )
         }
-    }
-}
-
-@Composable
-fun MovieGenreChip(genre: String) {
-    Box(
-        modifier = Modifier
-            .padding(end = 4.dp)
-            .widthIn(min = 80.dp)
-            .clip(CircleShape)
-            .background(Color(0XFFA3A4B7).copy(alpha = 0.24F))
-            .padding(vertical = 4.dp),
-        contentAlignment = Alignment.Center
-    ) {
-
-        Text(
-            color = Color.White.copy(alpha = 0.78F),
-            text = genre,
-            textAlign = TextAlign.Center,
-            fontSize = 14.sp,
-            fontWeight = Light
-        )
     }
 }
 
