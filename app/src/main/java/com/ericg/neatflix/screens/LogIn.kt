@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.*
@@ -24,7 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ericg.neatflix.R
-import com.ericg.neatflix.sharedComposables.BackOrNextButton
+import com.ericg.neatflix.sharedComposables.BackButton
+import com.ericg.neatflix.sharedComposables.NextButton
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 
 @Composable
@@ -36,21 +36,20 @@ fun LogInScreen() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 24.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back icon",
-                tint = Color.White.copy(alpha = 0.78F)
-            )
+            BackButton {
+
+            }
             Text(
                 text = "Welcome back",
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().offset((-12).dp),
                 textAlign = TextAlign.Center,
                 color = Color.White.copy(alpha = 0.78F),
-                fontSize = 18.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Medium
             )
         }
@@ -83,7 +82,7 @@ fun LogInScreen() {
         OutlinedTextField(
             value = emailInput,
             onValueChange = { newValue ->
-                emailInput = newValue
+                emailInput = if(newValue.length <= 32) newValue else emailInput
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -102,7 +101,7 @@ fun LogInScreen() {
         OutlinedTextField(
             value = passwordInput,
             onValueChange = { newValue ->
-                passwordInput = newValue
+                passwordInput = if(newValue.length <= 16) newValue else passwordInput
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -128,7 +127,7 @@ fun LogInScreen() {
             colors = textFieldColors
         )
 
-        BackOrNextButton {
+        NextButton {
 
         }
     }
