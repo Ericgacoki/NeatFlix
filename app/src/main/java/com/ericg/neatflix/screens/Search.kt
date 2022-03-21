@@ -59,13 +59,27 @@ fun SearchScreen() {
                 Timber.d("Search Param = $globalExposedSearchParam")
             })
 
+        // FIXME: Display UI status -> loading, no data...
+        if (10 <= 0) {
+            Column(
+                modifier = Modifier.fillMaxHeight(0.83F).fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.no_match_found),
+                    contentDescription = null
+                )
+            }
+        }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
             contentPadding = PaddingValues(vertical = 12.dp)
         ) {
 
-            items(count = 0) {
+            items(count = 20) {
                 SearchResultItem(
                     imdbId = "",
                     title = "Spider-Man far from home",
@@ -78,27 +92,14 @@ fun SearchScreen() {
                     ),
                     rating = 4F,
                     releaseYear = "2019",
-                    showFavorite = false,
                     onRemoveFavorite = {},
                     onClick = {
 
                     }
                 )
             }
-
-            item {
-                // FIXME: Display UI status -> loading, no data...
-                if (-1 <= 0) {
-                    Image(
-                        modifier = Modifier
-                            .padding(top = 50.dp)
-                            .fillMaxWidth(),
-                        painter = painterResource(id = R.drawable.no_match_found),
-                        contentDescription = null
-                    )
-                }
-            }
         }
+
     }
 }
 
