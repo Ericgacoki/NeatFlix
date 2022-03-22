@@ -1,65 +1,75 @@
 package com.ericg.neatflix.screens
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.ericg.neatflix.R
+import com.ericg.neatflix.sharedComposables.LottieLoader
+import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import kotlinx.coroutines.delay
+import timber.log.Timber
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SplashScreen() {
-    ConstraintLayout(
+    var isLogoVisible by remember { mutableStateOf(true) }
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF180E36))
+            .background(AppPrimaryColor)
     ) {
-        val (banner, logo) = createRefs()
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
 
-        Image(
-            painter = painterResource(id = R.drawable.movie_banner),
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.5F)
-                .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
-                .constrainAs(banner) {
-                    top.linkTo(parent.top)
-                },
-            contentScale = ContentScale.Crop,
-            contentDescription = "Movie banner"
-        )
+            LottieLoader(
+                modifier = Modifier.size(270.dp),
+                lottieFile = R.raw.bubble
+            )
 
-        Image(
-            modifier = Modifier
-                .widthIn(max = 150.dp)
-                .alpha(0.78F)
-                .constrainAs(logo) {
-                    top.linkTo(banner.bottom)
-                    bottom.linkTo(banner.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            painter = painterResource(id = R.drawable.neatflix_logo_large),
-            contentDescription = null
-        )
+            LaunchedEffect(Unit) {
+                delay(2000)
+                isLogoVisible = false
+                delay(2000)
+                Timber.e("Navigate to Home!")
+            }
+
+            this@Column.AnimatedVisibility(
+                visible = isLogoVisible,
+                exit = fadeOut(
+                    animationSpec = tween(durationMillis = 2000)
+                ) + scaleOut(animationSpec = tween(durationMillis = 2000)),
+            ) {
+                Image(
+                    modifier = Modifier
+                        .widthIn(max = 170.dp)
+                        .alpha(0.78F),
+                    painter = painterResource(id = R.drawable.neatflix_logo_large),
+                    contentDescription = null
+                )
+            }
+
+        }
     }
 }
 
-@Preview(device = Devices.PIXEL, uiMode = UI_MODE_NIGHT_YES)
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SplashScreenPrev() {
     SplashScreen()
