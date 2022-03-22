@@ -36,7 +36,7 @@ fun SignUpOrLogInScreen() {
             painter = painterResource(id = R.drawable.movie_banner),
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
+                // .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
                 .constrainAs(banner) {
                     top.linkTo(parent.top)
                 }
