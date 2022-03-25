@@ -140,7 +140,7 @@ fun MovieDetails() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
         ) {
-            val t = "Money Heist: From Tokyo to Berlin"
+            val t = "Don't Look Up"
             Text(
                 text = t,
                 modifier = Modifier.fillMaxWidth(0.5F),
@@ -151,7 +151,7 @@ fun MovieDetails() {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "2021",
+                text = "2022",
                 fontSize = 15.sp,
                 fontWeight = Light,
                 color = Color.White.copy(alpha = 0.56F)
@@ -171,7 +171,7 @@ fun MovieDetails() {
                     start.linkTo(parent.start)
                 },
             contentScale = Crop,
-            contentDescription = "Movie poster"
+            contentDescription = "movie poster"
         )
 
         Row(

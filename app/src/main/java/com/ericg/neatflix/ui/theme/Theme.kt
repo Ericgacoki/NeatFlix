@@ -34,7 +34,7 @@ fun NeatFlixTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composab
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
-        LightColorPalette
+        DarkColorPalette // retain dark mode
     }
     val systemUiController = rememberSystemUiController()
     SideEffect {
