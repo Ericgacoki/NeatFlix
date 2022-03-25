@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -212,6 +213,31 @@ fun BackButton(onClick: () -> Unit) {
     }
 }
 
+@Preview
+@Composable
+fun SearchItemPrev() {
+    SearchResultItem(
+        imdbId = "",
+        title = "Spider-Man far from home and never coming back",
+        posterImage = R.drawable.manifest,
+        genres = listOf(
+            MovieGenre(1, "Drama"),
+            MovieGenre(2, "Sci-Fi"),
+            MovieGenre(3, "Romance"),
+            MovieGenre(4, "Action"),
+        ),
+        rating = 4F,
+        releaseYear = "2019",
+        showFavorite = true,
+        onRemoveFavorite = {
+            Timber.d("Removing favorite...")
+        },
+        onClick = {
+            Timber.d("Navigating to details screen...")
+        }
+    )
+}
+
 @Composable
 fun SearchResultItem(
     imdbId: String,
@@ -298,7 +324,7 @@ fun SearchResultItem(
                         config = RatingBarConfig()
                             .style(RatingBarStyle.Normal)
                             .isIndicator(true)
-                            .activeColor(Color(0XFFF5BD1F))
+                            .activeColor(Color(0XFFC9F964))
                             .hideInactiveStars(false)
                             .inactiveColor(Color.LightGray.copy(alpha = 0.78F))
                             .stepSize(StepSize.HALF)
@@ -314,7 +340,7 @@ fun SearchResultItem(
                             onRemoveFavorite()
                         }) {
                             Icon(
-                                imageVector = Icons.Filled.Favorite,
+                                painter = painterResource(id = R.drawable.ic_heart_fill),
                                 tint = AppOnPrimaryColor,
                                 contentDescription = "fav icon"
                             )
@@ -340,8 +366,8 @@ fun SearchResultItem(
 @Composable
 fun MovieGenreChip(
     genre: String,
-    background: Color = Color(0XFFF5BD1F).copy(alpha = 0.20F),
-    textColor: Color = Color(0XFFF5BD1F)
+    background: Color = Color(0XFFC9F964).copy(alpha = 0.16F),
+    textColor: Color = Color(0xFFD4F58F)
 ) {
     Box(
         modifier = Modifier
