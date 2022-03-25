@@ -13,8 +13,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -236,8 +234,10 @@ fun MovieDetails() {
                 favorite = !favorite
             }) {
                 Icon(
-                    imageVector = if (favorite) Icons.Filled.Favorite
-                    else Icons.Outlined.FavoriteBorder,
+                    painter = painterResource(
+                        id = if (favorite) R.drawable.ic_heart_fill
+                        else R.drawable.ic_heart_outlie
+                    ),
                     tint = AppOnPrimaryColor,
                     contentDescription = "fav icon"
                 )
