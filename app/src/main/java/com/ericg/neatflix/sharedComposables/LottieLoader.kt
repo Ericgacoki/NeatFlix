@@ -8,27 +8,6 @@ import com.airbnb.lottie.compose.*
 import timber.log.Timber
 
 @Composable
-fun LottieLoader(
-    modifier: Modifier,
-    @RawRes lottieFile: Int
-) {
-    val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(lottieFile),
-        onRetry = { failCount, exception ->
-            Timber.e("Failed ${failCount}X with exception. Reason: ${exception.localizedMessage}")
-            // stop retrying
-            false
-        }
-    )
-    val progress by animateLottieCompositionAsState(composition)
-    LottieAnimation(
-        composition = composition,
-        progress = progress,
-        modifier = modifier
-    )
-}
-
-@Composable
 fun LoopReverseLottieLoader(
     modifier: Modifier = Modifier,
     @RawRes lottieFile: Int,
@@ -56,5 +35,26 @@ fun LoopReverseLottieLoader(
         modifier = modifier,
         enableMergePaths = remember { enableMergePaths },
         alignment = alignment
+    )
+}
+
+@Composable
+fun LottieLoader(
+    modifier: Modifier,
+    @RawRes lottieFile: Int
+) {
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(lottieFile),
+        onRetry = { failCount, exception ->
+            Timber.e("Failed ${failCount}X with exception. Reason: ${exception.localizedMessage}")
+            // stop retrying
+            false
+        }
+    )
+    val progress by animateLottieCompositionAsState(composition)
+    LottieAnimation(
+        composition = composition,
+        progress = progress,
+        modifier = modifier
     )
 }
