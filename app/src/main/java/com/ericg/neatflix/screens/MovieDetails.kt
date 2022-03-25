@@ -256,7 +256,8 @@ fun MovieDetails() {
                 MovieGenreChip(
                     background = ButtonColor,
                     textColor = AppOnPrimaryColor,
-                    genre = it)
+                    genre = it
+                )
             }
         }
 
