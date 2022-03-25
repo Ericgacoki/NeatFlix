@@ -36,6 +36,7 @@ import com.ericg.neatflix.R
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
@@ -236,13 +237,13 @@ fun NestedScroll() {
             Text(
                 text = "Genres",
                 fontSize = 24.sp,
-                color = AppOnPrimaryColor,
+                color = Color.White,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(4.dp)
             )
         }
         item {
-            // TODO: Get genres from API
+            // TODO: Get genres from API and append them to "All"
             val genres = listOf("All", "Drama", "Romance", "Action", "Horror", "Sci-Fi", "Crime")
             var selectedGenre by remember { mutableStateOf("All") }
 
@@ -266,7 +267,7 @@ fun NestedScroll() {
             Text(
                 text = "Trending",
                 fontSize = 24.sp,
-                color = AppOnPrimaryColor,
+                color = Color.White,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(4.dp)
             )
@@ -291,7 +292,7 @@ fun NestedScroll() {
             Text(
                 text = "Top Rated",
                 fontSize = 24.sp,
-                color = AppOnPrimaryColor,
+                color = Color.White,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(4.dp)
             )
@@ -310,11 +311,35 @@ fun NestedScroll() {
                 }
             }
         }
+
+        item {
+            Text(
+                text = "Now Playing",
+                fontSize = 24.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+        item {
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                items(count = 10) {
+                    MovieItem(
+                        image = R.drawable.dont_look_up,
+                        title = "",
+                        modifier = Modifier
+                            .width(130.dp)
+                            .height(195.dp)
+                    )
+                }
+            }
+        }
+
         item {
             Text(
                 text = "Upcoming",
                 fontSize = 24.sp,
-                color = AppOnPrimaryColor,
+                color = Color.White,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(4.dp)
             )
@@ -398,11 +423,16 @@ fun SelectableGenreChip(
             .padding(end = 4.dp)
             .clip(CircleShape)
             .background(
-                color = if (selected) Color(0XFF9495B1)
+                color = if (selected) Color(0xFFA0A1C2)
                 else ButtonColor.copy(alpha = 0.5F)
             )
             .height(32.dp)
             .widthIn(min = 80.dp)
+            /*.border(
+                width = 0.5.dp,
+                color = Color(0xC69495B1),
+                shape = CircleShape
+            )*/
             .padding(horizontal = 8.dp)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -413,9 +443,10 @@ fun SelectableGenreChip(
     ) {
         Text(
             text = genre,
+            fontWeight = if (selected) FontWeight.Normal else FontWeight.Light,
             textAlign = TextAlign.Center,
             modifier = Modifier.align(Center),
-            color = if (selected) Color(0XFF180E36) else Color.White
+            color = if (selected) Color(0XFF180E36) else Color.White.copy(alpha = 0.80F)
         )
     }
 }

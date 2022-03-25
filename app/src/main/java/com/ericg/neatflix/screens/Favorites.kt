@@ -7,8 +7,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,8 +54,8 @@ fun Favorites() {
         SearchBar(
             autoFocus = false,
             onSearch = {
-            Timber.d("Search Param = $globalExposedSearchParam")
-        })
+                Timber.d("Search Param = $globalExposedSearchParam")
+            })
 
         LazyColumn(
             modifier = Modifier
@@ -79,7 +77,7 @@ fun Favorites() {
                     releaseYear = "2019",
                     showFavorite = true,
                     onRemoveFavorite = {
-                           Timber.d("Removing favorite...")
+                        Timber.d("Removing favorite...")
                     },
                     onClick = {
                         Timber.d("Navigating to details screen...")
