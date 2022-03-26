@@ -68,7 +68,8 @@ fun MovieDetails() {
             movieTitleBox,
             moviePosterImage,
             translucentBr,
-            ratingBar) = createRefs()
+            ratingBar
+        ) = createRefs()
 
         Image(
             painter = painterResource(id = R.drawable.dont_look_up),
@@ -120,7 +121,8 @@ fun MovieDetails() {
                             Color.Transparent,
                             Color(0XFF180E36).copy(alpha = 0.5F),
                             Color(0XFF180E36)
-                        ), startY = 0.1F
+                        ),
+                        startY = 0.1F
                     )
                 )
                 .constrainAs(translucentBr) {
