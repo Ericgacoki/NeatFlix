@@ -237,7 +237,7 @@ fun NestedScroll() {
             Text(
                 text = "Genres",
                 fontSize = 24.sp,
-                color = Color.White,
+                color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(4.dp)
             )
@@ -267,7 +267,7 @@ fun NestedScroll() {
             Text(
                 text = "Trending",
                 fontSize = 24.sp,
-                color = Color.White,
+                color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(4.dp)
             )
@@ -292,7 +292,7 @@ fun NestedScroll() {
             Text(
                 text = "Top Rated",
                 fontSize = 24.sp,
-                color = Color.White,
+                color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(4.dp)
             )
@@ -316,7 +316,7 @@ fun NestedScroll() {
             Text(
                 text = "Now Playing",
                 fontSize = 24.sp,
-                color = Color.White,
+                color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(4.dp)
             )
@@ -339,7 +339,7 @@ fun NestedScroll() {
             Text(
                 text = "Upcoming",
                 fontSize = 24.sp,
-                color = Color.White,
+                color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(4.dp)
             )
