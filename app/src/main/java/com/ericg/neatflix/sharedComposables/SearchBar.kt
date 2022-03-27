@@ -25,7 +25,7 @@ import com.ericg.neatflix.R
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 
-// Fixme: A very bad way to expose a state... but sina otherwise!
+// Fixme: Store this state in a viewModel
 var globalExposedSearchParam: String? = null
 
 @Composable
