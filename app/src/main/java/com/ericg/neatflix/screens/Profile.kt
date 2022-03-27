@@ -2,15 +2,16 @@ package com.ericg.neatflix.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,15 +26,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.ericg.neatflix.R
+import com.ericg.neatflix.screens.destinations.FavoritesDestination
 import com.ericg.neatflix.sharedComposables.BackButton
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
 
+@Destination
 @Composable
-fun Profile() {
+fun Profile(
+    navigator: DestinationsNavigator
+) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -59,7 +66,7 @@ fun Profile() {
                 }
         ) {
             BackButton {
-
+                navigator.navigateUp()
             }
         }
 
@@ -112,7 +119,8 @@ fun Profile() {
         /** Custom boarder -> Reason: Image boarder wasn't working properly */
         Box(
             modifier = Modifier
-                .size(83.5.dp).clip(CircleShape)
+                .size(83.5.dp)
+                .clip(CircleShape)
                 .background(AppPrimaryColor)
                 .constrainAs(imageBoarder) {
                     top.linkTo(topBgImage.bottom)
@@ -182,21 +190,37 @@ fun Profile() {
                 fontSize = 16.sp,
                 color = AppOnPrimaryColor
             )
-
         }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.constrainAs(favMoviesIcon) {
-                start.linkTo(viewedMoviesIcon.end)
-                top.linkTo(topBgImage.bottom)
-                bottom.linkTo(profilePhoto.bottom)
-                end.linkTo(parent.end, margin = 24.dp)
-            }
+            modifier = Modifier
+                .constrainAs(favMoviesIcon) {
+                    start.linkTo(viewedMoviesIcon.end)
+                    top.linkTo(topBgImage.bottom)
+                    bottom.linkTo(profilePhoto.bottom)
+                    end.linkTo(parent.end, margin = 24.dp)
+                }
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    navigator.navigate(
+                        FavoritesDestination
+                    ) {
+                        launchSingleTop = true
+                    }
+                }
         ) {
-            IconButton(onClick = { }) {
+            IconButton(onClick = {
+                navigator.navigate(
+                    FavoritesDestination
+                ) {
+                    launchSingleTop = true
+                }
+            }) {
                 Icon(
-                    imageVector = Icons.Filled.Favorite,
+                    painter = painterResource(id = R.drawable.ic_heart_fill),
                     contentDescription = null,
                     tint = AppOnPrimaryColor
                 )
@@ -225,10 +249,10 @@ fun Profile() {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "v: 0.0.1-alpha",
+                text = "v: 0.0.1-alpha [dummy profile]",
                 fontWeight = FontWeight.Light,
                 fontSize = 14.sp,
-                color = AppOnPrimaryColor.copy(alpha = 0.78F)
+                color = AppOnPrimaryColor.copy(alpha = 0.5F)
             )
         }
     }
@@ -239,5 +263,5 @@ fun Profile() {
 @Preview(device = Devices.PIXEL_3)
 @Composable
 fun ProfilePreview() {
-    Profile()
+    // Profile()
 }
