@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.devtools.ksp' version '1.6.10-1.0.2'
 }
 
 android {
@@ -49,6 +50,16 @@ android {
         correctErrorTypes = true
     }
 }
+kotlin {
+    sourceSets {
+        debug {
+            kotlin.srcDir("build/generated/ksp/debug/kotlin")
+        }
+        release {
+            kotlin.srcDir("build/generated/ksp/release/kotlin")
+        }
+    }
+}
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
@@ -65,31 +76,42 @@ dependencies {
 
     // Constraint Layout
     implementation "androidx.constraintlayout:constraintlayout-compose:$constraintlayoutVersion"
+
     // Accompanist
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.24.5-alpha"
+
     // Landscapist image loader
     implementation "com.github.skydoves:landscapist-coil:$landscapistVersion"
+
     // RatingBar
     implementation 'com.github.a914-gowtham:compose-ratingbar:1.2.3'
+
     // Timber
     implementation "com.jakewharton.timber:timber:$timberVersion"
+
     // Stetho
     implementation 'com.facebook.stetho:stetho:1.6.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.6.0'
+
     // Lottie
     implementation "com.airbnb.android:lottie-compose:$lottieVersion"
+
+    // RaamCosta Navigation
+    implementation 'io.github.raamcosta.compose-destinations:core:1.4.0-beta'
+    ksp 'io.github.raamcosta.compose-destinations:ksp:1.4.0-beta'
+
     // Hilt
     implementation "com.google.dagger:hilt-android:$hiltVersion"
     kapt "com.google.dagger:hilt-android-compiler:2.38.1"
-
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
     kapt "androidx.hilt:hilt-compiler:1.0.0"
-
+    // Hilt Navigation - for @HiltViewModel
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'
