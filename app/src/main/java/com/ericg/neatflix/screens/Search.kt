@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -22,10 +23,15 @@ import com.ericg.neatflix.sharedComposables.SearchResultItem
 import com.ericg.neatflix.sharedComposables.globalExposedSearchParam
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import timber.log.Timber
 
+@Destination
 @Composable
-fun SearchScreen() {
+fun SearchScreen(
+    navigator: DestinationsNavigator
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -38,8 +44,10 @@ fun SearchScreen() {
                 .padding(horizontal = 10.dp, vertical = 16.dp)
                 .fillMaxWidth()
         ) {
+            val focusManager = LocalFocusManager.current
             BackButton {
-
+                focusManager.clearFocus()
+                navigator.navigateUp()
             }
 
             Text(
@@ -62,7 +70,9 @@ fun SearchScreen() {
         // FIXME: Display UI status -> loading, no data...
         if (10 <= 0) {
             Column(
-                modifier = Modifier.fillMaxHeight(0.83F).fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxHeight(0.83F)
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
@@ -106,5 +116,5 @@ fun SearchScreen() {
 @Preview
 @Composable
 fun SearchPrev() {
-    SearchScreen()
+    // SearchScreen()
 }
