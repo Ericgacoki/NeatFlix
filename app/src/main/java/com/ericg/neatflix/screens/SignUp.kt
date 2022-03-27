@@ -26,9 +26,14 @@ import com.ericg.neatflix.R
 import com.ericg.neatflix.sharedComposables.BackButton
 import com.ericg.neatflix.sharedComposables.NextButton
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@Destination
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(
+    navigator: DestinationsNavigator
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -163,5 +168,5 @@ fun SignUpScreen() {
 @Preview(device = Devices.PIXEL)
 @Composable
 fun SignUpScreenPrev() {
-    SignUpScreen()
+    // SignUpScreen()
 }

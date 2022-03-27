@@ -23,9 +23,14 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.ericg.neatflix.R
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@Destination
 @Composable
-fun SignUpOrLogInScreen() {
+fun SignUpOrLogInScreen(
+    navigator: DestinationsNavigator
+) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
@@ -108,5 +113,5 @@ fun SignUpOrLogInScreen() {
 @Preview(device = Devices.PIXEL)
 @Composable
 fun SignUpOrLogInPrev() {
-    SignUpOrLogInScreen()
+    // SignUpOrLogInScreen()
 }
