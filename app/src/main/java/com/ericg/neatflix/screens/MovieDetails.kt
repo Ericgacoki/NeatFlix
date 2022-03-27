@@ -36,10 +36,14 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ericg.neatflix.R
 import com.ericg.neatflix.sharedComposables.MovieGenreChip
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
+import com.ericg.neatflix.viewmodel.MovieDetailsViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
 import com.gowtham.ratingbar.RatingBarStyle
@@ -47,12 +51,16 @@ import com.gowtham.ratingbar.StepSize
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
+import javax.inject.Inject
 
 @Composable
 fun MovieDetails() {
-    val movieGenre = remember {
+    val viewModel: MovieDetailsViewModel = hiltViewModel<MovieDetailsViewModel>()
+    val movieGenres1 = remember {
         mutableStateListOf("Sci-fi", "Drama", "Fantasy")
     }
+    val movieGenres2 = viewModel.getMovieGenres()
+
 
     ConstraintLayout(
         modifier = Modifier
@@ -142,9 +150,8 @@ fun MovieDetails() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
         ) {
-            val t = "Don't Look Up"
             Text(
-                text = t,
+                text = viewModel.getMovieTitle(),
                 modifier = Modifier.fillMaxWidth(0.5F),
                 maxLines = 2,
                 fontSize = 16.sp,
@@ -254,11 +261,11 @@ fun MovieDetails() {
                     start.linkTo(parent.start)
                 }
         ) {
-            items(movieGenre) {
+            items(movieGenres2) {
                 MovieGenreChip(
                     background = ButtonColor,
                     textColor = AppOnPrimaryColor,
-                    genre = it
+                    genre = it.name
                 )
             }
         }
@@ -314,11 +321,6 @@ fun CastCrew() {
     ) {
         CoilImage(
             modifier = Modifier
-                /*.border(
-                    width = .5.dp,
-                    color = Color(0XFF74e39a),
-                    shape = CircleShape
-                )*/
                 .clip(CircleShape)
                 .size(70.dp),
             imageModel = R.drawable.timothee,
