@@ -17,15 +17,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ericg.neatflix.R
+import com.ericg.neatflix.screens.destinations.HomeDestination
 import com.ericg.neatflix.sharedComposables.LottieLoader
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
 @OptIn(ExperimentalAnimationApi::class)
+@Destination(start = true)
 @Composable
-fun SplashScreen() {
-    var isLogoVisible by remember { mutableStateOf(true) }
+fun SplashScreen(
+    navigator: DestinationsNavigator?
+) {
+    var animateLogo by remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -45,13 +51,15 @@ fun SplashScreen() {
 
             LaunchedEffect(Unit) {
                 delay(2000)
-                isLogoVisible = false
+                animateLogo = true
                 delay(2000)
                 Timber.e("Navigate to Home!")
+                navigator!!.popBackStack()
+                navigator.navigate(HomeDestination())
             }
 
             this@Column.AnimatedVisibility(
-                visible = isLogoVisible,
+                visible = animateLogo.not(),
                 exit = fadeOut(
                     animationSpec = tween(durationMillis = 2000)
                 ) + scaleOut(animationSpec = tween(durationMillis = 2000)),
@@ -64,7 +72,6 @@ fun SplashScreen() {
                     contentDescription = null
                 )
             }
-
         }
     }
 }
@@ -72,5 +79,5 @@ fun SplashScreen() {
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SplashScreenPrev() {
-    SplashScreen()
+    SplashScreen(navigator = null)
 }
