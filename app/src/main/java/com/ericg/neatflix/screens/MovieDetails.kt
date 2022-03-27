@@ -224,16 +224,15 @@ fun MovieDetails() {
                 value = 4.0F,
                 modifier = Modifier.padding(horizontal = 6.dp),
                 config = RatingBarConfig()
-                    .style(RatingBarStyle.HighLighted)
+                    .style(RatingBarStyle.Normal)
                     .isIndicator(true)
                     .activeColor(AppOnPrimaryColor)
                     .hideInactiveStars(false)
-                    .inactiveColor(Color.LightGray)
+                    .inactiveColor(Color.LightGray.copy(alpha = 0.3F))
                     .stepSize(StepSize.HALF)
                     .numStars(5)
                     .size(16.dp)
-                    .padding(4.dp)
-                    .style(RatingBarStyle.HighLighted),
+                    .padding(4.dp),
                 onValueChange = {},
                 onRatingChanged = {}
             )
