@@ -6,7 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieDetailsViewModel @Inject constructor(private val title: String) : ViewModel() {
+class HomeViewModel @Inject constructor(private val title: String) : ViewModel() {
     fun getMovieTitle(): String = title
 
     fun getMovieGenres(
@@ -14,7 +14,7 @@ class MovieDetailsViewModel @Inject constructor(private val title: String) : Vie
     ): List<Genre>{
         return listOf(
             Genre(movieId,"Sci-fi"),
-            Genre(movieId,"Porn \uD83C\uDF51"),
+            Genre(movieId,"Erotic \uD83C\uDF51"),
             Genre(movieId,"Drama"),
             Genre(movieId,"Fantasy"),
             Genre(movieId,"Adventure"))
