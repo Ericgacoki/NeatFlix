@@ -32,29 +32,41 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ericg.neatflix.R
+import com.ericg.neatflix.screens.destinations.MovieDetailsDestination
+import com.ericg.neatflix.screens.destinations.ProfileDestination
+import com.ericg.neatflix.screens.destinations.SearchScreenDestination
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.ericg.neatflix.viewmodel.HomeViewModel
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
 
+@Destination
 @Composable
-fun Home() {
+fun Home(
+    navigator: DestinationsNavigator?,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF180E36))
     ) {
-        ProfileAndSearchBar()
-        NestedScroll()
+        ProfileAndSearchBar(navigator!!)
+        NestedScroll(navigator = navigator)
     }
 }
 
 @Composable
-fun ProfileAndSearchBar() {
+fun ProfileAndSearchBar(
+    navigator: DestinationsNavigator
+) {
     Row(
         modifier = Modifier
             .padding(top = 12.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
@@ -83,12 +95,17 @@ fun ProfileAndSearchBar() {
                 contentScale = Crop,
                 modifier = Modifier
                     .size(48.dp)
-                    .clip(CircleShape),
-                contentDescription = "profile"
+                    .clip(CircleShape)
+                    .clickable {
+                        navigator.navigate(
+                            direction = ProfileDestination()
+                        ) {
+                            launchSingleTop = true
+                        }
+                    },
+                contentDescription = "profile picture"
             )
-
         }
-
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -101,7 +118,7 @@ fun ProfileAndSearchBar() {
                 modifier = Modifier
                     .padding(bottom = 8.dp, top = 4.dp)
                     .widthIn(max = 110.dp),
-                contentDescription = "profile"
+                contentDescription = "logo"
             )
 
             val types = listOf("Movies", "Tv Shows")
@@ -154,7 +171,13 @@ fun ProfileAndSearchBar() {
         }
 
         IconButton(
-            onClick = { }
+            onClick = {
+                navigator.navigate(
+                    direction = SearchScreenDestination()
+                ) {
+                    launchSingleTop = true
+                }
+            }
         ) {
             Icon(
                 modifier = Modifier.size(22.dp),
@@ -226,7 +249,9 @@ fun DropdownMenu() {
 }*/
 
 @Composable
-fun NestedScroll() {
+fun NestedScroll(
+    navigator: DestinationsNavigator
+) {
     val listState = rememberLazyListState()
     LazyColumn(
         state = listState, modifier = Modifier
@@ -283,7 +308,13 @@ fun NestedScroll() {
                             /** 4:3 */
                             .width(215.dp)
                             .height(161.25.dp)
-                    )
+                    ) { // FIXME: Pass Url/id or the whole movie object from the API
+                        navigator.navigate(
+                            direction = MovieDetailsDestination(it)
+                        ) {
+                            launchSingleTop = true
+                        }
+                    }
                 }
             }
         }
@@ -307,7 +338,14 @@ fun NestedScroll() {
                         modifier = Modifier
                             .width(130.dp)
                             .height(195.dp)
-                    )
+                    ) {
+                        // FIXME: Pass Url/id or the whole movie object from the API
+                        navigator.navigate(
+                            direction = MovieDetailsDestination(it)
+                        ) {
+                            launchSingleTop = true
+                        }
+                    }
                 }
             }
         }
@@ -330,7 +368,14 @@ fun NestedScroll() {
                         modifier = Modifier
                             .width(130.dp)
                             .height(195.dp)
-                    )
+                    ) {
+                        // FIXME: Pass Url/id or the whole movie object from the API
+                        navigator.navigate(
+                            direction = MovieDetailsDestination(it)
+                        ) {
+                            launchSingleTop = true
+                        }
+                    }
                 }
             }
         }
@@ -353,7 +398,14 @@ fun NestedScroll() {
                         modifier = Modifier
                             .width(130.dp)
                             .height(195.dp)
-                    )
+                    ) {
+                        // FIXME: Pass Url/id or the whole movie object from the API
+                        navigator.navigate(
+                            direction = MovieDetailsDestination(it)
+                        ) {
+                            launchSingleTop = true
+                        }
+                    }
                 }
             }
         }
@@ -369,12 +421,19 @@ fun MovieItem(
     image: Int,
     title: String,
     modifier: Modifier,
-    landscape: Boolean = false
+    landscape: Boolean = false,
+    onclick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .wrapContentHeight()
-            .padding(all = 4.dp),
+            .padding(all = 4.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
+                onclick()
+            },
         horizontalAlignment = Alignment.Start
     ) {
         CoilImage(
@@ -454,5 +513,5 @@ fun SelectableGenreChip(
 @Preview
 @Composable
 fun HomePrev() {
-    Home()
+    Home(null)
 }
