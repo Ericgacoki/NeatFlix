@@ -37,30 +37,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ericg.neatflix.R
 import com.ericg.neatflix.sharedComposables.MovieGenreChip
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
-import com.ericg.neatflix.viewmodel.MovieDetailsViewModel
+import com.ericg.neatflix.ui.theme.SeeMore
+import com.ericg.neatflix.viewmodel.DetailsViewModel
+import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
 import com.gowtham.ratingbar.RatingBarStyle
 import com.gowtham.ratingbar.StepSize
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
-import javax.inject.Inject
 
+@Destination
 @Composable
-fun MovieDetails() {
-    val viewModel: MovieDetailsViewModel = hiltViewModel<MovieDetailsViewModel>()
-    val movieGenres1 = remember {
+fun MovieDetails(
+    navigator: DestinationsNavigator,
+    viewModel: DetailsViewModel = hiltViewModel(),
+    movieId: Int
+) {
+    val movieGenres2 = remember {
         mutableStateListOf("Sci-fi", "Drama", "Fantasy")
     }
-    val movieGenres2 = viewModel.getMovieGenres()
-
 
     ConstraintLayout(
         modifier = Modifier
@@ -101,7 +104,9 @@ fun MovieDetails() {
                 }
         ) {
             val (icon) = createRefs()
-            IconButton(onClick = { }) {
+            IconButton(onClick = {
+                navigator.navigateUp()
+            }) {
                 Icon(
                     imageVector = Icons.Rounded.ArrowBack,
                     contentDescription = null,
@@ -151,7 +156,7 @@ fun MovieDetails() {
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = viewModel.getMovieTitle(),
+                text = "viewModel.getMovieTitle()",
                 modifier = Modifier.fillMaxWidth(0.5F),
                 maxLines = 2,
                 fontSize = 16.sp,
@@ -160,7 +165,7 @@ fun MovieDetails() {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "2022",
+                text = "2022 id: $movieId",
                 fontSize = 15.sp,
                 fontWeight = Light,
                 color = Color.White.copy(alpha = 0.56F)
@@ -172,8 +177,8 @@ fun MovieDetails() {
             modifier = Modifier
                 .padding(16.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .width(130.dp)
-                .height(195.dp)
+                .width(115.dp)
+                .height(172.5.dp)
                 .constrainAs(moviePosterImage) {
                     top.linkTo(headerImage.bottom)
                     bottom.linkTo(headerImage.bottom)
@@ -264,7 +269,7 @@ fun MovieDetails() {
                 MovieGenreChip(
                     background = ButtonColor,
                     textColor = AppOnPrimaryColor,
-                    genre = it.name
+                    genre = it
                 )
             }
         }
@@ -413,7 +418,7 @@ fun ExpandableText(
         if (!expanded) {
             val density = LocalDensity.current
             Text(
-                color = AppOnPrimaryColor,
+                color = SeeMore,
                 text = "... See more",
                 fontWeight = Bold,
                 fontSize = 14.sp,
@@ -447,5 +452,5 @@ fun ExpandableText(
 @Preview
 @Composable
 fun MovieDetailsPreview() {
-    MovieDetails()
+    // MovieDetails()
 }
