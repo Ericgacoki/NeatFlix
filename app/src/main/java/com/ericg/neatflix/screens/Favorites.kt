@@ -1,7 +1,7 @@
 package com.ericg.neatflix.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -65,11 +65,13 @@ fun Favorites(
             IconButton(
                 onClick = {
                     focusManager.clearFocus()
+                    navigator.popBackStack()
                     navigator.navigate(HomeDestination()) {
                         this.launchSingleTop = true
                         this.restoreState
                     }
-                }) {
+                }
+            ) {
                 Icon(
                     modifier = Modifier.size(26.dp),
                     painter = painterResource(id = R.drawable.ic_home),
@@ -83,7 +85,8 @@ fun Favorites(
             autoFocus = false,
             onSearch = {
                 Timber.d("Search Param = $globalExposedSearchParam")
-            })
+            }
+        )
 
         val focusManager = LocalFocusManager.current
         LazyColumn(
