@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -56,7 +56,8 @@ fun Profile(
             translucentBr,
             viewedMoviesIcon,
             favMoviesIcon,
-            appVersion) = createRefs()
+            appVersion
+        ) = createRefs()
 
         Box(
             modifier = Modifier
@@ -106,7 +107,8 @@ fun Profile(
                             Color(0XFF180E36).copy(alpha = 0.5F),
                             Color(0XFF180E36).copy(alpha = 0.75F),
                             Color(0XFF180E36).copy(alpha = 1F)
-                        ), startY = 0F
+                        ),
+                        startY = 0F
                     )
                 )
                 .constrainAs(translucentBr) {
@@ -256,8 +258,6 @@ fun Profile(
             )
         }
     }
-
-
 }
 
 @Preview(device = Devices.PIXEL_3)

@@ -43,7 +43,6 @@ import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.ui.theme.SeeMore
 import com.ericg.neatflix.viewmodel.DetailsViewModel
-import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
 import com.gowtham.ratingbar.RatingBarStyle
@@ -146,17 +145,15 @@ fun MovieDetails(
         )
 
         Column(
-            modifier = Modifier
-                .constrainAs(movieTitleBox) {
-                    start.linkTo(moviePosterImage.end)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(headerImage.bottom)
-                },
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start
+            modifier = Modifier.constrainAs(movieTitleBox) {
+                start.linkTo(moviePosterImage.end)
+                end.linkTo(parent.end)
+                bottom.linkTo(headerImage.bottom)
+            },
+            verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "viewModel.getMovieTitle()",
+                text = viewModel.getMovieTitle(),
                 modifier = Modifier.fillMaxWidth(0.5F),
                 maxLines = 2,
                 fontSize = 16.sp,
@@ -276,10 +273,10 @@ fun MovieDetails(
 
         ExpandableText(
             text = "Kate (Jennifer Lawrence), an astronomy grad student, " +
-                    " and her professor Dr. Randall Mindy (Leonardo DiCaprio) make an" +
-                    " astounding discovery of a comet orbiting within the solar system." +
-                    " The problem: it's on a direct collision course with Earth. The other" +
-                    " problem? No one really seems to care",
+                " and her professor Dr. Randall Mindy (Leonardo DiCaprio) make an" +
+                " astounding discovery of a comet orbiting within the solar system." +
+                " The problem: it's on a direct collision course with Earth. The other" +
+                " problem? No one really seems to care",
             modifier = Modifier
                 .padding(4.dp)
                 .constrainAs(descriptionText) {
@@ -381,9 +378,9 @@ fun ExpandableText(
 
     LaunchedEffect(text, expanded, textLayoutResult, seeMoreSize) {
         val lastLineIndex = minimizedMaxLines - 1
-        if (!expanded && textLayoutResult != null && seeMoreSize != null
-            && lastLineIndex + 1 == textLayoutResult.lineCount
-            && textLayoutResult.isLineEllipsized(lastLineIndex)
+        if (!expanded && textLayoutResult != null && seeMoreSize != null &&
+            lastLineIndex + 1 == textLayoutResult.lineCount &&
+            textLayoutResult.isLineEllipsized(lastLineIndex)
         ) {
             var lastCharIndex = textLayoutResult.getLineEnd(lastLineIndex, visibleEnd = true) + 1
             var charRect: Rect

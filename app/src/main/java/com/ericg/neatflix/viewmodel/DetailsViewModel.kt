@@ -5,6 +5,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailsViewModel @Inject constructor(val title: String): ViewModel() {
+class DetailsViewModel @Inject constructor(val title: String) : ViewModel() {
     fun getMovieTitle(): String = title
 }
