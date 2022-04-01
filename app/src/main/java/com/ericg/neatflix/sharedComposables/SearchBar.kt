@@ -91,6 +91,7 @@ fun SearchBar(
                 Row {
                     AnimatedVisibility(visible = searchInput.trim().isNotEmpty()) {
                         IconButton(onClick = {
+
                             focusManager.clearFocus()
                             searchInput = ""
                             globalExposedSearchParam = null
@@ -104,8 +105,10 @@ fun SearchBar(
                     }
 
                     IconButton(onClick = {
-                        focusManager.clearFocus()
-                        onSearch()
+                        if (!globalExposedSearchParam?.trim().isNullOrEmpty()) {
+                            focusManager.clearFocus()
+                            onSearch()
+                        }
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_search),
