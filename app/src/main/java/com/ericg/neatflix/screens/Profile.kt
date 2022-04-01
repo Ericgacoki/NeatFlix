@@ -172,20 +172,24 @@ fun Profile(
             }
         )
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.constrainAs(viewedMoviesIcon) {
                 start.linkTo(profilePhoto.end, margin = 36.dp)
                 top.linkTo(topBgImage.bottom)
                 bottom.linkTo(profilePhoto.bottom)
             }
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_eyes),
-                contentDescription = null,
-                tint = AppOnPrimaryColor
-            )
-            Spacer(modifier = Modifier.width(8.dp))
+            IconButton(onClick = { }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_eyes),
+                    contentDescription = null,
+                    tint = AppOnPrimaryColor
+                )
+            }
+
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = "12",
                 fontWeight = FontWeight.Light,
@@ -194,8 +198,9 @@ fun Profile(
             )
         }
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .constrainAs(favMoviesIcon) {
                     start.linkTo(viewedMoviesIcon.end)
@@ -227,7 +232,7 @@ fun Profile(
                     tint = AppOnPrimaryColor
                 )
             }
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = "34",
                 fontWeight = FontWeight.Light,
