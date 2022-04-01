@@ -96,7 +96,7 @@ fun Favorites(
         ) {
             items(count = 10) {
                 SearchResultItem(
-                    imdbId = "",
+                    imdbId = "sample id",
                     title = "Spider-Man far from home and never coming back",
                     posterImage = R.drawable.manifest,
                     genres = listOf(
