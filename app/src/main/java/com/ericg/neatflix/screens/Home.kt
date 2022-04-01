@@ -8,7 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -17,7 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.* // ktlint-disable no-wildcard-imports
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
@@ -165,9 +165,7 @@ fun ProfileAndSearchBar(
                     .clip(RoundedCornerShape(4.dp))
                     .background(AppOnPrimaryColor)
             ) {
-
             }
-
         }
 
         IconButton(
@@ -186,7 +184,6 @@ fun ProfileAndSearchBar(
                 tint = AppOnPrimaryColor
             )
         }
-
     }
 }
 
@@ -254,7 +251,8 @@ fun NestedScroll(
 ) {
     val listState = rememberLazyListState()
     LazyColumn(
-        state = listState, modifier = Modifier
+        state = listState,
+        modifier = Modifier
             .padding(horizontal = 2.dp)
             .fillMaxSize()
     ) {
@@ -465,7 +463,6 @@ fun MovieItem(
                 textAlign = TextAlign.Start
             )
         }
-
     }
 }
 
