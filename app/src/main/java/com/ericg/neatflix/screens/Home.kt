@@ -8,16 +8,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.runtime.* // ktlint-disable no-wildcard-imports
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
@@ -27,25 +29,33 @@ import androidx.compose.ui.layout.ContentScale.Companion.Crop
 import androidx.compose.ui.layout.ContentScale.Companion.Fit
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Light
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.ericg.neatflix.R
+import com.ericg.neatflix.model.Movie
 import com.ericg.neatflix.screens.destinations.MovieDetailsDestination
 import com.ericg.neatflix.screens.destinations.ProfileDestination
 import com.ericg.neatflix.screens.destinations.SearchScreenDestination
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
+import com.ericg.neatflix.util.Constants.IMAGE_BASE_URL
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
+import retrofit2.HttpException
+import java.io.IOException
 
 @Destination
 @Composable
@@ -59,7 +69,7 @@ fun Home(
             .background(Color(0xFF180E36))
     ) {
         ProfileAndSearchBar(navigator!!)
-        NestedScroll(navigator = navigator)
+        NestedScroll(navigator = navigator, viewModel)
     }
 }
 
@@ -121,18 +131,18 @@ fun ProfileAndSearchBar(
                 contentDescription = "logo"
             )
 
-            val types = listOf("Movies", "Tv Shows")
-            var selectedType by remember { mutableStateOf(types[0]) }
+            val filmCategories = listOf("Movies", "Tv Shows")
+            var selectedFilmCategory by remember { mutableStateOf(filmCategories[0]) }
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                types.forEachIndexed { index, filmType ->
+                filmCategories.forEachIndexed { index, filmType ->
                     Text(
                         text = filmType,
-                        fontWeight = if (selectedType == types[index]) FontWeight.Bold else FontWeight.Light,
-                        fontSize = if (selectedType == types[index]) 24.sp else 16.sp,
-                        color = if (selectedType == types[index])
+                        fontWeight = if (selectedFilmCategory == filmCategories[index]) FontWeight.Bold else FontWeight.Light,
+                        fontSize = if (selectedFilmCategory == filmCategories[index]) 24.sp else 16.sp,
+                        color = if (selectedFilmCategory == filmCategories[index])
                             AppOnPrimaryColor else Color.LightGray.copy(alpha = 0.78F),
                         modifier = Modifier
                             .padding(start = 4.dp, end = 4.dp, top = 8.dp)
@@ -140,7 +150,7 @@ fun ProfileAndSearchBar(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ) {
-                                selectedType = types[index]
+                                selectedFilmCategory = filmCategories[index]
                             }
 
                     )
@@ -148,7 +158,7 @@ fun ProfileAndSearchBar(
             }
 
             val animOffset = animateDpAsState(
-                targetValue = when (types.indexOf(selectedType)) {
+                targetValue = when (filmCategories.indexOf(selectedFilmCategory)) {
                     0 -> (-30).dp
                     else -> 30.dp
                 },
@@ -187,69 +197,27 @@ fun ProfileAndSearchBar(
     }
 }
 
-/*@Composable
-fun DropdownMenu() {
-    var expanded by remember { mutableStateOf(false) }
-    val items = listOf("Movies", "Series")
-    var selectedIndex by remember { mutableStateOf(0) }
-
-    Box(
-        modifier = Modifier
-            .padding(4.dp)
-            .fillMaxHeight()
-            .width(80.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .background(Color(0xFF180E36))
-    ) {
-        Text(
-            items[selectedIndex],
-            color = Color.White.copy(alpha = 0.78F),
-            modifier = Modifier
-                .align(Center)
-                .padding(4.dp)
-                .clickable(onClick = { expanded = true }),
-            textAlign = TextAlign.Center
-        )
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .background(ButtonColor)
-                .clip(RoundedCornerShape(4.dp))
-        ) {
-            items.forEachIndexed { index, value ->
-                DropdownMenuItem(onClick = {
-                    expanded = false
-                    selectedIndex = index
-                }) {
-                    Text(
-                        text = value,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .fillMaxWidth()
-                    )
-                }
-                if (index != items.lastIndex) {
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 6.dp)
-                            .height((0.5).dp)
-                            .background(Color(0XFF9495B1))
-                    )
-                }
-            }
-        }
-    }
-}*/
-
 @Composable
 fun NestedScroll(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    viewModel: HomeViewModel
 ) {
-    val listState = rememberLazyListState()
+
+    val trendingMovies = viewModel.trendingMoviesState.value.collectAsLazyPagingItems()
+
+    val topRatedMovies = viewModel.topRatedMoviesState.value.collectAsLazyPagingItems()
+    val nowPlayingMovies = viewModel.nowPlayingMoviesState.value.collectAsLazyPagingItems()
+    val upcomingMovies = viewModel.upcomingMoviesState.value.collectAsLazyPagingItems()
+
+    val listState: LazyListState = rememberLazyListState(viewModel.index, viewModel.offset)
+
+    LaunchedEffect(key1 = listState.isScrollInProgress) {
+        if (!listState.isScrollInProgress) {
+            viewModel.index = listState.firstVisibleItemIndex
+            viewModel.offset = listState.firstVisibleItemScrollOffset
+        }
+    }
+
     LazyColumn(
         state = listState,
         modifier = Modifier
@@ -262,13 +230,11 @@ fun NestedScroll(
                 fontSize = 24.sp,
                 color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(all = 4.dp)
             )
         }
         item {
-            // TODO: Get genres from API and append them to "All"
-            val genres = listOf("All", "Drama", "Romance", "Action", "Horror", "Sci-Fi", "Crime")
-            var selectedGenre by remember { mutableStateOf("All") }
+            val genres = viewModel.movieGenres
 
             LazyRow(
                 modifier = Modifier
@@ -277,10 +243,12 @@ fun NestedScroll(
             ) {
                 items(count = genres.size) {
                     SelectableGenreChip(
-                        genre = genres[it],
-                        selected = genres[it] == selectedGenre
+                        genre = genres[it].name,
+                        selected = genres[it].name == viewModel.selectedGenre.value
                     ) {
-                        selectedGenre = genres[it]
+                        if (viewModel.selectedGenre.value != genres[it].name) {
+                            viewModel.setSelectedGenre(genre = genres[it])
+                        }
                     }
                 }
             }
@@ -292,29 +260,18 @@ fun NestedScroll(
                 fontSize = 24.sp,
                 color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(start = 4.dp, top = 8.dp)
             )
         }
         item {
-            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                items(count = 10) {
-                    MovieItem(
-                        landscape = true,
-                        image = R.drawable.dont_look_up,
-                        title = "Don't Look Up",
-                        modifier = Modifier
-                            /** 4:3 */
-                            .width(215.dp)
-                            .height(161.25.dp)
-                    ) { // FIXME: Pass Url/id or the whole movie object from the API
-                        navigator.navigate(
-                            direction = MovieDetailsDestination(it)
-                        ) {
-                            launchSingleTop = true
-                        }
-                    }
+            ScrollableMovieItems(
+                landscape = true,
+                navigator = navigator,
+                pagingItems = trendingMovies,
+                onErrorClick = {
+                    viewModel.refreshAll()
                 }
-            }
+            )
         }
 
         item {
@@ -323,29 +280,17 @@ fun NestedScroll(
                 fontSize = 24.sp,
                 color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(all = 4.dp)
             )
         }
         item {
-            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                items(count = 10) {
-                    MovieItem(
-                        image = R.drawable.manifest,
-                        title = "",
-                        /** 2:3 */
-                        modifier = Modifier
-                            .width(130.dp)
-                            .height(195.dp)
-                    ) {
-                        // FIXME: Pass Url/id or the whole movie object from the API
-                        navigator.navigate(
-                            direction = MovieDetailsDestination(it)
-                        ) {
-                            launchSingleTop = true
-                        }
-                    }
+            ScrollableMovieItems(
+                navigator = navigator,
+                pagingItems = topRatedMovies,
+                onErrorClick = {
+                    viewModel.refreshAll()
                 }
-            }
+            )
         }
 
         item {
@@ -354,28 +299,17 @@ fun NestedScroll(
                 fontSize = 24.sp,
                 color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(start = 4.dp, top = 14.dp, bottom = 4.dp)
             )
         }
         item {
-            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                items(count = 10) {
-                    MovieItem(
-                        image = R.drawable.dont_look_up,
-                        title = "",
-                        modifier = Modifier
-                            .width(130.dp)
-                            .height(195.dp)
-                    ) {
-                        // FIXME: Pass Url/id or the whole movie object from the API
-                        navigator.navigate(
-                            direction = MovieDetailsDestination(it)
-                        ) {
-                            launchSingleTop = true
-                        }
-                    }
+            ScrollableMovieItems(
+                navigator = navigator,
+                pagingItems = nowPlayingMovies,
+                onErrorClick = {
+                    viewModel.refreshAll()
                 }
-            }
+            )
         }
 
         item {
@@ -384,28 +318,73 @@ fun NestedScroll(
                 fontSize = 24.sp,
                 color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(start = 4.dp, top = 14.dp, bottom = 4.dp)
             )
         }
         item {
-            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                items(count = 10) {
-                    MovieItem(
-                        image = R.drawable.dont_look_up,
-                        title = "",
-                        modifier = Modifier
-                            .width(130.dp)
-                            .height(195.dp)
-                    ) {
-                        // FIXME: Pass Url/id or the whole movie object from the API
-                        navigator.navigate(
-                            direction = MovieDetailsDestination(it)
-                        ) {
-                            launchSingleTop = true
-                        }
-                    }
+            ScrollableMovieItems(
+                navigator = navigator,
+                pagingItems = upcomingMovies,
+                onErrorClick = {
+                    viewModel.refreshAll()
                 }
-            }
+            )
+        }
+
+        item {
+            Text(
+                text = "Favorite",
+                fontSize = 24.sp,
+                color = AppOnPrimaryColor,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 4.dp, top = 14.dp, bottom = 4.dp)
+            )
+        }
+        item {
+            ScrollableMovieItems(
+                navigator = navigator,
+                pagingItems = topRatedMovies, // favorite
+                onErrorClick = {
+                    viewModel.refreshAll()
+                }
+            )
+        }
+        item {
+            Text(
+                text = "Recommended",
+                fontSize = 24.sp,
+                color = AppOnPrimaryColor,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 4.dp, top = 14.dp, bottom = 4.dp)
+            )
+        }
+        item {
+            ScrollableMovieItems(
+                navigator = navigator,
+                pagingItems = topRatedMovies, // recommended
+                onErrorClick = {
+                    viewModel.refreshAll()
+                }
+            )
+        }
+
+        item {
+            Text(
+                text = "Back in the days",
+                fontSize = 24.sp,
+                color = AppOnPrimaryColor,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 4.dp, top = 14.dp, bottom = 4.dp)
+            )
+        }
+        item {
+            ScrollableMovieItems(
+                navigator = navigator,
+                pagingItems = topRatedMovies, // backInTheDays
+                onErrorClick = {
+                    viewModel.refreshAll()
+                }
+            )
         }
 
         item {
@@ -416,10 +395,10 @@ fun NestedScroll(
 
 @Composable
 fun MovieItem(
-    image: Int,
+    imageUrl: String,
     title: String,
     modifier: Modifier,
-    landscape: Boolean = false,
+    landscape: Boolean,
     onclick: () -> Unit
 ) {
     Column(
@@ -435,7 +414,7 @@ fun MovieItem(
         horizontalAlignment = Alignment.Start
     ) {
         CoilImage(
-            imageModel = image,
+            imageModel = imageUrl,
             shimmerParams = ShimmerParams(
                 baseColor = AppPrimaryColor,
                 highlightColor = ButtonColor,
@@ -452,7 +431,7 @@ fun MovieItem(
 
         AnimatedVisibility(visible = landscape) {
             Text(
-                text = title,
+                text = trimTitle(title),
                 modifier = Modifier
                     .padding(start = 4.dp, top = 4.dp)
                     .fillMaxWidth(),
@@ -466,8 +445,85 @@ fun MovieItem(
     }
 }
 
-/**This [SelectableGenreChip()] differs from [MovieGenreChip()] in that
- * it is selectable while MovieGenreChip is not*/
+private fun trimTitle(text: String) = if (text.length <= 30) text else {
+    val textWithEllipsis = text.removeRange(startIndex = 30, endIndex = text.length)
+    "$textWithEllipsis..."
+}
+
+@Composable
+private fun ScrollableMovieItems(
+    landscape: Boolean = false,
+    navigator: DestinationsNavigator,
+    pagingItems: LazyPagingItems<Movie>,
+    onErrorClick: () -> Unit
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(if (landscape) 215.dp else 195.dp)
+    ) {
+        when (pagingItems.loadState.refresh) {
+            is LoadState.Loading ->
+                // TODO("Use Lotti File")
+                CircularProgressIndicator(
+                    modifier = Modifier.width(40.dp)
+                )
+            is LoadState.NotLoading -> {
+                LazyRow(modifier = Modifier.fillMaxWidth()) {
+                    pagingItems.itemSnapshotList.items.forEach { movie ->
+                        val imagePath =
+                            if (landscape) movie.backdropPath else movie.posterPath
+                        item {
+                            MovieItem(
+                                landscape = landscape,
+                                imageUrl = "$IMAGE_BASE_URL/$imagePath",
+                                title = movie.title,
+                                modifier = Modifier
+                                    .width(if (landscape) 215.dp else 130.dp)
+                                    .height(if (landscape) 161.25.dp else 195.dp)
+                            ) {
+                                navigator.navigate(
+                                    direction = MovieDetailsDestination(movie)
+                                ) {
+                                    launchSingleTop = true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            is LoadState.Error -> {
+                val error = pagingItems.loadState.refresh as LoadState.Error
+                val errorMessage = when (error.error) {
+                    is HttpException -> "Sorry, Something went wrong!\nTap to retry"
+                    is IOException -> "Connection failed. Tap to retry!"
+                    else -> "Failed! Tap to retry!"
+                }
+                Box(contentAlignment = Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(161.25.dp) // maintain the vertical space between two categories
+                        .clickable {
+                            onErrorClick()
+                        }
+                ) {
+                    Text(
+                        text = errorMessage,
+                        textAlign = TextAlign.Center,
+                        fontSize = 18.sp,
+                        fontWeight = Light,
+                        color = Color(0xFFE28B8B),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+            else -> {
+            }
+        }
+    }
+}
+
 @Composable
 fun SelectableGenreChip(
     genre: String,

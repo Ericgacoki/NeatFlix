@@ -7,18 +7,18 @@ import com.ericg.neatflix.model.Movie
 import retrofit2.HttpException
 import java.io.IOException
 
-class TrendingMoviesSource(private val api: APIService) : PagingSource<Int, Movie>() {
+class NowPlayingMovieSource(private val api: APIService) : PagingSource<Int, Movie>() {
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? = state.anchorPosition
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         return try {
             val nextPage = params.key ?: 1
-            val trendingMovies = api.getTrendingMovies(page = nextPage)
+            val nowPlayingMovies = api.getNowPlayingMovies(page = nextPage)
 
             LoadResult.Page(
-                data = trendingMovies.results,
+                data = nowPlayingMovies.results,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = if (trendingMovies.results.isEmpty()) null else trendingMovies.page + 1
+                nextKey = if (nowPlayingMovies.results.isEmpty()) null else nowPlayingMovies.page + 1
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)
