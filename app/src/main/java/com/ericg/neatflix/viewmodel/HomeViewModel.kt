@@ -52,6 +52,9 @@ class HomeViewModel @Inject constructor(
         if (movieGenres.size == 1) {
             getMoviesGenre()
         }
+        if (genreId == null) {
+            selectedGenre.value = "All"
+        }
         getTrendingMovies(genreId)
         getTopRatedMovies(genreId)
         getNowPlayingMovies(genreId)
