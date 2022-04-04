@@ -17,9 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ericg.neatflix.R
-import com.ericg.neatflix.data.MovieGenre
+import com.ericg.neatflix.model.Genre as MovieGenre
 import com.ericg.neatflix.screens.destinations.HomeDestination
-import com.ericg.neatflix.screens.destinations.MovieDetailsDestination
 import com.ericg.neatflix.sharedComposables.BackButton
 import com.ericg.neatflix.sharedComposables.SearchBar
 import com.ericg.neatflix.sharedComposables.SearchResultItem
@@ -113,9 +112,9 @@ fun Favorites(
                     },
                     onClick = {
                         focusManager.clearFocus()
-                        navigator.navigate(MovieDetailsDestination(it)) {
+                        /*navigator.navigate(MovieDetailsDestination() {
                             this.launchSingleTop = true
-                        }
+                        }*/
                     }
                 )
             }
