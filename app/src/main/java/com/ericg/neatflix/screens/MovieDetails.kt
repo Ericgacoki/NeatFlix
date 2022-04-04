@@ -28,7 +28,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.Light
-import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
@@ -43,8 +42,8 @@ import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.ui.theme.SeeMore
-import com.ericg.neatflix.util.Constants.IMAGE_BASE_URL
-import com.ericg.neatflix.viewmodel.DetailsViewModel
+import com.ericg.neatflix.util.Constants.BASE_BACKDROP_IMAGE_URL
+import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
@@ -83,12 +82,19 @@ fun MovieDetails(
         ) = createRefs()
 
         CoilImage(
-            imageModel = "$IMAGE_BASE_URL/${movie.backdropPath}",
+            imageModel = "$BASE_BACKDROP_IMAGE_URL/${movie.backdropPath}",
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
                 .fillMaxHeight(0.33F)
                 .constrainAs(headerImage) {},
+            shimmerParams = ShimmerParams(
+                baseColor = AppPrimaryColor,
+                highlightColor = ButtonColor,
+                durationMillis = 350,
+                dropOff = 0.65F,
+                tilt = 20F
+            ),
             contentScale = Crop,
             contentDescription = "Header backdrop image",
         )
@@ -171,7 +177,7 @@ fun MovieDetails(
         }
 
         CoilImage(
-            imageModel = "$IMAGE_BASE_URL/${movie.posterPath}",
+            imageModel = "$BASE_POSTER_IMAGE_URL/${movie.posterPath}",
             modifier = Modifier
                 .padding(16.dp)
                 .clip(RoundedCornerShape(4.dp))
