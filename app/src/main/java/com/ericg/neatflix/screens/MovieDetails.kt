@@ -5,7 +5,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -38,11 +37,15 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ericg.neatflix.R
+import com.ericg.neatflix.model.Movie
 import com.ericg.neatflix.sharedComposables.MovieGenreChip
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
+import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.ui.theme.SeeMore
+import com.ericg.neatflix.util.Constants.IMAGE_BASE_URL
 import com.ericg.neatflix.viewmodel.DetailsViewModel
+import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
 import com.gowtham.ratingbar.RatingBarStyle
@@ -57,12 +60,10 @@ import com.skydoves.landscapist.coil.CoilImage
 @Composable
 fun MovieDetails(
     navigator: DestinationsNavigator,
-    viewModel: DetailsViewModel = hiltViewModel(),
-    movieId: Int
+    viewModel: HomeViewModel = hiltViewModel(),
+
+    movie: Movie
 ) {
-    val movieGenres2 = remember {
-        mutableStateListOf("Sci-fi", "Drama", "Fantasy")
-    }
 
     ConstraintLayout(
         modifier = Modifier
@@ -81,15 +82,15 @@ fun MovieDetails(
             ratingBar
         ) = createRefs()
 
-        Image(
-            painter = painterResource(id = R.drawable.dont_look_up),
+        CoilImage(
+            imageModel = "$IMAGE_BASE_URL/${movie.backdropPath}",
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
                 .fillMaxHeight(0.33F)
                 .constrainAs(headerImage) {},
             contentScale = Crop,
-            contentDescription = "Header landscape image",
+            contentDescription = "Header backdrop image",
         )
 
         ConstraintLayout(
@@ -153,24 +154,24 @@ fun MovieDetails(
             verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = viewModel.getMovieTitle(),
+                text = movie.title,
                 modifier = Modifier.fillMaxWidth(0.5F),
                 maxLines = 2,
-                fontSize = 16.sp,
-                fontWeight = SemiBold,
+                fontSize = 18.sp,
+                fontWeight = Bold,
                 color = Color.White.copy(alpha = 0.78F)
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "2022 id: $movieId",
+                text = movie.releaseDate,
                 fontSize = 15.sp,
                 fontWeight = Light,
                 color = Color.White.copy(alpha = 0.56F)
             )
         }
 
-        Image(
-            painter = painterResource(id = R.drawable.dont_look_up_portrait),
+        CoilImage(
+            imageModel = "$IMAGE_BASE_URL/${movie.posterPath}",
             modifier = Modifier
                 .padding(16.dp)
                 .clip(RoundedCornerShape(4.dp))
@@ -181,7 +182,16 @@ fun MovieDetails(
                     bottom.linkTo(headerImage.bottom)
                     start.linkTo(parent.start)
                 },
+            shimmerParams = ShimmerParams(
+                baseColor = AppPrimaryColor,
+                highlightColor = ButtonColor,
+                durationMillis = 350,
+                dropOff = 0.65F,
+                tilt = 20F
+            ),
+            previewPlaceholder = R.drawable.dont_look_up,
             contentScale = Crop,
+            circularReveal = CircularReveal(duration = 1000),
             contentDescription = "movie poster"
         )
 
@@ -207,7 +217,7 @@ fun MovieDetails(
                         .padding(4.dp)
                 ) {
                     Text(
-                        text = "16+",
+                        text = if (movie.adult) "18+" else "PG",
                         fontSize = 14.sp,
                         fontWeight = Light,
                         color = Color.White.copy(alpha = 0.56F)
@@ -215,7 +225,7 @@ fun MovieDetails(
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "2h 18m",
+                    text = if (movie.runtime == 0) "1h 57min" else "${movie.runtime / 60}h ${movie.runtime % 60}min",
                     fontSize = 14.sp,
                     fontWeight = Light,
                     color = Color.White.copy(alpha = 0.56F)
@@ -223,7 +233,7 @@ fun MovieDetails(
             }
 
             RatingBar(
-                value = 4.0F,
+                value = (movie.voteAverage / 2).toFloat(),
                 modifier = Modifier.padding(horizontal = 6.dp),
                 config = RatingBarConfig()
                     .style(RatingBarStyle.Normal)
@@ -239,7 +249,7 @@ fun MovieDetails(
                 onRatingChanged = {}
             )
 
-            var favorite by remember { mutableStateOf(true) }
+            var favorite by remember { mutableStateOf(false) }
             IconButton(onClick = {
                 favorite = !favorite
             }) {
@@ -262,21 +272,22 @@ fun MovieDetails(
                     start.linkTo(parent.start)
                 }
         ) {
-            items(movieGenres2) {
-                MovieGenreChip(
-                    background = ButtonColor,
-                    textColor = AppOnPrimaryColor,
-                    genre = it
-                )
+            val movieGenres = viewModel.movieGenres.filter { genre ->
+                movie.genreIds!!.contains(genre.id)
+            }
+            movieGenres.forEach { genre ->
+                item {
+                    MovieGenreChip(
+                        background = ButtonColor,
+                        textColor = AppOnPrimaryColor,
+                        genre = genre.name
+                    )
+                }
             }
         }
 
         ExpandableText(
-            text = "Kate (Jennifer Lawrence), an astronomy grad student, " +
-                " and her professor Dr. Randall Mindy (Leonardo DiCaprio) make an" +
-                " astounding discovery of a comet orbiting within the solar system." +
-                " The problem: it's on a direct collision course with Earth. The other" +
-                " problem? No one really seems to care",
+            text = movie.overview,
             modifier = Modifier
                 .padding(4.dp)
                 .constrainAs(descriptionText) {
