@@ -27,10 +27,6 @@ class HomeViewModel @Inject constructor(
     private val moviesRepository: MoviesRepository,
     private val genreRepository: GenreRepository
 ) : ViewModel() {
-
-    var index = 0
-    var offset = 0
-
     private var _movieGenres = mutableStateListOf(Genre(null, "All"))
     val movieGenres: SnapshotStateList<Genre> = _movieGenres
 
@@ -53,7 +49,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun refreshAll(genreId: Int? = null) {
-        if (movieGenres.size == 1){getMoviesGenre()}
+        if (movieGenres.size == 1) {
+            getMoviesGenre()
+        }
         getTrendingMovies(genreId)
         getTopRatedMovies(genreId)
         getNowPlayingMovies(genreId)
@@ -61,7 +59,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun setSelectedGenre(genre: Genre) {
-        selectedGenre = mutableStateOf(genre.name)
+        selectedGenre.value = genre.name
         refreshAll(genre.id)
     }
 
@@ -104,8 +102,7 @@ class HomeViewModel @Inject constructor(
                     results.filter { movie ->
                         movie.genreIds!!.contains(genreId)
                     }
-
-                }
+                }.cachedIn(viewModelScope)
             } else {
                 moviesRepository.getTopRatedMovies().cachedIn(viewModelScope)
             }
@@ -119,7 +116,7 @@ class HomeViewModel @Inject constructor(
                     results.filter { movie ->
                         movie.genreIds!!.contains(genreId)
                     }
-                }
+                }.cachedIn(viewModelScope)
             } else {
                 moviesRepository.getNowPlayingMovies().cachedIn(viewModelScope)
             }
@@ -133,7 +130,7 @@ class HomeViewModel @Inject constructor(
                     results.filter { movie ->
                         movie.genreIds!!.contains(genreId)
                     }
-                }
+                }.cachedIn(viewModelScope)
             } else {
                 moviesRepository.getUpcomingMovies().cachedIn(viewModelScope)
             }
