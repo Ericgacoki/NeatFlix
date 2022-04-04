@@ -39,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.ericg.neatflix.R
 import com.ericg.neatflix.model.Movie
 import com.ericg.neatflix.screens.destinations.MovieDetailsDestination
@@ -200,23 +201,15 @@ fun ProfileAndSearchBar(
 @Composable
 fun NestedScroll(
     navigator: DestinationsNavigator,
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
 
     val trendingMovies = viewModel.trendingMoviesState.value.collectAsLazyPagingItems()
-
     val topRatedMovies = viewModel.topRatedMoviesState.value.collectAsLazyPagingItems()
     val nowPlayingMovies = viewModel.nowPlayingMoviesState.value.collectAsLazyPagingItems()
     val upcomingMovies = viewModel.upcomingMoviesState.value.collectAsLazyPagingItems()
 
-    val listState: LazyListState = rememberLazyListState(viewModel.index, viewModel.offset)
-
-    LaunchedEffect(key1 = listState.isScrollInProgress) {
-        if (!listState.isScrollInProgress) {
-            viewModel.index = listState.firstVisibleItemIndex
-            viewModel.offset = listState.firstVisibleItemScrollOffset
-        }
-    }
+    val listState: LazyListState = rememberLazyListState()
 
     LazyColumn(
         state = listState,
@@ -280,7 +273,7 @@ fun NestedScroll(
                 fontSize = 24.sp,
                 color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(all = 4.dp)
+                modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
             )
         }
         item {
@@ -471,23 +464,22 @@ private fun ScrollableMovieItems(
                 )
             is LoadState.NotLoading -> {
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    pagingItems.itemSnapshotList.items.forEach { movie ->
+                    items(pagingItems) { movie ->
                         val imagePath =
-                            if (landscape) movie.backdropPath else movie.posterPath
-                        item {
-                            MovieItem(
-                                landscape = landscape,
-                                imageUrl = "$IMAGE_BASE_URL/$imagePath",
-                                title = movie.title,
-                                modifier = Modifier
-                                    .width(if (landscape) 215.dp else 130.dp)
-                                    .height(if (landscape) 161.25.dp else 195.dp)
+                            if (landscape) movie!!.backdropPath else movie!!.posterPath
+
+                        MovieItem(
+                            landscape = landscape,
+                            imageUrl = "$IMAGE_BASE_URL/$imagePath",
+                            title = movie.title,
+                            modifier = Modifier
+                                .width(if (landscape) 215.dp else 130.dp)
+                                .height(if (landscape) 161.25.dp else 195.dp)
+                        ) {
+                            navigator.navigate(
+                                direction = MovieDetailsDestination(movie)
                             ) {
-                                navigator.navigate(
-                                    direction = MovieDetailsDestination(movie)
-                                ) {
-                                    launchSingleTop = true
-                                }
+                                launchSingleTop = true
                             }
                         }
                     }
