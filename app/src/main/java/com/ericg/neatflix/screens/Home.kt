@@ -1,9 +1,8 @@
 package com.ericg.neatflix.screens
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,7 +47,8 @@ import com.ericg.neatflix.screens.destinations.SearchScreenDestination
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
-import com.ericg.neatflix.util.Constants.IMAGE_BASE_URL
+import com.ericg.neatflix.util.Constants.BASE_BACKDROP_IMAGE_URL
+import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -466,11 +466,12 @@ private fun ScrollableMovieItems(
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
                     items(pagingItems) { movie ->
                         val imagePath =
-                            if (landscape) movie!!.backdropPath else movie!!.posterPath
+                            if (landscape) "$BASE_BACKDROP_IMAGE_URL/${movie!!.backdropPath}"
+                            else "$BASE_POSTER_IMAGE_URL/${movie!!.posterPath}"
 
                         MovieItem(
                             landscape = landscape,
-                            imageUrl = "$IMAGE_BASE_URL/$imagePath",
+                            imageUrl = imagePath,
                             title = movie.title,
                             modifier = Modifier
                                 .width(if (landscape) 215.dp else 130.dp)
@@ -522,13 +523,22 @@ fun SelectableGenreChip(
     selected: Boolean,
     onclick: () -> Unit
 ) {
+
+    val animateChipBackgroundColor by animateColorAsState(
+        targetValue = if (selected) Color(0xFFA0A1C2) else ButtonColor.copy(alpha = 0.5F),
+        animationSpec = tween(
+            durationMillis = if (selected) 100 else 50,
+            delayMillis = 0,
+            easing = LinearOutSlowInEasing
+        )
+    )
+
     Box(
         modifier = Modifier
             .padding(end = 4.dp)
             .clip(CircleShape)
             .background(
-                color = if (selected) Color(0xFFA0A1C2)
-                else ButtonColor.copy(alpha = 0.5F)
+                color = animateChipBackgroundColor
             )
             .height(32.dp)
             .widthIn(min = 80.dp)
