@@ -1,20 +1,50 @@
 package com.ericg.neatflix.model
 
-import android.content.Context
 import com.ericg.neatflix.BuildConfig
+import com.ericg.neatflix.data.response.GenreResponse
 import com.ericg.neatflix.data.response.MoviesResponse
-import com.ericg.neatflix.util.Constants.API_KEY
-import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.http.GET
 import retrofit2.http.Query
-import javax.inject.Inject
 
 interface APIService {
-
     @GET("trending/movie/day")
     suspend fun getTrendingMovies(
         @Query("page") page: Int = 0,
-        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY, // TODO: change to NEATFLIX_API_KEY
         @Query("language") language: String = "en"
     ): MoviesResponse
+
+    @GET("movie/top_rated")
+    suspend fun getTopRatedMovies(
+        @Query("page") page: Int = 0,
+        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("language") language: String = "en"
+    ): MoviesResponse
+
+    @GET("movie/now_playing")
+    suspend fun getNowPlayingMovies(
+        @Query("page") page: Int = 0,
+        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("language") language: String = "en"
+    ): MoviesResponse
+
+    @GET("movie/upcoming")
+    suspend fun getUpcomingMovies(
+        @Query("page") page: Int = 0,
+        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("language") language: String = "en"
+    ): MoviesResponse
+
+    @GET("movie/top_rated")
+    suspend fun getRecommendedMovies(
+        @Query("page") page: Int = 0,
+        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("language") language: String = "en"
+    ): MoviesResponse
+
+    @GET("genre/movie/list")
+    suspend fun getMovieGenres(
+        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("language") language: String = "en"
+    ): GenreResponse
 }
