@@ -21,6 +21,7 @@ class MoviesRepository @Inject constructor(private val api: APIService) {
             }
         ).flow
     }
+
     fun getTopRatedMovies(): Flow<PagingData<Movie>>{
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 30),
@@ -29,6 +30,7 @@ class MoviesRepository @Inject constructor(private val api: APIService) {
             }
         ).flow
     }
+
     fun getNowPlayingMovies(): Flow<PagingData<Movie>>{
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 30),
@@ -37,6 +39,7 @@ class MoviesRepository @Inject constructor(private val api: APIService) {
             }
         ).flow
     }
+
     fun getUpcomingMovies(): Flow<PagingData<Movie>>{
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 30),

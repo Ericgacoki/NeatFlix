@@ -14,7 +14,6 @@ class TrendingMoviesSource(private val api: APIService) : PagingSource<Int, Movi
         return try {
             val nextPage = params.key ?: 1
             val trendingMovies = api.getTrendingMovies(page = nextPage)
-
             LoadResult.Page(
                 data = trendingMovies.results,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
