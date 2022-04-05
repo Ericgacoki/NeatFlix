@@ -14,6 +14,13 @@ interface APIService {
         @Query("language") language: String = "en"
     ): MoviesResponse
 
+    @GET("movie/popular")
+    suspend fun getPopularMovies(
+        @Query("page") page: Int = 0,
+        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("language") language: String = "en"
+    ): MoviesResponse
+
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(
         @Query("page") page: Int = 0,
@@ -35,8 +42,9 @@ interface APIService {
         @Query("language") language: String = "en"
     ): MoviesResponse
 
-    @GET("movie/top_rated")
+    @GET("/movie/{movie_id}/recommendations")
     suspend fun getRecommendedMovies(
+        @Query("movie_id") movieId: Int,
         @Query("page") page: Int = 0,
         @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
         @Query("language") language: String = "en"
@@ -47,4 +55,13 @@ interface APIService {
         @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
         @Query("language") language: String = "en"
     ): GenreResponse
+
+    @GET("search/movie")
+    suspend fun searchMovies(
+        @Query("query") searchParams: String,
+        @Query("page") page: Int = 0,
+        @Query("include_adult") includeAdult: Boolean = true,
+        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("language") language: String = "en"
+    ): MoviesResponse
 }
