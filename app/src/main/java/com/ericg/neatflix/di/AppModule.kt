@@ -2,6 +2,7 @@ package com.ericg.neatflix.di
 
 import com.ericg.neatflix.data.repository.GenreRepository
 import com.ericg.neatflix.data.repository.MoviesRepository
+import com.ericg.neatflix.data.repository.SearchRepository
 import com.ericg.neatflix.model.APIService
 import com.ericg.neatflix.util.Constants.BASE_URL
 import dagger.Module
@@ -50,6 +51,10 @@ object AppModule {
     @Singleton
     @Provides
     fun provideMoviesRepository(api: APIService) = MoviesRepository(api = api)
+
+    @Singleton
+    @Provides
+    fun provideSearchRepository(api: APIService) = SearchRepository(api = api)
 
     @Singleton
     @Provides

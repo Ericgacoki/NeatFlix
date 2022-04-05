@@ -205,6 +205,7 @@ fun NestedScroll(
 ) {
 
     val trendingMovies = viewModel.trendingMoviesState.value.collectAsLazyPagingItems()
+    val popularMovies = viewModel.popularMoviesState.value.collectAsLazyPagingItems()
     val topRatedMovies = viewModel.topRatedMoviesState.value.collectAsLazyPagingItems()
     val nowPlayingMovies = viewModel.nowPlayingMoviesState.value.collectAsLazyPagingItems()
     val upcomingMovies = viewModel.upcomingMoviesState.value.collectAsLazyPagingItems()
@@ -269,6 +270,25 @@ fun NestedScroll(
 
         item {
             Text(
+                text = "Popular",
+                fontSize = 24.sp,
+                color = AppOnPrimaryColor,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 4.dp, top = 8.dp)
+            )
+        }
+        item {
+            ScrollableMovieItems(
+                navigator = navigator,
+                pagingItems = popularMovies,
+                onErrorClick = {
+                    viewModel.refreshAll()
+                }
+            )
+        }
+
+        item {
+            Text(
                 text = "Top Rated",
                 fontSize = 24.sp,
                 color = AppOnPrimaryColor,
@@ -323,10 +343,10 @@ fun NestedScroll(
                 }
             )
         }
-
+/*
         item {
             Text(
-                text = "Favorite",
+                text = "Watch List",
                 fontSize = 24.sp,
                 color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
@@ -336,7 +356,7 @@ fun NestedScroll(
         item {
             ScrollableMovieItems(
                 navigator = navigator,
-                pagingItems = topRatedMovies, // favorite
+                pagingItems = topRatedMovies, // watchList -> from room db
                 onErrorClick = {
                     viewModel.refreshAll()
                 }
@@ -354,7 +374,7 @@ fun NestedScroll(
         item {
             ScrollableMovieItems(
                 navigator = navigator,
-                pagingItems = topRatedMovies, // recommended
+                pagingItems = topRatedMovies, // recommended -> fetched using a random id from watchlist and/or from the current genre
                 onErrorClick = {
                     viewModel.refreshAll()
                 }
@@ -378,7 +398,7 @@ fun NestedScroll(
                     viewModel.refreshAll()
                 }
             )
-        }
+        }*/
 
         item {
             Spacer(modifier = Modifier.height(8.dp))
