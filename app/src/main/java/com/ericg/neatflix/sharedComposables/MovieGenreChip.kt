@@ -22,7 +22,7 @@ import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 fun MovieGenreChip(
     genre: String,
     background: Color = Color(0XFFC9F964).copy(alpha = 0.16F),
-    textColor: Color = AppOnPrimaryColor
+    textColor: Color = Color(0XFFC9F964)
 ) {
     Box(
         modifier = Modifier

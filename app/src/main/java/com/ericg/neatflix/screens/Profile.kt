@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.ericg.neatflix.R
-import com.ericg.neatflix.screens.destinations.FavoritesDestination
+import com.ericg.neatflix.screens.destinations.WatchListDestination
 import com.ericg.neatflix.sharedComposables.BackButton
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
@@ -213,7 +213,7 @@ fun Profile(
                     indication = null
                 ) {
                     navigator.navigate(
-                        FavoritesDestination
+                        WatchListDestination
                     ) {
                         launchSingleTop = true
                     }
@@ -221,7 +221,7 @@ fun Profile(
         ) {
             IconButton(onClick = {
                 navigator.navigate(
-                    FavoritesDestination
+                    WatchListDestination
                 ) {
                     launchSingleTop = true
                 }
@@ -263,10 +263,4 @@ fun Profile(
             )
         }
     }
-}
-
-@Preview(device = Devices.PIXEL_3)
-@Composable
-fun ProfilePreview() {
-    // Profile()
 }
