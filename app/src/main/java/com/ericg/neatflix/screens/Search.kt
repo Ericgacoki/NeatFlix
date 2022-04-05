@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,26 +13,35 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.ericg.neatflix.R
-import com.ericg.neatflix.model.Genre as MovieGenre
+import com.ericg.neatflix.screens.destinations.MovieDetailsDestination
 import com.ericg.neatflix.sharedComposables.BackButton
 import com.ericg.neatflix.sharedComposables.SearchBar
 import com.ericg.neatflix.sharedComposables.SearchResultItem
-import com.ericg.neatflix.sharedComposables.globalExposedSearchParam
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
+import com.ericg.neatflix.viewmodel.HomeViewModel
+import com.ericg.neatflix.viewmodel.SearchViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import timber.log.Timber
 
 @Destination
 @Composable
 fun SearchScreen(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    viewModel: SearchViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
+
+    val searchResult = viewModel.searchMoviesState.value.collectAsLazyPagingItems()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,57 +74,77 @@ fun SearchScreen(
         SearchBar(
             autoFocus = true,
             onSearch = {
-                Timber.d("Search Param = $globalExposedSearchParam")
+                viewModel.searchMovie()
             })
-
-        // FIXME: Display UI status -> loading, no data...
-        if (10 <= 0) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight(0.83F)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.no_match_found),
-                    contentDescription = null
-                )
-            }
-        }
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
             contentPadding = PaddingValues(vertical = 12.dp)
         ) {
+            when (searchResult.loadState.refresh) {
+                is LoadState.NotLoading -> {
+                    items(searchResult) { movie ->
+                        val focus = LocalFocusManager.current
 
-            items(count = 20) {
-                SearchResultItem(
-                    imdbId = "",
-                    title = "Spider-Man far from home",
-                    posterImage = R.drawable.manifest,
-                    genres = listOf(
-                        MovieGenre(1, "Drama"),
-                        MovieGenre(2, "Sci-Fi"),
-                        MovieGenre(3, "Romance"),
-                        MovieGenre(4, "Action"),
-                    ),
-                    rating = 4F,
-                    releaseYear = "2019",
-                    onRemoveFavorite = {},
-                    onClick = {
+                        SearchResultItem(
+                            title = movie!!.title,
+                            posterImage = "$BASE_POSTER_IMAGE_URL/${movie.posterPath}",
+                            genres = homeViewModel.movieGenres.filter { genre ->
+                                movie.genreIds!!.contains(genre.id)
+                            },
+                            rating = movie.voteAverage / 2,
+                            releaseYear = movie.releaseDate,
+                            onRemoveFavorite = {},
+                            onClick = {
+                                focus.clearFocus()
+                                navigator.navigate(
+                                    direction = MovieDetailsDestination(movie)
 
+                                ) {
+                                    launchSingleTop = true
+                                }
+                            }
+                        )
                     }
-                )
+                    if (searchResult.itemCount == 0) {
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.no_match_found),
+                                    contentDescription = null
+                                )
+                            }
+
+                        }
+                    }
+                }
+
+                is LoadState.Loading -> item {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                else -> item {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.no_match_found),
+                            contentDescription = null
+                        )
+                    }
+                }
             }
         }
-
     }
-}
 
-@Preview
-@Composable
-fun SearchPrev() {
-    // SearchScreen()
 }
