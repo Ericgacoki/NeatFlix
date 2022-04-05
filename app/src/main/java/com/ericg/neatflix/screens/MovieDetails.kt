@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.Light
+import androidx.compose.ui.text.font.FontWeight.Companion.Normal
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
@@ -60,7 +61,6 @@ import com.skydoves.landscapist.coil.CoilImage
 fun MovieDetails(
     navigator: DestinationsNavigator,
     viewModel: HomeViewModel = hiltViewModel(),
-
     movie: Movie
 ) {
 
@@ -70,7 +70,7 @@ fun MovieDetails(
             .background(Color(0xFF180E36))
     ) {
         val (
-            headerImage,
+            backdropimage,
             backButton,
             movieGenreChips,
             descriptionText,
@@ -87,7 +87,7 @@ fun MovieDetails(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
                 .fillMaxHeight(0.33F)
-                .constrainAs(headerImage) {},
+                .constrainAs(backdropimage) {},
             shimmerParams = ShimmerParams(
                 baseColor = AppPrimaryColor,
                 highlightColor = ButtonColor,
@@ -147,33 +147,100 @@ fun MovieDetails(
                 .constrainAs(translucentBr) {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    bottom.linkTo(headerImage.bottom)
+                    bottom.linkTo(backdropimage.bottom)
                 }
         )
 
         Column(
             modifier = Modifier.constrainAs(movieTitleBox) {
                 start.linkTo(moviePosterImage.end)
-                end.linkTo(parent.end)
-                bottom.linkTo(headerImage.bottom)
+                end.linkTo(parent.end, margin = 24.dp)
+                bottom.linkTo(moviePosterImage.bottom, margin = 10.dp)
             },
             verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start
         ) {
             Text(
                 text = movie.title,
-                modifier = Modifier.fillMaxWidth(0.5F),
+                modifier = Modifier
+                    .padding(start = 4.dp, bottom = 8.dp)
+                    .fillMaxWidth(0.5F),
                 maxLines = 2,
                 fontSize = 18.sp,
                 fontWeight = Bold,
                 color = Color.White.copy(alpha = 0.78F)
             )
-            Spacer(modifier = Modifier.height(4.dp))
+
             Text(
                 text = movie.releaseDate,
+                modifier = Modifier.padding(start = 4.dp, bottom = 8.dp),
                 fontSize = 15.sp,
                 fontWeight = Light,
                 color = Color.White.copy(alpha = 0.56F)
             )
+
+            RatingBar(
+                value = (movie.voteAverage / 2).toFloat(),
+                modifier = Modifier.padding(horizontal = 6.dp),
+                config = RatingBarConfig()
+                    .style(RatingBarStyle.Normal)
+                    .isIndicator(true)
+                    .activeColor(Color(0XFFC9F964))
+                    .hideInactiveStars(false)
+                    .inactiveColor(Color.LightGray.copy(alpha = 0.3F))
+                    .stepSize(StepSize.HALF)
+                    .numStars(5)
+                    .size(16.dp)
+                    .padding(4.dp),
+                onValueChange = {},
+                onRatingChanged = {}
+            )
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(start = 4.dp, bottom = 8.dp)
+                    .fillMaxWidth(0.42F),
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .border(
+                            1.dp,
+                            color = if (movie.adult) Color(0xFFFF6F6F) else Color.White.copy(alpha = 0.78F)
+                        )
+                        .background(if (movie.adult) Color(0xFFFF6F6F).copy(alpha = 0.14F) else Color.Transparent)
+                        .padding(4.dp)
+                ) {
+                    val color: Color
+                    Text(
+                        text = if (movie.adult) {
+                            color = Color(0xFFFF6F6F)
+                            "18+"
+                        } else {
+                            color = Color.White.copy(alpha = 0.56F)
+                            "PG"
+                        },
+                        fontSize = 14.sp,
+                        fontWeight = Normal,
+                        color = color
+                    )
+                }
+
+                var favorite by remember { mutableStateOf(false) }
+                IconButton(onClick = {
+                    favorite = !favorite
+                }) {
+                    Icon(
+                        painter = painterResource(
+                            id = if (favorite) R.drawable.ic_heart_fill
+                            else R.drawable.ic_heart_outlie
+                        ),
+                        tint = AppOnPrimaryColor,
+                        contentDescription = "fav icon"
+                    )
+                }
+            }
         }
 
         CoilImage(
@@ -184,8 +251,8 @@ fun MovieDetails(
                 .width(115.dp)
                 .height(172.5.dp)
                 .constrainAs(moviePosterImage) {
-                    top.linkTo(headerImage.bottom)
-                    bottom.linkTo(headerImage.bottom)
+                    top.linkTo(backdropimage.bottom)
+                    bottom.linkTo(backdropimage.bottom)
                     start.linkTo(parent.start)
                 },
             shimmerParams = ShimmerParams(
@@ -200,75 +267,6 @@ fun MovieDetails(
             circularReveal = CircularReveal(duration = 1000),
             contentDescription = "movie poster"
         )
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .constrainAs(ratingBar) {
-                    start.linkTo(moviePosterImage.end, 0.dp)
-                    end.linkTo(parent.end, 0.dp)
-                    top.linkTo(headerImage.bottom)
-                    bottom.linkTo(moviePosterImage.bottom)
-                }
-        ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .border(1.dp, color = Color.White.copy(alpha = 0.78F))
-                        .padding(4.dp)
-                ) {
-                    Text(
-                        text = if (movie.adult) "18+" else "PG",
-                        fontSize = 14.sp,
-                        fontWeight = Light,
-                        color = Color.White.copy(alpha = 0.56F)
-                    )
-                }
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = if (movie.runtime == 0) "1h 57min" else "${movie.runtime / 60}h ${movie.runtime % 60}min",
-                    fontSize = 14.sp,
-                    fontWeight = Light,
-                    color = Color.White.copy(alpha = 0.56F)
-                )
-            }
-
-            RatingBar(
-                value = (movie.voteAverage / 2).toFloat(),
-                modifier = Modifier.padding(horizontal = 6.dp),
-                config = RatingBarConfig()
-                    .style(RatingBarStyle.Normal)
-                    .isIndicator(true)
-                    .activeColor(AppOnPrimaryColor)
-                    .hideInactiveStars(false)
-                    .inactiveColor(Color.LightGray.copy(alpha = 0.3F))
-                    .stepSize(StepSize.HALF)
-                    .numStars(5)
-                    .size(16.dp)
-                    .padding(4.dp),
-                onValueChange = {},
-                onRatingChanged = {}
-            )
-
-            var favorite by remember { mutableStateOf(false) }
-            IconButton(onClick = {
-                favorite = !favorite
-            }) {
-                Icon(
-                    painter = painterResource(
-                        id = if (favorite) R.drawable.ic_heart_fill
-                        else R.drawable.ic_heart_outlie
-                    ),
-                    tint = AppOnPrimaryColor,
-                    contentDescription = "fav icon"
-                )
-            }
-        }
 
         LazyRow(
             modifier = Modifier
