@@ -1,7 +1,7 @@
 package com.ericg.neatflix.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -17,21 +17,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ericg.neatflix.R
-import com.ericg.neatflix.model.Genre as MovieGenre
 import com.ericg.neatflix.screens.destinations.HomeDestination
 import com.ericg.neatflix.sharedComposables.BackButton
 import com.ericg.neatflix.sharedComposables.SearchBar
-import com.ericg.neatflix.sharedComposables.SearchResultItem
-import com.ericg.neatflix.sharedComposables.globalExposedSearchParam
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import timber.log.Timber
 
 @Destination
 @Composable
-fun Favorites(
+fun WatchList(
     navigator: DestinationsNavigator
 ) {
     Column(
@@ -53,8 +49,7 @@ fun Favorites(
             }
 
             Text(
-                text = "My Favorites",
-                // modifier = Modifier.padding(start = 42.dp),
+                text = "My Watch list",
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp,
@@ -83,7 +78,6 @@ fun Favorites(
         SearchBar(
             autoFocus = false,
             onSearch = {
-                Timber.d("Search Param = $globalExposedSearchParam")
             }
         )
 
@@ -94,29 +88,29 @@ fun Favorites(
             contentPadding = PaddingValues(vertical = 12.dp)
         ) {
             items(count = 10) {
-                SearchResultItem(
-                    imdbId = "sample id",
-                    title = "Spider-Man far from home and never coming back",
-                    posterImage = R.drawable.manifest,
-                    genres = listOf(
-                        MovieGenre(1, "Drama"),
-                        MovieGenre(2, "Sci-Fi"),
-                        MovieGenre(3, "Romance"),
-                        MovieGenre(4, "Action"),
-                    ),
-                    rating = 4F,
-                    releaseYear = "2019",
-                    showFavorite = true,
-                    onRemoveFavorite = {
-                        Timber.d("Remove from Room DB")
-                    },
-                    onClick = {
-                        focusManager.clearFocus()
-                        /*navigator.navigate(MovieDetailsDestination() {
+                /* SearchResultItem(
+                     imdbId = "sample id",
+                     title = "Spider-Man far from home and never coming back",
+                     posterImage = R.drawable.manifest,
+                     genres = listOf(
+                         MovieGenre(1, "Drama"),
+                         MovieGenre(2, "Sci-Fi"),
+                         MovieGenre(3, "Romance"),
+                         MovieGenre(4, "Action"),
+                     ),
+                     rating = 4F,
+                     releaseYear = "2019",
+                     showFavorite = true,
+                     onRemoveFavorite = {
+                         Timber.d("Remove from Room DB")
+                     },
+                     onClick = {
+                         focusManager.clearFocus()
+                         *//*navigator.navigate(MovieDetailsDestination() {
                             this.launchSingleTop = true
-                        }*/
+                        }*//*
                     }
-                )
+                )*/
             }
         }
     }

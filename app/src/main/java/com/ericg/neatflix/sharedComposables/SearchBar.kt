@@ -24,16 +24,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ericg.neatflix.R
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
-
-// Fixme: Store this state in a viewModel
-var globalExposedSearchParam: String? = null
+import com.ericg.neatflix.viewmodel.SearchViewModel
 
 @Composable
 fun SearchBar(
     autoFocus: Boolean,
+    viewModel: SearchViewModel = hiltViewModel(),
     onSearch: () -> Unit
 ) {
     Box(
@@ -52,8 +52,9 @@ fun SearchBar(
             value = searchInput,
             onValueChange = { newValue ->
                 searchInput = if (newValue.trim().isNotEmpty()) newValue else ""
-                globalExposedSearchParam = searchInput
-                onSearch()
+
+                viewModel.searchParam.value = searchInput
+                // onSearch()
             },
             modifier = Modifier
                 .fillMaxSize()
@@ -79,6 +80,7 @@ fun SearchBar(
             keyboardActions = KeyboardActions(
                 onSearch = {
                     focusManager.clearFocus()
+                    viewModel.searchParam.value = searchInput
                     onSearch()
                 }
             ),
@@ -94,7 +96,7 @@ fun SearchBar(
 
                             focusManager.clearFocus()
                             searchInput = ""
-                            globalExposedSearchParam = null
+                            viewModel.searchParam.value = ""
                         }) {
                             Icon(
                                 imageVector = Icons.Default.Clear,
@@ -105,8 +107,9 @@ fun SearchBar(
                     }
 
                     IconButton(onClick = {
-                        if (!globalExposedSearchParam?.trim().isNullOrEmpty()) {
+                        if (viewModel.searchParam.value.trim().isNotEmpty()) {
                             focusManager.clearFocus()
+                            viewModel.searchParam.value = searchInput
                             onSearch()
                         }
                     }) {

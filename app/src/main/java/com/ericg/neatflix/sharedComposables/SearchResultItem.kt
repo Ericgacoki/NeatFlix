@@ -38,18 +38,16 @@ import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
 import timber.log.Timber
 
-
 @Composable
 fun SearchResultItem(
-    imdbId: String,
-    title: String,
-    posterImage: Int,
+    title: String?,
+    posterImage: String?,
     genres: List<MovieGenre>,
-    rating: Float,
-    releaseYear: String,
+    rating: Double,
+    releaseYear: String?,
     showFavorite: Boolean = false,
-    onRemoveFavorite: () -> Unit,
-    onClick: () -> Unit
+    onRemoveFavorite: () -> Unit?,
+    onClick: () -> Unit?
 ) {
     Box(
         modifier = Modifier
@@ -96,7 +94,7 @@ fun SearchResultItem(
                     .fillMaxSize()
             ) {
                 Text(
-                    text = title,
+                    text = title ?: "",
                     modifier = Modifier.fillMaxWidth(),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -107,7 +105,7 @@ fun SearchResultItem(
                 )
 
                 Text(
-                    text = releaseYear,
+                    text = releaseYear ?: "",
                     fontWeight = FontWeight.Light,
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp,
@@ -120,12 +118,12 @@ fun SearchResultItem(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     RatingBar(
-                        value = rating,
+                        value = rating.toFloat(),
                         modifier = Modifier.padding(end = 6.dp),
                         config = RatingBarConfig()
                             .style(RatingBarStyle.Normal)
                             .isIndicator(true)
-                            .activeColor(AppOnPrimaryColor)
+                            .activeColor(Color(0XFFC9F964))
                             .hideInactiveStars(false)
                             .inactiveColor(Color.LightGray.copy(alpha = 0.2F))
                             .stepSize(StepSize.HALF)
@@ -140,7 +138,7 @@ fun SearchResultItem(
                         IconButton(onClick = {
                             onRemoveFavorite()
                         }) {
-                            Icon(
+                            Icon( // TODO: change this to watch later
                                 painter = painterResource(id = R.drawable.ic_heart_fill),
                                 tint = AppOnPrimaryColor,
                                 contentDescription = "fav icon"
@@ -162,29 +160,4 @@ fun SearchResultItem(
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun SearchItemPrev() {
-    SearchResultItem(
-        imdbId = "",
-        title = "Spider-Man far from home and never coming back",
-        posterImage = R.drawable.manifest,
-        genres = listOf(
-            MovieGenre(1, "Drama"),
-            MovieGenre(2, "Sci-Fi"),
-            MovieGenre(3, "Romance"),
-            MovieGenre(4, "Action"),
-        ),
-        rating = 4F,
-        releaseYear = "2019",
-        showFavorite = true,
-        onRemoveFavorite = {
-            Timber.d("Removing favorite...")
-        },
-        onClick = {
-            Timber.d("Navigating to details screen...")
-        }
-    )
 }
