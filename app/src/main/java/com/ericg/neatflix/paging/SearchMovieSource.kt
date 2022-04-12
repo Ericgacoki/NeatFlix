@@ -1,4 +1,4 @@
-package com.ericg.neatflix.data.pagingsource
+package com.ericg.neatflix.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
