@@ -19,7 +19,7 @@ android {
         minSdk 26
         targetSdk 31
         versionCode 1
-        versionName "1.0"
+        versionName "alpha-1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -113,8 +113,7 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:2.38.1"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
     kapt "androidx.hilt:hilt-compiler:1.0.0"
-
-    // Hilt Navigation - for @HiltViewModel
+    // Hilt - for @HiltViewModel
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
     // Retrofit
@@ -132,5 +131,4 @@ dependencies {
 
     // Pagination
     implementation "androidx.paging:paging-compose:1.0.0-alpha14"
-
 }
