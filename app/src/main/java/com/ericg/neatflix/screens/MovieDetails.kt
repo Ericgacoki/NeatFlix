@@ -30,7 +30,6 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.Light
 import androidx.compose.ui.text.font.FontWeight.Companion.Normal
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,7 +69,7 @@ fun MovieDetails(
             .background(Color(0xFF180E36))
     ) {
         val (
-            backdropimage,
+            backdropImage,
             backButton,
             movieGenreChips,
             descriptionText,
@@ -87,7 +86,19 @@ fun MovieDetails(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
                 .fillMaxHeight(0.33F)
-                .constrainAs(backdropimage) {},
+                .constrainAs(backdropImage) {},
+            failure = {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_image_failed),
+                        tint = Color(0xFFFF6F6F),
+                        contentDescription = null
+                    )
+                }
+            },
             shimmerParams = ShimmerParams(
                 baseColor = AppPrimaryColor,
                 highlightColor = ButtonColor,
@@ -147,14 +158,14 @@ fun MovieDetails(
                 .constrainAs(translucentBr) {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    bottom.linkTo(backdropimage.bottom)
+                    bottom.linkTo(backdropImage.bottom)
                 }
         )
 
         Column(
             modifier = Modifier.constrainAs(movieTitleBox) {
-                start.linkTo(moviePosterImage.end)
-                end.linkTo(parent.end, margin = 24.dp)
+                start.linkTo(moviePosterImage.end, margin = 12.dp)
+                end.linkTo(parent.end, margin = 12.dp)
                 bottom.linkTo(moviePosterImage.bottom, margin = 10.dp)
             },
             verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start
@@ -230,7 +241,7 @@ fun MovieDetails(
                 var favorite by remember { mutableStateOf(false) }
                 IconButton(onClick = {
                     favorite = !favorite
-                }) {
+                }) { // TODO: Change this to add to watch list
                     Icon(
                         painter = painterResource(
                             id = if (favorite) R.drawable.ic_heart_fill
@@ -251,10 +262,21 @@ fun MovieDetails(
                 .width(115.dp)
                 .height(172.5.dp)
                 .constrainAs(moviePosterImage) {
-                    top.linkTo(backdropimage.bottom)
-                    bottom.linkTo(backdropimage.bottom)
+                    top.linkTo(backdropImage.bottom)
+                    bottom.linkTo(backdropImage.bottom)
                     start.linkTo(parent.start)
-                },
+                }, failure = {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_image_failed),
+                        tint = Color(0xFFFF6F6F),
+                        contentDescription = null
+                    )
+                }
+            },
             shimmerParams = ShimmerParams(
                 baseColor = AppPrimaryColor,
                 highlightColor = ButtonColor,
@@ -459,10 +481,4 @@ fun ExpandableText(
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun MovieDetailsPreview() {
-    // MovieDetails()
 }
