@@ -274,7 +274,7 @@ fun NestedScroll(
                 fontSize = 24.sp,
                 color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 4.dp, top = 8.dp)
+                modifier = Modifier.padding(start = 4.dp, top = 6.dp)
             )
         }
         item {
@@ -293,7 +293,7 @@ fun NestedScroll(
                 fontSize = 24.sp,
                 color = AppOnPrimaryColor,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
+                modifier = Modifier.padding(start = 4.dp, top = 14.dp, bottom = 8.dp)
             )
         }
         item {
@@ -435,6 +435,18 @@ fun MovieItem(
                 dropOff = 0.65F,
                 tilt = 20F
             ),
+            failure = {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_image_failed),
+                        tint = Color(0xFFFF6F6F),
+                        contentDescription = null
+                    )
+                }
+            },
             previewPlaceholder = R.drawable.dont_look_up,
             contentScale = Crop,
             circularReveal = CircularReveal(duration = 1000),
@@ -471,7 +483,7 @@ private fun ScrollableMovieItems(
     onErrorClick: () -> Unit
 ) {
     Box(
-        contentAlignment = Alignment.Center,
+        contentAlignment = Center,
         modifier = Modifier
             .fillMaxWidth()
             .height(if (landscape) 215.dp else 195.dp)
