@@ -29,6 +29,7 @@ import androidx.compose.ui.layout.ContentScale.Companion.Fit
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Light
+import androidx.compose.ui.text.font.FontWeight.Companion.Normal
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -127,7 +128,7 @@ fun ProfileAndSearchBar(
                 contentScale = Fit,
                 alpha = 0.78F,
                 modifier = Modifier
-                    .padding(bottom = 8.dp, top = 4.dp)
+                    .padding(bottom =  8.dp, top = 4.dp)
                     .widthIn(max = 110.dp),
                 contentDescription = "logo"
             )
@@ -470,8 +471,8 @@ fun MovieItem(
     }
 }
 
-private fun trimTitle(text: String) = if (text.length <= 30) text else {
-    val textWithEllipsis = text.removeRange(startIndex = 30, endIndex = text.length)
+private fun trimTitle(text: String) = if (text.length <= 26) text else {
+    val textWithEllipsis = text.removeRange(startIndex = 26, endIndex = text.length)
     "$textWithEllipsis..."
 }
 
@@ -589,7 +590,7 @@ fun SelectableGenreChip(
     ) {
         Text(
             text = genre,
-            fontWeight = if (selected) FontWeight.Normal else FontWeight.Light,
+            fontWeight = if (selected) Normal else Light,
             textAlign = TextAlign.Center,
             modifier = Modifier.align(Center),
             color = if (selected) Color(0XFF180E36) else Color.White.copy(alpha = 0.80F)
@@ -597,8 +598,3 @@ fun SelectableGenreChip(
     }
 }
 
-@Preview
-@Composable
-fun HomePrev() {
-    Home(null)
-}
