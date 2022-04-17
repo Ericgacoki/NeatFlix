@@ -12,7 +12,7 @@ import javax.inject.Inject
 class MoviesRepository @Inject constructor(private val api: APIService) {
     fun getTrendingMovies(): Flow<PagingData<Movie>>{
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 20), // by default TMDB API's 1 page holds 20 items
+            config = PagingConfig(enablePlaceholders = false, pageSize = 20), // by default TMDB's API 1 page holds 20 items
             pagingSourceFactory = {
                 TrendingMoviesSource(api = api)
             }
@@ -50,6 +50,14 @@ class MoviesRepository @Inject constructor(private val api: APIService) {
             config = PagingConfig(enablePlaceholders = false, pageSize = 20),
             pagingSourceFactory = {
                 UpcomingMovieSource(api = api)
+            }
+        ).flow
+    }
+    fun getSimilarMovies(movieId: Int): Flow<PagingData<Movie>>{
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 20),
+            pagingSourceFactory = {
+                SimilarMoviesSource(api = api, movieId = movieId)
             }
         ).flow
     }
