@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.ericg.neatflix.R
 import com.ericg.neatflix.model.Movie
 import com.ericg.neatflix.sharedComposables.MovieGenreChip
@@ -44,6 +46,7 @@ import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.ui.theme.SeeMore
 import com.ericg.neatflix.util.Constants.BASE_BACKDROP_IMAGE_URL
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
+import com.ericg.neatflix.viewmodel.DetailsViewModel
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
@@ -59,9 +62,11 @@ import com.skydoves.landscapist.coil.CoilImage
 @Composable
 fun MovieDetails(
     navigator: DestinationsNavigator,
-    viewModel: HomeViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    detailsViewModel: DetailsViewModel = hiltViewModel(),
     movie: Movie
 ) {
+    val similarMovies = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
 
     ConstraintLayout(
         modifier = Modifier
@@ -77,7 +82,7 @@ fun MovieDetails(
             movieTitleBox,
             moviePosterImage,
             translucentBr,
-            ratingBar
+            similarMoviesRow
         ) = createRefs()
 
         CoilImage(
@@ -298,7 +303,7 @@ fun MovieDetails(
                     start.linkTo(parent.start)
                 }
         ) {
-            val movieGenres = viewModel.movieGenres.filter { genre ->
+            val movieGenres = homeViewModel.movieGenres.filter { genre ->
                 movie.genreIds!!.contains(genre.id)
             }
             movieGenres.forEach { genre ->
@@ -345,6 +350,24 @@ fun MovieDetails(
                     items(10) {
                         CastCrew()
                     }
+                }
+            }
+        }
+
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(similarMoviesRow) {
+                    top.linkTo(cast.bottom)
+                }
+        ) {
+            items(similarMovies) { movie ->
+                MovieItem(
+                    imageUrl = "$BASE_BACKDROP_IMAGE_URL/${movie!!.backdropPath}",
+                    title = movie.title,
+                    modifier = Modifier.size(215.dp, 161.25.dp),
+                    landscape = true
+                ) {
                 }
             }
         }
