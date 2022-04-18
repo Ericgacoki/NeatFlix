@@ -1,6 +1,8 @@
 package com.ericg.neatflix.screens
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -64,12 +66,22 @@ fun MovieDetails(
     navigator: DestinationsNavigator,
     homeViewModel: HomeViewModel = hiltViewModel(),
     detailsViewModel: DetailsViewModel = hiltViewModel(),
-    movie: Movie
+    currentMovie: Movie
 ) {
+    var movie by remember {
+        mutableStateOf(currentMovie)
+    }
+
+    LaunchedEffect(key1 = movie) {
+        detailsViewModel.getSimilarMovies(movieId = movie.id)
+    }
     val similarMovies = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
+
+    val state = rememberScrollState()
 
     ConstraintLayout(
         modifier = Modifier
+            .scrollable(enabled = true, state = state, orientation = Orientation.Vertical)
             .fillMaxSize()
             .background(Color(0xFF180E36))
     ) {
@@ -354,20 +366,54 @@ fun MovieDetails(
             }
         }
 
-        LazyRow(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .constrainAs(similarMoviesRow) {
                     top.linkTo(cast.bottom)
                 }
         ) {
-            items(similarMovies) { movie ->
-                MovieItem(
-                    imageUrl = "$BASE_BACKDROP_IMAGE_URL/${movie!!.backdropPath}",
-                    title = movie.title,
-                    modifier = Modifier.size(215.dp, 161.25.dp),
-                    landscape = true
-                ) {
+            Text(
+                text = "Similar",
+                fontWeight = Bold,
+                color = AppOnPrimaryColor,
+                modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
+            )
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                items(similarMovies) { thisMovie ->
+                    CoilImage(
+                        imageModel = "${BASE_POSTER_IMAGE_URL}/${thisMovie!!.posterPath}",
+                        shimmerParams = ShimmerParams(
+                            baseColor = AppPrimaryColor,
+                            highlightColor = ButtonColor,
+                            durationMillis = 350,
+                            dropOff = 0.65F,
+                            tilt = 20F
+                        ),
+                        failure = {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_image_failed),
+                                    tint = Color(0xFFFF6F6F),
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        previewPlaceholder = R.drawable.dont_look_up,
+                        contentScale = Crop,
+                        circularReveal = CircularReveal(duration = 1000),
+                        modifier = Modifier
+                            .padding(start = 8.dp, top = 4.dp, bottom = 4.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .size(130.dp, 195.dp)
+                            .clickable {
+                                 movie = thisMovie
+                            },
+                        contentDescription = "Movie item"
+                    )
                 }
             }
         }
