@@ -50,6 +50,7 @@ import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.util.Constants.BASE_BACKDROP_IMAGE_URL
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
+import com.ericg.neatflix.viewmodel.DetailsViewModel
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -57,13 +58,15 @@ import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
 import retrofit2.HttpException
+import timber.log.Timber
 import java.io.IOException
 
 @Destination
 @Composable
 fun Home(
     navigator: DestinationsNavigator?,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    detailsViewModel: DetailsViewModel = hiltViewModel(),
 ) {
     Column(
         modifier = Modifier
@@ -71,7 +74,7 @@ fun Home(
             .background(Color(0xFF180E36))
     ) {
         ProfileAndSearchBar(navigator!!)
-        NestedScroll(navigator = navigator, viewModel)
+        NestedScroll(navigator = navigator, viewModel, detailsViewModel)
     }
 }
 
@@ -202,9 +205,9 @@ fun ProfileAndSearchBar(
 @Composable
 fun NestedScroll(
     navigator: DestinationsNavigator,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel,
+    detailsViewModel: DetailsViewModel
 ) {
-
     val trendingMovies = viewModel.trendingMoviesState.value.collectAsLazyPagingItems()
     val popularMovies = viewModel.popularMoviesState.value.collectAsLazyPagingItems()
     val topRatedMovies = viewModel.topRatedMoviesState.value.collectAsLazyPagingItems()
@@ -260,6 +263,7 @@ fun NestedScroll(
         }
         item {
             ScrollableMovieItems(
+                detailsViewModel = detailsViewModel,
                 landscape = true,
                 navigator = navigator,
                 pagingItems = trendingMovies,
@@ -479,6 +483,7 @@ private fun trimTitle(text: String) = if (text.length <= 26) text else {
 @Composable
 private fun ScrollableMovieItems(
     landscape: Boolean = false,
+    detailsViewModel: DetailsViewModel? = null,
     navigator: DestinationsNavigator,
     pagingItems: LazyPagingItems<Movie>,
     onErrorClick: () -> Unit
@@ -487,7 +492,7 @@ private fun ScrollableMovieItems(
         contentAlignment = Center,
         modifier = Modifier
             .fillMaxWidth()
-            .height(if (landscape) 215.dp else 195.dp)
+            .height(if (!landscape) 215.dp else 195.dp)
     ) {
         when (pagingItems.loadState.refresh) {
             is LoadState.Loading ->

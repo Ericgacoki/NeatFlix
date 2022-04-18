@@ -1,6 +1,8 @@
 package com.ericg.neatflix.screens
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.ericg.neatflix.R
 import com.ericg.neatflix.model.CastDemo
 import com.ericg.neatflix.model.Movie
@@ -45,6 +49,7 @@ import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.ui.theme.SeeMore
 import com.ericg.neatflix.util.Constants.BASE_BACKDROP_IMAGE_URL
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
+import com.ericg.neatflix.viewmodel.DetailsViewModel
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
@@ -60,12 +65,24 @@ import com.skydoves.landscapist.coil.CoilImage
 @Composable
 fun MovieDetails(
     navigator: DestinationsNavigator,
-    viewModel: HomeViewModel = hiltViewModel(),
-    movie: Movie
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    detailsViewModel: DetailsViewModel = hiltViewModel(),
+    currentMovie: Movie
 ) {
+    var movie by remember {
+        mutableStateOf(currentMovie)
+    }
+
+    LaunchedEffect(key1 = movie) {
+        detailsViewModel.getSimilarMovies(movieId = movie.id)
+    }
+    val similarMovies = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
+
+    val state = rememberScrollState()
 
     ConstraintLayout(
         modifier = Modifier
+            .scrollable(enabled = true, state = state, orientation = Orientation.Vertical)
             .fillMaxSize()
             .background(Color(0xFF180E36))
     ) {
@@ -78,7 +95,7 @@ fun MovieDetails(
             movieTitleBox,
             moviePosterImage,
             translucentBr,
-            ratingBar
+            similarMoviesRow
         ) = createRefs()
 
         CoilImage(
@@ -299,7 +316,7 @@ fun MovieDetails(
                     start.linkTo(parent.start)
                 }
         ) {
-            val movieGenres = viewModel.movieGenres.filter { genre ->
+            val movieGenres = homeViewModel.movieGenres.filter { genre ->
                 movie.genreIds!!.contains(genre.id)
             }
             movieGenres.forEach { genre ->
@@ -354,6 +371,58 @@ fun MovieDetails(
                             CastCrew(castMember = it)
                         }
                     }
+                }
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(similarMoviesRow) {
+                    top.linkTo(cast.bottom)
+                }
+        ) {
+            Text(
+                text = "Similar",
+                fontWeight = Bold,
+                color = AppOnPrimaryColor,
+                modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
+            )
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                items(similarMovies) { thisMovie ->
+                    CoilImage(
+                        imageModel = "${BASE_POSTER_IMAGE_URL}/${thisMovie!!.posterPath}",
+                        shimmerParams = ShimmerParams(
+                            baseColor = AppPrimaryColor,
+                            highlightColor = ButtonColor,
+                            durationMillis = 350,
+                            dropOff = 0.65F,
+                            tilt = 20F
+                        ),
+                        failure = {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_image_failed),
+                                    tint = Color(0xFFFF6F6F),
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        previewPlaceholder = R.drawable.dont_look_up,
+                        contentScale = Crop,
+                        circularReveal = CircularReveal(duration = 1000),
+                        modifier = Modifier
+                            .padding(start = 8.dp, top = 4.dp, bottom = 4.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .size(130.dp, 195.dp)
+                            .clickable {
+                                 movie = thisMovie
+                            },
+                        contentDescription = "Movie item"
+                    )
                 }
             }
         }
