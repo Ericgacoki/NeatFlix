@@ -491,7 +491,7 @@ private fun ScrollableMovieItems(
         contentAlignment = Center,
         modifier = Modifier
             .fillMaxWidth()
-            .height(if (landscape) 215.dp else 195.dp)
+            .height(if (!landscape) 215.dp else 195.dp)
     ) {
         when (pagingItems.loadState.refresh) {
             is LoadState.Loading ->
@@ -514,8 +514,6 @@ private fun ScrollableMovieItems(
                                 .width(if (landscape) 215.dp else 130.dp)
                                 .height(if (landscape) 161.25.dp else 195.dp)
                         ) {
-                            Timber.e("Clicked MovieItem with id ${movie.id}")
-                            detailsViewModel!!.getSimilarMovies(movie.id)
                             navigator.navigate(
                                 direction = MovieDetailsDestination(movie)
                             ) {
