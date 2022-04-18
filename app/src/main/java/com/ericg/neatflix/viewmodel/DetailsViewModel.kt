@@ -20,8 +20,7 @@ class DetailsViewModel @Inject constructor(val repository: MoviesRepository) : V
 
     fun getSimilarMovies(movieId: Int) {
         viewModelScope.launch {
-            val result = repository.getSimilarMovies(movieId)
-            result.let {
+            repository.getSimilarMovies(movieId).also {
                 _similarMovies.value = it
             }
         }
