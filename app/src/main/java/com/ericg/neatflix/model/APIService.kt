@@ -43,7 +43,7 @@ interface APIService {
         @Query("language") language: String = "en"
     ): MoviesResponse
 
-    @GET("/movie/{movie_id}/recommendations")
+    @GET("movie/{movie_id}/recommendations")
     suspend fun getRecommendedMovies(
         @Query("movie_id") movieId: Int,
         @Query("page") page: Int = 0,
@@ -51,7 +51,7 @@ interface APIService {
         @Query("language") language: String = "en"
     ): MoviesResponse
 
-    @GET("/3/movie/{movie_id}/similar")
+    @GET("movie/{movie_id}/similar")
     suspend fun getSimilarMovies(
         @Path("movie_id") movieId: Int,
         @Query("page") page: Int = 0,
