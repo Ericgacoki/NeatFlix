@@ -25,3 +25,7 @@ data class Cast(
     @SerializedName("character")
     val character: String
 ): Parcelable
+
+data class CastDemo(
+   val image: Int
+)

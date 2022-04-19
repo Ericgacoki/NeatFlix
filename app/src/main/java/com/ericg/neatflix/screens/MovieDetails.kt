@@ -37,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.ericg.neatflix.R
+import com.ericg.neatflix.model.CastDemo
 import com.ericg.neatflix.model.Movie
 import com.ericg.neatflix.sharedComposables.MovieGenreChip
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
@@ -353,8 +354,16 @@ fun MovieDetails(
             }
             item {
                 LazyRow {
-                    items(10) {
-                        CastCrew()
+                    val demoCastList = listOf<CastDemo>(
+                        CastDemo(R.drawable.popcorn),
+                        CastDemo(R.drawable.mountain),
+                        CastDemo(R.drawable.timothee),
+                        CastDemo(R.drawable.ic_launcher_foreground),
+                    )
+                    demoCastList.forEach {
+                        item {
+                            CastCrew(castMember = it)
+                        }
                     }
                 }
             }
@@ -416,7 +425,7 @@ fun MovieDetails(
 }
 
 @Composable
-fun CastCrew() {
+fun CastCrew(castMember: CastDemo) {
     Column(
         modifier = Modifier.padding(end = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -425,7 +434,7 @@ fun CastCrew() {
             modifier = Modifier
                 .clip(CircleShape)
                 .size(70.dp),
-            imageModel = R.drawable.timothee,
+            imageModel = castMember.image,
             shimmerParams = ShimmerParams(
                 baseColor = MaterialTheme.colors.background,
                 highlightColor = AppOnPrimaryColor,
@@ -439,7 +448,7 @@ fun CastCrew() {
             contentDescription = "cast image"
         )
         Text(
-            text = castName("Timothee"),
+            text = castName(""),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             color = AppOnPrimaryColor
