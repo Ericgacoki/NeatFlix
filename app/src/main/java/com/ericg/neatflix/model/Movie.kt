@@ -20,8 +20,6 @@ data class Movie(
     val id: Int,
     @SerializedName("imdb_id")
     val imdbId: String?,
-    @SerializedName("production_companies")
-    val productionCompanies: List<ProductionCompany>?,
     @SerializedName("original_language")
     val originalLanguage: String,
     @SerializedName("original_title")

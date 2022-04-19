@@ -1,11 +1,8 @@
 package com.ericg.neatflix.screens
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,7 +43,6 @@ import com.ericg.neatflix.sharedComposables.MovieGenreChip
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
-import com.ericg.neatflix.ui.theme.SeeMore
 import com.ericg.neatflix.util.Constants.BASE_BACKDROP_IMAGE_URL
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
 import com.ericg.neatflix.viewmodel.DetailsViewModel
@@ -78,11 +74,8 @@ fun MovieDetails(
     }
     val similarMovies = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
 
-    val state = rememberScrollState()
-
     ConstraintLayout(
         modifier = Modifier
-            .scrollable(enabled = true, state = state, orientation = Orientation.Vertical)
             .fillMaxSize()
             .background(Color(0xFF180E36))
     ) {
@@ -340,7 +333,7 @@ fun MovieDetails(
                 }
         )
 
-        LazyColumn(
+        /*LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 4.dp)
@@ -354,6 +347,7 @@ fun MovieDetails(
                 Text(
                     text = "Cast",
                     fontWeight = Bold,
+                    fontSize = 18.sp,
                     color = AppOnPrimaryColor,
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
@@ -373,18 +367,19 @@ fun MovieDetails(
                     }
                 }
             }
-        }
+        }*/
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .constrainAs(similarMoviesRow) {
-                    top.linkTo(cast.bottom)
+                    top.linkTo(descriptionText.bottom)
                 }
         ) {
             Text(
                 text = "Similar",
                 fontWeight = Bold,
+                fontSize = 18.sp,
                 color = AppOnPrimaryColor,
                 modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
             )
@@ -419,7 +414,7 @@ fun MovieDetails(
                             .clip(RoundedCornerShape(8.dp))
                             .size(130.dp, 195.dp)
                             .clickable {
-                                 movie = thisMovie
+                                movie = thisMovie
                             },
                         contentDescription = "Movie item"
                     )
@@ -530,7 +525,7 @@ fun ExpandableText(
         if (!expanded) {
             val density = LocalDensity.current
             Text(
-                color = SeeMore,
+                color = Color(0x2DFF978C).copy(alpha = 0.78F),
                 text = "... See more",
                 fontWeight = Bold,
                 fontSize = 14.sp,

@@ -50,7 +50,6 @@ import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.util.Constants.BASE_BACKDROP_IMAGE_URL
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
-import com.ericg.neatflix.viewmodel.DetailsViewModel
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -58,15 +57,13 @@ import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
 import retrofit2.HttpException
-import timber.log.Timber
 import java.io.IOException
 
 @Destination
 @Composable
 fun Home(
     navigator: DestinationsNavigator?,
-    viewModel: HomeViewModel = hiltViewModel(),
-    detailsViewModel: DetailsViewModel = hiltViewModel(),
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     Column(
         modifier = Modifier
@@ -74,7 +71,7 @@ fun Home(
             .background(Color(0xFF180E36))
     ) {
         ProfileAndSearchBar(navigator!!)
-        NestedScroll(navigator = navigator, viewModel, detailsViewModel)
+        NestedScroll(navigator = navigator, viewModel)
     }
 }
 
@@ -145,7 +142,7 @@ fun ProfileAndSearchBar(
                 filmCategories.forEachIndexed { index, filmType ->
                     Text(
                         text = filmType,
-                        fontWeight = if (selectedFilmCategory == filmCategories[index]) FontWeight.Bold else FontWeight.Light,
+                        fontWeight = if (selectedFilmCategory == filmCategories[index]) FontWeight.Bold else Light,
                         fontSize = if (selectedFilmCategory == filmCategories[index]) 24.sp else 16.sp,
                         color = if (selectedFilmCategory == filmCategories[index])
                             AppOnPrimaryColor else Color.LightGray.copy(alpha = 0.78F),
@@ -205,8 +202,7 @@ fun ProfileAndSearchBar(
 @Composable
 fun NestedScroll(
     navigator: DestinationsNavigator,
-    viewModel: HomeViewModel,
-    detailsViewModel: DetailsViewModel
+    viewModel: HomeViewModel
 ) {
     val trendingMovies = viewModel.trendingMoviesState.value.collectAsLazyPagingItems()
     val popularMovies = viewModel.popularMoviesState.value.collectAsLazyPagingItems()
@@ -263,7 +259,6 @@ fun NestedScroll(
         }
         item {
             ScrollableMovieItems(
-                detailsViewModel = detailsViewModel,
                 landscape = true,
                 navigator = navigator,
                 pagingItems = trendingMovies,
@@ -442,7 +437,7 @@ fun MovieItem(
             ),
             failure = {
                 Box(
-                    contentAlignment = Alignment.Center,
+                    contentAlignment = Center,
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Icon(
@@ -483,7 +478,6 @@ private fun trimTitle(text: String) = if (text.length <= 26) text else {
 @Composable
 private fun ScrollableMovieItems(
     landscape: Boolean = false,
-    detailsViewModel: DetailsViewModel? = null,
     navigator: DestinationsNavigator,
     pagingItems: LazyPagingItems<Movie>,
     onErrorClick: () -> Unit
