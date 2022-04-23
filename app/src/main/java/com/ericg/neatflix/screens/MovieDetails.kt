@@ -3,6 +3,7 @@ package com.ericg.neatflix.screens
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -83,7 +84,7 @@ fun MovieDetails(
             backdropImage,
             backButton,
             movieGenreChips,
-            descriptionText,
+            overviewText,
             cast,
             movieTitleBox,
             moviePosterImage,
@@ -322,25 +323,21 @@ fun MovieDetails(
                 }
             }
         }
-
         ExpandableText(
             text = movie.overview,
             modifier = Modifier
-                .padding(4.dp)
-                .constrainAs(descriptionText) {
+                .fillMaxWidth()
+                .constrainAs(overviewText) {
                     top.linkTo(movieGenreChips.bottom)
-                    start.linkTo(parent.start)
                 }
         )
 
-        /*LazyColumn(
+        LazyColumn(
+            horizontalAlignment = Alignment.Start,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp)
                 .constrainAs(cast) {
-                    top.linkTo(descriptionText.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
+                    top.linkTo(overviewText.bottom)
+                    bottom.linkTo(parent.bottom)
                 }
         ) {
             item {
@@ -349,17 +346,16 @@ fun MovieDetails(
                     fontWeight = Bold,
                     fontSize = 18.sp,
                     color = AppOnPrimaryColor,
-                    modifier = Modifier.padding(vertical = 4.dp)
+                    modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
                 )
             }
             item {
                 LazyRow {
-                    val demoCastList = listOf<CastDemo>(
-                        CastDemo(R.drawable.popcorn),
-                        CastDemo(R.drawable.mountain),
-                        CastDemo(R.drawable.timothee),
-                        CastDemo(R.drawable.ic_launcher_foreground),
-                    )
+                    val demoCastList = mutableListOf<CastDemo>()
+                    (1..10).map {
+                        demoCastList.add(CastDemo(R.drawable.mountain))
+                    }
+
                     demoCastList.forEach {
                         item {
                             CastCrew(castMember = it)
@@ -367,57 +363,53 @@ fun MovieDetails(
                     }
                 }
             }
-        }*/
+            item {
+                Text(
+                    text = "Similar",
+                    fontWeight = Bold,
+                    fontSize = 18.sp,
+                    color = AppOnPrimaryColor,
+                    modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
+                )
+            }
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(similarMoviesRow) {
-                    top.linkTo(descriptionText.bottom)
-                }
-        ) {
-            Text(
-                text = "Similar",
-                fontWeight = Bold,
-                fontSize = 18.sp,
-                color = AppOnPrimaryColor,
-                modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
-            )
-            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                items(similarMovies) { thisMovie ->
-                    CoilImage(
-                        imageModel = "${BASE_POSTER_IMAGE_URL}/${thisMovie!!.posterPath}",
-                        shimmerParams = ShimmerParams(
-                            baseColor = AppPrimaryColor,
-                            highlightColor = ButtonColor,
-                            durationMillis = 350,
-                            dropOff = 0.65F,
-                            tilt = 20F
-                        ),
-                        failure = {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier.fillMaxSize()
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_image_failed),
-                                    tint = Color(0xFFFF6F6F),
-                                    contentDescription = null
-                                )
-                            }
-                        },
-                        previewPlaceholder = R.drawable.dont_look_up,
-                        contentScale = Crop,
-                        circularReveal = CircularReveal(duration = 1000),
-                        modifier = Modifier
-                            .padding(start = 8.dp, top = 4.dp, bottom = 4.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .size(130.dp, 195.dp)
-                            .clickable {
-                                movie = thisMovie
+            item {
+                LazyRow(modifier = Modifier.fillMaxWidth()) {
+                    items(similarMovies) { thisMovie ->
+                        CoilImage(
+                            imageModel = "${BASE_POSTER_IMAGE_URL}/${thisMovie!!.posterPath}",
+                            shimmerParams = ShimmerParams(
+                                baseColor = AppPrimaryColor,
+                                highlightColor = ButtonColor,
+                                durationMillis = 350,
+                                dropOff = 0.65F,
+                                tilt = 20F
+                            ),
+                            failure = {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_image_failed),
+                                        tint = Color(0xFFFF6F6F),
+                                        contentDescription = null
+                                    )
+                                }
                             },
-                        contentDescription = "Movie item"
-                    )
+                            previewPlaceholder = R.drawable.dont_look_up,
+                            contentScale = Crop,
+                            circularReveal = CircularReveal(duration = 1000),
+                            modifier = Modifier
+                                .padding(start = 8.dp, top = 4.dp, bottom = 4.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .size(130.dp, 195.dp)
+                                .clickable {
+                                    movie = thisMovie
+                                },
+                            contentDescription = "Movie item"
+                        )
+                    }
                 }
             }
         }
@@ -427,7 +419,7 @@ fun MovieDetails(
 @Composable
 fun CastCrew(castMember: CastDemo) {
     Column(
-        modifier = Modifier.padding(end = 8.dp),
+        modifier = Modifier.padding(end = 8.dp, top = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CoilImage(
@@ -448,13 +440,7 @@ fun CastCrew(castMember: CastDemo) {
             contentDescription = "cast image"
         )
         Text(
-            text = castName(""),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            color = AppOnPrimaryColor
-        )
-        Text(
-            text = "Actor",
+            text = castName("Timothee"),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             color = AppOnPrimaryColor.copy(alpha = 0.45F),
