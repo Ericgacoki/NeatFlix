@@ -1,5 +1,6 @@
 package com.ericg.neatflix.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -339,13 +340,15 @@ fun MovieDetails(
             horizontalAlignment = Alignment.Start
         ) {
             item {
-                Text(
-                    text = "Cast",
-                    fontWeight = Bold,
-                    fontSize = 18.sp,
-                    color = AppOnPrimaryColor,
-                    modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
-                )
+                AnimatedVisibility(visible = true) { // TODO: Watch the cast list
+                    Text(
+                        text = "Cast",
+                        fontWeight = Bold,
+                        fontSize = 18.sp,
+                        color = AppOnPrimaryColor,
+                        modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
+                    )
+                }
             }
             item {
                 LazyRow(modifier = Modifier.padding(4.dp)) {
@@ -362,13 +365,15 @@ fun MovieDetails(
                 }
             }
             item {
-                Text(
-                    text = "Similar",
-                    fontWeight = Bold,
-                    fontSize = 18.sp,
-                    color = AppOnPrimaryColor,
-                    modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
-                )
+                AnimatedVisibility(visible = (similarMovies.itemCount != 0)) {
+                    Text(
+                        text = "Similar",
+                        fontWeight = Bold,
+                        fontSize = 18.sp,
+                        color = AppOnPrimaryColor,
+                        modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
+                    )
+                }
             }
 
             item {
@@ -418,7 +423,7 @@ fun MovieDetails(
 @Composable
 fun CastCrew(castMember: CastDemo) {
     Column(
-        modifier = Modifier.padding(end = 8.dp, top = 4.dp, bottom = 2.dp),
+        modifier = Modifier.padding(end = 8.dp, top = 2.dp, bottom = 2.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CoilImage(
