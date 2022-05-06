@@ -256,17 +256,17 @@ fun MovieDetails(
                         )
                     }
 
-                    var favorite by remember { mutableStateOf(false) }
+                    var addedToList by remember { mutableStateOf(false) }
                     IconButton(onClick = {
-                        favorite = !favorite
-                    }) { // TODO: Change this to add to watch list
+                        addedToList = !addedToList
+                    }) {
                         Icon(
                             painter = painterResource(
-                                id = if (favorite) R.drawable.ic_heart_fill
-                                else R.drawable.ic_heart_outlie
+                                id = if (addedToList) R.drawable.ic_added_to_list
+                                else R.drawable.ic_add_to_list
                             ),
                             tint = AppOnPrimaryColor,
-                            contentDescription = "fav icon"
+                            contentDescription = "add to watch list icon"
                         )
                     }
                 }
