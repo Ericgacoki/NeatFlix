@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
@@ -39,7 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.ericg.neatflix.R
-import com.ericg.neatflix.model.CastDemo
+import com.ericg.neatflix.model.Cast
 import com.ericg.neatflix.model.Movie
 import com.ericg.neatflix.sharedComposables.MovieGenreChip
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
@@ -73,8 +72,11 @@ fun MovieDetails(
 
     LaunchedEffect(key1 = movie) {
         detailsViewModel.getSimilarMovies(movieId = movie.id)
+        detailsViewModel.getMovieCast(movieId = movie.id)
     }
+
     val similarMovies = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
+    val movieCastList = detailsViewModel.movieCast.value
 
     Column(
         modifier = Modifier
@@ -340,7 +342,7 @@ fun MovieDetails(
             horizontalAlignment = Alignment.Start
         ) {
             item {
-                AnimatedVisibility(visible = true) { // TODO: Watch the cast list
+                AnimatedVisibility(visible = (movieCastList.isNotEmpty())) {
                     Text(
                         text = "Cast",
                         fontWeight = Bold,
@@ -352,28 +354,19 @@ fun MovieDetails(
             }
             item {
                 LazyRow(modifier = Modifier.padding(4.dp)) {
-                    val demoCastList = mutableListOf<CastDemo>()
-                    (1..10).map {
-                        demoCastList.add(CastDemo(R.drawable.mountain))
-                    }
-
-                    demoCastList.forEach {
-                        item {
-                            CastCrew(castMember = it)
-                        }
+                    movieCastList.forEach { cast ->
+                        item { CastCrew(cast = cast) }
                     }
                 }
             }
             item {
-                AnimatedVisibility(visible = (similarMovies.itemCount != 0)) {
-                    Text(
-                        text = "Similar",
-                        fontWeight = Bold,
-                        fontSize = 18.sp,
-                        color = AppOnPrimaryColor,
-                        modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
-                    )
-                }
+                Text(
+                    text = "Similar",
+                    fontWeight = Bold,
+                    fontSize = 18.sp,
+                    color = AppOnPrimaryColor,
+                    modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
+                )
             }
 
             item {
@@ -421,7 +414,7 @@ fun MovieDetails(
 
 
 @Composable
-fun CastCrew(castMember: CastDemo) {
+fun CastCrew(cast: Cast?) {
     Column(
         modifier = Modifier.padding(end = 8.dp, top = 2.dp, bottom = 2.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -430,32 +423,52 @@ fun CastCrew(castMember: CastDemo) {
             modifier = Modifier
                 .clip(CircleShape)
                 .size(70.dp),
-            imageModel = castMember.image,
+            imageModel = "$BASE_POSTER_IMAGE_URL/${cast!!.profilePath}",
             shimmerParams = ShimmerParams(
-                baseColor = MaterialTheme.colors.background,
-                highlightColor = AppOnPrimaryColor,
+                baseColor = AppPrimaryColor,
+                highlightColor = ButtonColor,
                 durationMillis = 350,
                 dropOff = 0.65F,
                 tilt = 20F
             ),
+            failure = {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        modifier = Modifier.size(70.dp),
+                        painter = painterResource(id = R.drawable.ic_user),
+                        tint = Color.LightGray,
+                        contentDescription = null
+                    )
+                }
+            },
             previewPlaceholder = R.drawable.timothee,
             contentScale = Crop,
             circularReveal = CircularReveal(duration = 1000),
             contentDescription = "cast image"
         )
         Text(
-            text = castName("Timothee"),
+            text = trimName(cast.name),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            color = AppOnPrimaryColor.copy(alpha = 0.5F),
+            fontSize = 14.sp,
+        )
+        Text(
+            text = trimName(cast.department),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             color = AppOnPrimaryColor.copy(alpha = 0.45F),
-            fontSize = 14.sp,
+            fontSize = 12.sp,
         )
     }
 }
 
-fun castName(name: String): String {
-    return if (name.length <= 8) name else {
-        name.removeRange(6..name.lastIndex) + "..."
+fun trimName(name: String): String {
+    return if (name.length <= 10) name else {
+        name.removeRange(8..name.lastIndex) + "..."
     }
 }
 
