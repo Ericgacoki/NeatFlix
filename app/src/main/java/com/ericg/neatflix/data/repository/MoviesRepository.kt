@@ -3,16 +3,19 @@ package com.ericg.neatflix.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.ericg.neatflix.data.response.CastResponse
 import com.ericg.neatflix.model.APIService
+import com.ericg.neatflix.model.Cast
 import com.ericg.neatflix.model.Movie
 import com.ericg.neatflix.paging.*
+import com.ericg.neatflix.util.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class MoviesRepository @Inject constructor(private val api: APIService) {
     fun getTrendingMovies(): Flow<PagingData<Movie>>{
         return Pager(
-            config = PagingConfig(enablePlaceholders = false, pageSize = 20), // by default TMDB's API 1 page holds 20 items
+            config = PagingConfig(enablePlaceholders = false, pageSize = 20),
             pagingSourceFactory = {
                 TrendingMoviesSource(api = api)
             }
@@ -62,4 +65,13 @@ class MoviesRepository @Inject constructor(private val api: APIService) {
         ).flow
     }
 
+    /** Non-paging data */
+    suspend fun getMovieCast(movieId: Int): Resource<CastResponse>{
+        val response = try {
+            api.getMovieCast(movieId = movieId)
+        } catch (e: Exception){
+            return Resource.Error("Error when loading movie cast")
+        }
+        return Resource.Success(response)
+    }
 }

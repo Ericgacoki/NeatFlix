@@ -115,9 +115,3 @@ fun WatchList(
         }
     }
 }
-
-@Preview
-@Composable
-fun FavoritesPrev() {
-    // Favorites()
-}
