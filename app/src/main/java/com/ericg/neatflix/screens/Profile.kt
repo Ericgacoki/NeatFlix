@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -20,8 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -88,7 +86,7 @@ fun Profile(
             painter = painterResource(id = R.drawable.popcorn),
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.3F)
+                .fillMaxHeight(0.27F)
                 .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
                 .constrainAs(topBgImage) {
                     top.linkTo(backButton.bottom, margin = 16.dp)
@@ -118,7 +116,7 @@ fun Profile(
                 }
         )
 
-        /** Custom boarder -> Reason: Image boarder wasn't working properly */
+        /** Custom boarder -> Reason: The default Image  boarder wasn't working properly */
         Box(
             modifier = Modifier
                 .size(83.5.dp)
@@ -132,8 +130,8 @@ fun Profile(
         )
 
         CoilImage(
-            imageModel = R.drawable.timothee,
-            previewPlaceholder = R.drawable.timothee,
+            imageModel = R.drawable.ic_user,
+            previewPlaceholder = R.drawable.ic_user,
             contentScale = ContentScale.Crop,
             circularReveal = CircularReveal(duration = 1000),
             shimmerParams = ShimmerParams(
