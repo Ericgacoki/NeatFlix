@@ -94,7 +94,8 @@ fun ProfileAndSearchBar(
                 modifier = Modifier
                     .size(53.dp)
                     .clip(CircleShape)
-                    .background(AppOnPrimaryColor)
+                // TODO: Return this "boarder" when actual user icon is added
+                   // .background(AppOnPrimaryColor)
             )
             Box(
                 modifier = Modifier
@@ -103,7 +104,7 @@ fun ProfileAndSearchBar(
                     .background(AppPrimaryColor)
             )
             Image(
-                painter = painterResource(id = R.drawable.timothee),
+                painter = painterResource(id = R.drawable.ic_user),
                 contentScale = Crop,
                 modifier = Modifier
                     .size(48.dp)
