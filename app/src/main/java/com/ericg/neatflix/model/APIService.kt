@@ -1,6 +1,6 @@
 package com.ericg.neatflix.model
 
-import com.ericg.neatflix.BuildConfig
+import com.ericg.neatflix.BuildConfig import com.ericg.neatflix.data.response.CastResponse
 import com.ericg.neatflix.data.response.GenreResponse
 import com.ericg.neatflix.data.response.MoviesResponse
 import retrofit2.http.GET
@@ -43,7 +43,7 @@ interface APIService {
         @Query("language") language: String = "en"
     ): MoviesResponse
 
-    @GET("movie/{movie_id}/recommendations")
+    @GET("movie/{movie_id}/recommendations") // TODO: Impl this after adding watch list
     suspend fun getRecommendedMovies(
         @Query("movie_id") movieId: Int,
         @Query("page") page: Int = 0,
@@ -58,6 +58,12 @@ interface APIService {
         @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
         @Query("language") language: String = "en"
     ): MoviesResponse
+
+    @GET("movie/{movie_id}/credits")
+    suspend fun getMovieCast(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY
+    ): CastResponse
 
     @GET("genre/movie/list")
     suspend fun getMovieGenres(
