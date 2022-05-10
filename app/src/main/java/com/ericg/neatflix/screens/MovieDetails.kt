@@ -62,6 +62,8 @@ import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Destination
 @Composable
@@ -76,12 +78,16 @@ fun MovieDetails(
         mutableStateOf(currentMovie)
     }
 
+
+    val date = SimpleDateFormat.getDateTimeInstance().format(Date())
+
     val watchListMovie = MyListMovie(
         mediaId = movie.id,
         imagePath = movie.posterPath,
         title = movie.title,
         releaseDate = movie.releaseDate,
-        rating = movie.voteAverage
+        rating = movie.voteAverage,
+        addedOn = date
     )
 
     val addedToList = watchListViewModel.addedToWatchList.value
@@ -92,12 +98,6 @@ fun MovieDetails(
         detailsViewModel.getSimilarMovies(movieId = movie.id)
         detailsViewModel.getMovieCast(movieId = movie.id)
         watchListViewModel.exists(mediaId = movie.id)
-
-        Timber.e("Exists: ${addedToList}")
-    }
-
-    LaunchedEffect(key1 = addedToList) {
-        Timber.e("Exists: ${addedToList}")
     }
 
     Column(
