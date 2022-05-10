@@ -93,19 +93,17 @@ fun SearchScreen(
                             genres = homeViewModel.movieGenres.filter { genre ->
                                 movie.genreIds!!.contains(genre.id)
                             },
-                            rating = movie.voteAverage / 2,
-                            releaseYear = movie.releaseDate,
-                            onRemoveFavorite = {},
-                            onClick = {
-                                focus.clearFocus()
-                                navigator.navigate(
-                                    direction = MovieDetailsDestination(movie)
+                            rating = movie.voteAverage,
+                            releaseYear = movie.releaseDate
+                        ) {
+                            focus.clearFocus()
+                            navigator.navigate(
+                                direction = MovieDetailsDestination(movie)
 
-                                ) {
-                                    launchSingleTop = true
-                                }
+                            ) {
+                                launchSingleTop = true
                             }
-                        )
+                        }
                     }
                     if (searchResult.itemCount == 0) {
                         item {
