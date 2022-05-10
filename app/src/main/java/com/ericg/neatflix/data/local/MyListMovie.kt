@@ -10,5 +10,5 @@ data class MyListMovie(
     val title: String,
     val releaseDate: String,
     val rating: Double,
-    // @Embedded val genre: List<Genre>?
+    val addedOn: String
 )
