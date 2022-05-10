@@ -1,5 +1,7 @@
 package com.ericg.neatflix.screens
 
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -8,9 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.*
@@ -23,6 +23,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale.Companion.Crop
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextLayoutResult
@@ -38,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.ericg.neatflix.R
+import com.ericg.neatflix.data.local.MyListMovie
 import com.ericg.neatflix.model.Cast
 import com.ericg.neatflix.model.Movie
 import com.ericg.neatflix.sharedComposables.MovieGenreChip
@@ -48,6 +50,7 @@ import com.ericg.neatflix.util.Constants.BASE_BACKDROP_IMAGE_URL
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
 import com.ericg.neatflix.viewmodel.DetailsViewModel
 import com.ericg.neatflix.viewmodel.HomeViewModel
+import com.ericg.neatflix.viewmodel.WatchListViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
 import com.gowtham.ratingbar.RatingBarStyle
@@ -57,6 +60,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Destination
 @Composable
@@ -64,19 +69,36 @@ fun MovieDetails(
     navigator: DestinationsNavigator,
     homeViewModel: HomeViewModel = hiltViewModel(),
     detailsViewModel: DetailsViewModel = hiltViewModel(),
+    watchListViewModel: WatchListViewModel = hiltViewModel(),
     currentMovie: Movie
 ) {
     var movie by remember {
         mutableStateOf(currentMovie)
     }
 
+    val watchListMovie = MyListMovie(
+        mediaId = movie.id,
+        imagePath = movie.posterPath,
+        title = movie.title,
+        releaseDate = movie.releaseDate,
+        rating = movie.voteAverage
+    )
+
+    val addedToList = watchListViewModel.addedToWatchList.value
+    val similarMovies = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
+    val movieCastList = detailsViewModel.movieCast.value
+
     LaunchedEffect(key1 = movie) {
         detailsViewModel.getSimilarMovies(movieId = movie.id)
         detailsViewModel.getMovieCast(movieId = movie.id)
+        watchListViewModel.exists(mediaId = movie.id)
+
+        Timber.e("Exists: ${addedToList}")
     }
 
-    val similarMovies = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
-    val movieCastList = detailsViewModel.movieCast.value
+    LaunchedEffect(key1 = addedToList) {
+        Timber.e("Exists: ${addedToList}")
+    }
 
     Column(
         modifier = Modifier
@@ -259,13 +281,20 @@ fun MovieDetails(
                         )
                     }
 
-                    var addedToList by remember { mutableStateOf(false) }
+                    val context = LocalContext.current
                     IconButton(onClick = {
-                        addedToList = !addedToList
+
+                        if (addedToList != 0) {
+                            watchListViewModel.removeFromWatchList(watchListMovie)
+                            Toast.makeText(context, "Removed from watchlist", LENGTH_SHORT).show()
+                        } else {
+                            watchListViewModel.addToWatchList(watchListMovie)
+                            Toast.makeText(context, "Added to watchlist", LENGTH_SHORT).show()
+                        }
                     }) {
                         Icon(
                             painter = painterResource(
-                                id = if (addedToList) R.drawable.ic_added_to_list
+                                id = if (addedToList != 0) R.drawable.ic_added_to_list
                                 else R.drawable.ic_add_to_list
                             ),
                             tint = AppOnPrimaryColor,
@@ -452,14 +481,12 @@ fun CastCrew(cast: Cast?) {
         Text(
             text = trimName(cast.name),
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
             color = AppOnPrimaryColor.copy(alpha = 0.5F),
             fontSize = 14.sp,
         )
         Text(
             text = trimName(cast.department),
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
             color = AppOnPrimaryColor.copy(alpha = 0.45F),
             fontSize = 12.sp,
         )
@@ -556,6 +583,35 @@ fun ExpandableText(
                         state = rememberScrollState()
                     )
             )
+        }
+    }
+}
+
+@Composable
+fun ShowSnackBar(
+    message: String,
+    actionLabel: String?
+) {
+    val scaffoldState = rememberScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
+
+    Scaffold(
+        modifier = Modifier.fillMaxWidth(),
+        scaffoldState = scaffoldState
+    ) {
+        LaunchedEffect(key1 = Unit) {
+            coroutineScope.launch {
+                val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
+                    message = message,
+                    actionLabel = actionLabel ?: ""
+                )
+                when (snackBarResult) {
+                    SnackbarResult.Dismissed -> {}
+                    SnackbarResult.ActionPerformed -> {
+                        //TODO: navigate to WatchList
+                    }
+                }
+            }
         }
     }
 }
