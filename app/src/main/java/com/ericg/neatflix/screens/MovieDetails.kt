@@ -61,7 +61,6 @@ import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -282,14 +281,22 @@ fun MovieDetails(
                     }
 
                     val context = LocalContext.current
+                    val scope = rememberCoroutineScope()
                     IconButton(onClick = {
-
                         if (addedToList != 0) {
-                            watchListViewModel.removeFromWatchList(watchListMovie)
-                            Toast.makeText(context, "Removed from watchlist", LENGTH_SHORT).show()
+                            watchListViewModel.removeFromWatchList(watchListMovie.mediaId)
+                            scope.launch {
+                                Toast.makeText(
+                                    context, "Removed from watchlist", LENGTH_SHORT
+                                ).show()
+                            }
                         } else {
                             watchListViewModel.addToWatchList(watchListMovie)
-                            Toast.makeText(context, "Added to watchlist", LENGTH_SHORT).show()
+                            scope.launch {
+                                Toast.makeText(
+                                    context, "Added to watchlist", LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }) {
                         Icon(
