@@ -8,8 +8,11 @@ interface MoviesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addToWatchList(movie: MyListMovie)
 
-    @Delete
-    suspend fun removeFromWatchList(movie: MyListMovie)
+    @Query("DELETE FROM watch_list_table WHERE mediaId =:mediaId")
+    suspend fun removeFromWatchList(mediaId: Int)
+
+    @Query("DELETE FROM watch_list_table")
+    suspend fun deleteWatchList()
 
     @Query("SELECT EXISTS (SELECT 1 FROM watch_list_table WHERE mediaId = :mediaId)")
     suspend fun exists(mediaId: Int): Int
@@ -18,8 +21,5 @@ interface MoviesDao {
     fun getFullWatchList(): Flow<List<MyListMovie>>
 
     @Query("SELECT * FROM watch_list_table WHERE title LIKE :searchParam ORDER BY addedOn DESC")
-    fun searchWatchList(searchParam: String): Flow<List<MyListMovie>>
-
-    @Query("DELETE FROM watch_list_table")
-    suspend fun deleteWatchList()
+    fun searchWatchList(searchParam: String): List<MyListMovie>
 }
