@@ -14,15 +14,15 @@ class WatchListRepository @Inject constructor(private val database: WatchListDat
         return database.moviesDao.exists(mediaId)
     }
 
-    suspend fun removeFromWatchList(movie: MyListMovie){
-        database.moviesDao.removeFromWatchList(movie)
+    suspend fun removeFromWatchList(mediaId: Int){
+        database.moviesDao.removeFromWatchList(mediaId)
     }
 
     fun getFullWatchList(): Flow<List<MyListMovie>> {
        return database.moviesDao.getFullWatchList()
     }
 
-    fun searchInWatchList(searchParam: String): Flow<List<MyListMovie>> {
+    fun searchInWatchList(searchParam: String): List<MyListMovie> {
         return database.moviesDao.searchWatchList(searchParam)
     }
 
