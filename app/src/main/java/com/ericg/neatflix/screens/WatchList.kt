@@ -1,18 +1,21 @@
 package com.ericg.neatflix.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,22 +32,22 @@ import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.util.Constants
+import com.ericg.neatflix.util.collectAsStateLifecycleAware
 import com.ericg.neatflix.viewmodel.WatchListViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Destination
 @Composable
 fun WatchList(
     navigator: DestinationsNavigator,
     watchListViewModel: WatchListViewModel = hiltViewModel()
 ) {
+    var totalDismissed by remember { mutableStateOf(0) }
 
-    LaunchedEffect(key1 = Unit) {
-        watchListViewModel.getFullWatchList()
-    }
-
-    val myWatchList = watchListViewModel.myWatchList
+    val myWatchList = watchListViewModel.getFullWatchList()
+        .collectAsStateLifecycleAware(initial = emptyList())
 
     Column(
         modifier = Modifier
@@ -116,7 +119,8 @@ fun WatchList(
                     .border(
                         width = 1.dp, color = ButtonColor,
                         shape = RoundedCornerShape(4.dp)
-                    ).background(ButtonColor.copy(alpha = 0.25F))
+                    )
+                    .background(ButtonColor.copy(alpha = 0.25F))
             ) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -126,7 +130,7 @@ fun WatchList(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = countItems(myWatchList.size),
+                        text = countItems(myWatchList.value.size),
                         color = AppOnPrimaryColor
                     )
                     IconButton(onClick = { showNumberIndicator = !showNumberIndicator }) {
@@ -140,23 +144,102 @@ fun WatchList(
             }
         }
 
-
-        val focusManager = LocalFocusManager.current
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
             contentPadding = PaddingValues(vertical = 12.dp)
         ) {
-            items(myWatchList) { movie ->
-                SearchResultItem(
-                    title = movie.title,
-                    posterImage = "${Constants.BASE_POSTER_IMAGE_URL}/${movie.imagePath}",
-                    genres = emptyList(),
-                    rating = movie.rating,
-                    releaseYear = movie.releaseDate
-                ) {
+            items(myWatchList.value, key = { it.mediaId }) { movie ->
+                SwipeToDismissItem(
+                    modifier = Modifier.animateItemPlacement(),
+                    onDismiss = {
+                        watchListViewModel.removeFromWatchList(movie.mediaId)
+                        totalDismissed += 1
+                    }) {
+                    SearchResultItem(
+                        title = movie.title,
+                        posterImage = "${Constants.BASE_POSTER_IMAGE_URL}/${movie.imagePath}",
+                        genres = emptyList(),
+                        rating = movie.rating,
+                        releaseYear = movie.releaseDate
+                    ) { }
                 }
             }
         }
+
+        var openDialog by remember { mutableStateOf(true) }
+        if (totalDismissed == 3 && openDialog && myWatchList.value.size > 1) {
+            AlertDialog(
+                title = { Text(text = "Delete All") },
+                text = { Text(text = "Would you like to clear your watch list?") },
+                shape = RoundedCornerShape(8.dp),
+                confirmButton = {
+                    TextButton(onClick = {
+                        watchListViewModel.deleteWatchList()
+                        openDialog = openDialog.not()
+                    }) {
+                        Text(text = "YES")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { openDialog = openDialog.not() }) {
+                        Text(text = "NO")
+                    }
+                },
+                backgroundColor = ButtonColor,
+                contentColor = AppOnPrimaryColor,
+                onDismissRequest = {
+                    openDialog = openDialog.not()
+                })
+        }
     }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun SwipeToDismissItem(
+    modifier: Modifier,
+    onDismiss: () -> Unit,
+    swippable: @Composable () -> Unit,
+) {
+    val dismissState = DismissState(initialValue = DismissValue.Default,
+        confirmStateChange = {
+            if (it == DismissValue.DismissedToStart) {
+                onDismiss()
+            }
+            true
+        })
+
+    SwipeToDismiss(
+        state = dismissState,
+        modifier = modifier,
+        background = {
+            if (dismissState.dismissDirection == DismissDirection.EndToStart) {
+                Box(
+                    modifier = Modifier
+                        .padding(bottom = 12.dp)
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(Color.Transparent, ButtonColor.copy(alpha = 0.25F))
+                            )
+                        )
+                        .padding(8.dp)
+                ) {
+                    Column(modifier = Modifier.align(Alignment.CenterEnd)) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = null,
+                            tint = Color(0xFFFF6F6F),
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                    }
+                }
+            }
+        },
+        dismissContent = {
+            swippable()
+        },
+        directions = setOf(DismissDirection.EndToStart)
+    )
 }
