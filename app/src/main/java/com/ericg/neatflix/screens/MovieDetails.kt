@@ -448,7 +448,6 @@ fun MovieDetails(
     }
 }
 
-
 @Composable
 fun CastCrew(cast: Cast?) {
     Column(
@@ -594,31 +593,3 @@ fun ExpandableText(
     }
 }
 
-@Composable
-fun ShowSnackBar(
-    message: String,
-    actionLabel: String?
-) {
-    val scaffoldState = rememberScaffoldState()
-    val coroutineScope = rememberCoroutineScope()
-
-    Scaffold(
-        modifier = Modifier.fillMaxWidth(),
-        scaffoldState = scaffoldState
-    ) {
-        LaunchedEffect(key1 = Unit) {
-            coroutineScope.launch {
-                val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
-                    message = message,
-                    actionLabel = actionLabel ?: ""
-                )
-                when (snackBarResult) {
-                    SnackbarResult.Dismissed -> {}
-                    SnackbarResult.ActionPerformed -> {
-                        //TODO: navigate to WatchList
-                    }
-                }
-            }
-        }
-    }
-}
