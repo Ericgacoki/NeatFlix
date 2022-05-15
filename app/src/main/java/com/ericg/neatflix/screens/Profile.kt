@@ -2,16 +2,13 @@ package com.ericg.neatflix.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +25,7 @@ import com.ericg.neatflix.screens.destinations.WatchListDestination
 import com.ericg.neatflix.sharedComposables.BackButton
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
@@ -52,8 +50,7 @@ fun Profile(
             profilePhoto,
             imageBoarder,
             translucentBr,
-            viewedMoviesIcon,
-            favMoviesIcon,
+            btnWatchList,
             appVersion
         ) = createRefs()
 
@@ -159,7 +156,7 @@ fun Profile(
         }
 
         Text(
-            text = userName("John Doe"),
+            text = userName(" "),
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             color = AppOnPrimaryColor,
@@ -170,74 +167,24 @@ fun Profile(
             }
         )
 
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.constrainAs(viewedMoviesIcon) {
-                start.linkTo(profilePhoto.end, margin = 36.dp)
-                top.linkTo(topBgImage.bottom)
-                bottom.linkTo(profilePhoto.bottom)
-            }
-        ) {
-            IconButton(onClick = { }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_eyes),
-                    contentDescription = null,
-                    tint = AppOnPrimaryColor
-                )
-            }
-
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = "12",
-                fontWeight = FontWeight.Light,
-                fontSize = 16.sp,
-                color = AppOnPrimaryColor
-            )
-        }
-
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Button(
             modifier = Modifier
-                .constrainAs(favMoviesIcon) {
-                    start.linkTo(viewedMoviesIcon.end)
-                    top.linkTo(topBgImage.bottom)
-                    bottom.linkTo(profilePhoto.bottom)
+                .constrainAs(btnWatchList) {
                     end.linkTo(parent.end, margin = 24.dp)
-                }
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) {
-                    navigator.navigate(
-                        WatchListDestination
-                    ) {
-                        launchSingleTop = true
-                    }
-                }
-        ) {
-            IconButton(onClick = {
-                navigator.navigate(
-                    WatchListDestination
-                ) {
-                    launchSingleTop = true
-                }
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_heart_fill),
-                    contentDescription = null,
-                    tint = AppOnPrimaryColor
-                )
+                    top.linkTo(topBgImage.bottom)
+                    bottom.linkTo(topBgImage.bottom)
+                },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color(0xFF4C3D6D),
+                contentColor = AppOnPrimaryColor
+            ),
+            onClick = {
+                navigator.navigate(WatchListDestination)
             }
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = "34",
-                fontWeight = FontWeight.Light,
-                fontSize = 16.sp,
-                color = AppOnPrimaryColor
-            )
+        ) {
+            Text(text = "My List")
         }
+
         Column(
             modifier = Modifier.constrainAs(appVersion) {
                 start.linkTo(parent.start)
