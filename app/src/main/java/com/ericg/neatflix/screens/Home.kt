@@ -18,12 +18,16 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale.Companion.Crop
 import androidx.compose.ui.layout.ContentScale.Companion.Fit
 import androidx.compose.ui.res.painterResource
@@ -32,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Light
 import androidx.compose.ui.text.font.FontWeight.Companion.Normal
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -95,7 +98,7 @@ fun ProfileAndSearchBar(
                     .size(53.dp)
                     .clip(CircleShape)
                 // TODO: Return this "boarder" when actual user icon is added
-                   // .background(AppOnPrimaryColor)
+                // .background(AppOnPrimaryColor)
             )
             Box(
                 modifier = Modifier
@@ -103,21 +106,20 @@ fun ProfileAndSearchBar(
                     .clip(CircleShape)
                     .background(AppPrimaryColor)
             )
-            Image(
-                painter = painterResource(id = R.drawable.ic_user),
-                contentScale = Crop,
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .clickable {
-                        navigator.navigate(
-                            direction = ProfileDestination()
-                        ) {
-                            launchSingleTop = true
-                        }
-                    },
-                contentDescription = "profile picture"
-            )
+            IconButton(onClick = {
+                navigator.navigate(
+                    direction = ProfileDestination()
+                ) {
+                    launchSingleTop = true
+                }
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_person_profile),
+                    tint = AppOnPrimaryColor,
+                    modifier = Modifier.size(32.dp),
+                    contentDescription = "profile picture"
+                )
+            }
         }
 
         Column(
@@ -129,7 +131,7 @@ fun ProfileAndSearchBar(
                 contentScale = Fit,
                 alpha = 0.78F,
                 modifier = Modifier
-                    .padding(bottom =  8.dp, top = 4.dp)
+                    .padding(bottom = 8.dp, top = 4.dp)
                     .widthIn(max = 110.dp),
                 contentDescription = "logo"
             )
@@ -191,7 +193,7 @@ fun ProfileAndSearchBar(
             }
         ) {
             Icon(
-                modifier = Modifier.size(22.dp),
+                modifier = Modifier.size(28.dp),
                 painter = painterResource(id = R.drawable.ic_search),
                 contentDescription = "search icon",
                 tint = AppOnPrimaryColor
