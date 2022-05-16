@@ -11,35 +11,35 @@ interface APIService {
     @GET("trending/movie/day")
     suspend fun getTrendingMovies(
         @Query("page") page: Int = 0,
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY, // TODO: change to NEATFLIX_API_KEY
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en"
     ): MoviesResponse
 
     @GET("movie/popular")
     suspend fun getPopularMovies(
         @Query("page") page: Int = 0,
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en"
     ): MoviesResponse
 
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(
         @Query("page") page: Int = 0,
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en"
     ): MoviesResponse
 
     @GET("movie/now_playing")
     suspend fun getNowPlayingMovies(
         @Query("page") page: Int = 0,
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en"
     ): MoviesResponse
 
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(
         @Query("page") page: Int = 0,
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en"
     ): MoviesResponse
 
@@ -47,7 +47,7 @@ interface APIService {
     suspend fun getRecommendedMovies(
         @Query("movie_id") movieId: Int,
         @Query("page") page: Int = 0,
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en"
     ): MoviesResponse
 
@@ -55,7 +55,7 @@ interface APIService {
     suspend fun getSimilarMovies(
         @Path("movie_id") movieId: Int,
         @Query("page") page: Int = 0,
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en"
     ): MoviesResponse
 

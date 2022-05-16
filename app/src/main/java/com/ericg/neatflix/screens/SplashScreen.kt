@@ -53,7 +53,6 @@ fun SplashScreen(
                 delay(2000)
                 animateLogo = true
                 delay(2000)
-                Timber.e("Navigate to Home!")
                 navigator!!.popBackStack()
                 navigator.navigate(HomeDestination())
             }

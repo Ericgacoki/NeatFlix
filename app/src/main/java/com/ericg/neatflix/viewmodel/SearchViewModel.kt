@@ -23,6 +23,7 @@ class SearchViewModel @Inject constructor(
     val searchMoviesState: State<Flow<PagingData<Movie>>> = _searchMovies
 
     var searchParam = mutableStateOf("")
+    var previousSearch = mutableStateOf("")
 
     fun searchMovie() {
         viewModelScope.launch {
@@ -35,4 +36,6 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
+
+    // TODO: Add local search movie function
 }

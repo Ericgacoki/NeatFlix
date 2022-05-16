@@ -8,6 +8,7 @@ import com.ericg.neatflix.data.local.MyListMovie
 import com.ericg.neatflix.data.repository.WatchListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,6 +17,13 @@ class WatchListViewModel @Inject constructor(private val repo: WatchListReposito
 
     private val _addedToWatchList = mutableStateOf(0)
     val addedToWatchList: State<Int> = _addedToWatchList
+
+    private val _myWatchList = mutableStateOf(emptyList<MyListMovie>())
+    val myWatchList: State<List<MyListMovie>> = _myWatchList
+
+    init {
+        getFullWatchList()
+    }
 
     fun addToWatchList(movie: MyListMovie) {
         viewModelScope.launch {
@@ -31,19 +39,17 @@ class WatchListViewModel @Inject constructor(private val repo: WatchListReposito
         }
     }
 
-    fun removeFromWatchList(movie: MyListMovie) {
+    fun removeFromWatchList(mediaId: Int) {
         viewModelScope.launch {
-            repo.removeFromWatchList(movie)
+            repo.removeFromWatchList(mediaId)
         }.invokeOnCompletion {
-            exists(movie.mediaId)
+            exists(mediaId)
         }
     }
 
-    fun getFullWatchList(): Flow<List<MyListMovie>> {
-        return repo.getFullWatchList()
-    }
+    fun getFullWatchList() = repo.getFullWatchList()
 
-    fun searchInWatchList(searchParam: String): Flow<List<MyListMovie>> {
+    fun searchInWatchList(searchParam: String): List<MyListMovie> {
         return repo.searchInWatchList(searchParam)
     }
 

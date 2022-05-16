@@ -4,12 +4,6 @@
 apikey.properties
 gradle.properties
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
 .DS_Store
 /build
 /captures
@@ -17,3 +11,5 @@ gradle.properties
 .cxx
 local.properties
 /app/src/main/res/values/secrets.xml
+/app/schemas/com.ericg.neatflix.data.local.WatchListDatabase/1.json
+/app/schemas/com.ericg.neatflix.data.local.WatchListDatabase/2.json

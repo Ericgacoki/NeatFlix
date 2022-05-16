@@ -61,7 +61,8 @@ import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Destination
 @Composable
@@ -76,12 +77,16 @@ fun MovieDetails(
         mutableStateOf(currentMovie)
     }
 
+
+    val date = SimpleDateFormat.getDateTimeInstance().format(Date())
+
     val watchListMovie = MyListMovie(
         mediaId = movie.id,
         imagePath = movie.posterPath,
         title = movie.title,
         releaseDate = movie.releaseDate,
-        rating = movie.voteAverage
+        rating = movie.voteAverage,
+        addedOn = date
     )
 
     val addedToList = watchListViewModel.addedToWatchList.value
@@ -92,12 +97,6 @@ fun MovieDetails(
         detailsViewModel.getSimilarMovies(movieId = movie.id)
         detailsViewModel.getMovieCast(movieId = movie.id)
         watchListViewModel.exists(mediaId = movie.id)
-
-        Timber.e("Exists: ${addedToList}")
-    }
-
-    LaunchedEffect(key1 = addedToList) {
-        Timber.e("Exists: ${addedToList}")
     }
 
     Column(
@@ -282,14 +281,22 @@ fun MovieDetails(
                     }
 
                     val context = LocalContext.current
+                    val scope = rememberCoroutineScope()
                     IconButton(onClick = {
-
                         if (addedToList != 0) {
-                            watchListViewModel.removeFromWatchList(watchListMovie)
-                            Toast.makeText(context, "Removed from watchlist", LENGTH_SHORT).show()
+                            watchListViewModel.removeFromWatchList(watchListMovie.mediaId)
+                            scope.launch {
+                                Toast.makeText(
+                                    context, "Removed from watchlist", LENGTH_SHORT
+                                ).show()
+                            }
                         } else {
                             watchListViewModel.addToWatchList(watchListMovie)
-                            Toast.makeText(context, "Added to watchlist", LENGTH_SHORT).show()
+                            scope.launch {
+                                Toast.makeText(
+                                    context, "Added to watchlist", LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }) {
                         Icon(
@@ -441,7 +448,6 @@ fun MovieDetails(
     }
 }
 
-
 @Composable
 fun CastCrew(cast: Cast?) {
     Column(
@@ -587,31 +593,3 @@ fun ExpandableText(
     }
 }
 
-@Composable
-fun ShowSnackBar(
-    message: String,
-    actionLabel: String?
-) {
-    val scaffoldState = rememberScaffoldState()
-    val coroutineScope = rememberCoroutineScope()
-
-    Scaffold(
-        modifier = Modifier.fillMaxWidth(),
-        scaffoldState = scaffoldState
-    ) {
-        LaunchedEffect(key1 = Unit) {
-            coroutineScope.launch {
-                val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
-                    message = message,
-                    actionLabel = actionLabel ?: ""
-                )
-                when (snackBarResult) {
-                    SnackbarResult.Dismissed -> {}
-                    SnackbarResult.ActionPerformed -> {
-                        //TODO: navigate to WatchList
-                    }
-                }
-            }
-        }
-    }
-}
