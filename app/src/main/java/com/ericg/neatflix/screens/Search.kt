@@ -48,11 +48,11 @@ fun SearchScreen(
             .background(AppPrimaryColor)
     ) {
         Row(
-            horizontalArrangement = Arrangement.Start,
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .padding(horizontal = 10.dp, vertical = 16.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(fraction = 0.60F)
         ) {
             val focusManager = LocalFocusManager.current
             BackButton {
@@ -68,7 +68,6 @@ fun SearchScreen(
                 fontSize = 24.sp,
                 color = AppOnPrimaryColor
             )
-
         }
 
         SearchBar(
@@ -144,5 +143,4 @@ fun SearchScreen(
             }
         }
     }
-
 }
