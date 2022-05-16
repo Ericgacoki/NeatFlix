@@ -29,6 +29,7 @@ import com.ericg.neatflix.R
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.viewmodel.SearchViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun SearchBar(
@@ -48,13 +49,21 @@ fun SearchBar(
         val focusRequester = remember { FocusRequester() }
         val focusManager = LocalFocusManager.current
 
+        LaunchedEffect(key1 = searchInput) {
+            if (viewModel.searchParam.value.trim().isNotEmpty() &&
+                viewModel.searchParam.value.trim().length != viewModel.previousSearch.value.length
+            ) {
+                delay(750)
+                onSearch()
+                viewModel.previousSearch.value = searchInput.trim()
+            }
+        }
+
         TextField(
             value = searchInput,
             onValueChange = { newValue ->
                 searchInput = if (newValue.trim().isNotEmpty()) newValue else ""
-
                 viewModel.searchParam.value = searchInput
-                // onSearch()
             },
             modifier = Modifier
                 .fillMaxSize()
@@ -79,9 +88,14 @@ fun SearchBar(
             ),
             keyboardActions = KeyboardActions(
                 onSearch = {
-                    focusManager.clearFocus()
-                    viewModel.searchParam.value = searchInput
-                    onSearch()
+                    if (viewModel.searchParam.value.trim().isNotEmpty()) {
+                        focusManager.clearFocus()
+                        viewModel.searchParam.value = searchInput
+                        if (searchInput != viewModel.previousSearch.value) {
+                            viewModel.previousSearch.value = searchInput
+                            onSearch()
+                        }
+                    }
                 }
             ),
             trailingIcon = {
@@ -110,7 +124,10 @@ fun SearchBar(
                         if (viewModel.searchParam.value.trim().isNotEmpty()) {
                             focusManager.clearFocus()
                             viewModel.searchParam.value = searchInput
-                            onSearch()
+                            if (searchInput != viewModel.previousSearch.value) {
+                                viewModel.previousSearch.value = searchInput
+                                onSearch()
+                            }
                         }
                     }) {
                         Icon(
