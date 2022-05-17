@@ -24,8 +24,13 @@ class SearchViewModel @Inject constructor(
 
     var searchParam = mutableStateOf("")
     var previousSearch = mutableStateOf("")
+    var searchParamState: State<String> = searchParam
 
-    fun searchMovie() {
+    init{
+        searchParam.value = ""
+    }
+
+    fun searchRemoteMovie() {
         viewModelScope.launch {
             _searchMovies.value = if (searchParam.value.isNotEmpty()) {
                 searchRepository.multiSearch(searchParams = searchParam.value)
@@ -36,6 +41,4 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
-
-    // TODO: Add local search movie function
 }
