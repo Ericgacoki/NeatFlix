@@ -22,10 +22,6 @@ class WatchListRepository @Inject constructor(private val database: WatchListDat
        return database.moviesDao.getFullWatchList()
     }
 
-    fun searchInWatchList(searchParam: String): List<MyListMovie> {
-        return database.moviesDao.searchWatchList(searchParam)
-    }
-
     suspend fun deleteWatchList(){
         database.moviesDao.deleteWatchList()
     }
