@@ -43,9 +43,9 @@ interface APIService {
         @Query("language") language: String = "en"
     ): MoviesResponse
 
-    @GET("movie/{movie_id}/recommendations") // TODO: Impl this after adding watch list
+    @GET("movie/{movie_id}/recommendations")
     suspend fun getRecommendedMovies(
-        @Query("movie_id") movieId: Int,
+        @Path("movie_id") movieId: Int,
         @Query("page") page: Int = 0,
         @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en"
@@ -57,6 +57,14 @@ interface APIService {
         @Query("page") page: Int = 0,
         @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en"
+    ): MoviesResponse
+
+    @GET("discover/movie")
+    suspend fun getBackInTheDaysMovies(
+        @Query("page") page: Int = 0,
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
+        @Query("language") language: String = "en",
+        @Query("sort_by") sortBy: String = "release_date.asc"
     ): MoviesResponse
 
     @GET("movie/{movie_id}/credits")

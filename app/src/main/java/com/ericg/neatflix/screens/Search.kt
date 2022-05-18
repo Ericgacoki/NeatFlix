@@ -73,7 +73,7 @@ fun SearchScreen(
         SearchBar(
             autoFocus = true,
             onSearch = {
-                viewModel.searchMovie()
+                viewModel.searchRemoteMovie()
             })
 
         LazyColumn(

@@ -1,5 +1,6 @@
 package com.ericg.neatflix.viewmodel
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -18,11 +19,11 @@ class WatchListViewModel @Inject constructor(private val repo: WatchListReposito
     private val _addedToWatchList = mutableStateOf(0)
     val addedToWatchList: State<Int> = _addedToWatchList
 
-    private val _myWatchList = mutableStateOf(emptyList<MyListMovie>())
-    val myWatchList: State<List<MyListMovie>> = _myWatchList
+    private val _watchList = mutableStateOf<Flow<List<MyListMovie>>>(emptyFlow())
+    val watchList: MutableState<Flow<List<MyListMovie>>> = _watchList
 
     init {
-        getFullWatchList()
+        getWatchList()
     }
 
     fun addToWatchList(movie: MyListMovie) {
@@ -47,10 +48,8 @@ class WatchListViewModel @Inject constructor(private val repo: WatchListReposito
         }
     }
 
-    fun getFullWatchList() = repo.getFullWatchList()
-
-    fun searchInWatchList(searchParam: String): List<MyListMovie> {
-        return repo.searchInWatchList(searchParam)
+    private fun getWatchList(){
+       _watchList.value = repo.getFullWatchList()
     }
 
     fun deleteWatchList() {

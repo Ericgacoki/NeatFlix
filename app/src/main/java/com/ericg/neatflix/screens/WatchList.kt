@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ericg.neatflix.R
+import com.ericg.neatflix.data.local.MyListMovie
 import com.ericg.neatflix.screens.destinations.HomeDestination
 import com.ericg.neatflix.sharedComposables.BackButton
 import com.ericg.neatflix.sharedComposables.SearchBar
@@ -33,21 +34,29 @@ import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.util.Constants
 import com.ericg.neatflix.util.collectAsStateLifecycleAware
+import com.ericg.neatflix.viewmodel.SearchViewModel
 import com.ericg.neatflix.viewmodel.WatchListViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Destination
 @Composable
 fun WatchList(
     navigator: DestinationsNavigator,
-    watchListViewModel: WatchListViewModel = hiltViewModel()
+    watchListViewModel: WatchListViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel()
 ) {
     var totalDismissed by remember { mutableStateOf(0) }
 
-    val myWatchList = watchListViewModel.getFullWatchList()
+    val myWatchList = watchListViewModel.watchList.value
         .collectAsStateLifecycleAware(initial = emptyList())
+
+    var currentList: State<List<MyListMovie>> by remember { mutableStateOf(myWatchList) }
+    if (searchViewModel.searchParamState.value.isEmpty()) {
+        currentList = myWatchList
+    }
 
     Column(
         modifier = Modifier
@@ -97,7 +106,13 @@ fun WatchList(
         SearchBar(
             autoFocus = false,
             onSearch = {
-
+                val filterParam = searchViewModel.searchParam.value
+                myWatchList.value.filter { movie ->
+                    movie.title.contains(other = filterParam, ignoreCase = true)
+                }.let {
+                    currentList = mutableStateOf(it)
+                    Timber.d("Filtered by $filterParam: ${it.size}")
+                }
             }
         )
 
@@ -130,10 +145,10 @@ fun WatchList(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = countItems(myWatchList.value.size),
+                        text = countItems(currentList.value.size),
                         color = AppOnPrimaryColor
                     )
-                    IconButton(onClick = { showNumberIndicator = !showNumberIndicator }) {
+                    IconButton(onClick = { showNumberIndicator = false }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_cancel),
                             tint = AppOnPrimaryColor,
@@ -149,12 +164,15 @@ fun WatchList(
                 .fillMaxSize(),
             contentPadding = PaddingValues(vertical = 12.dp)
         ) {
-            items(myWatchList.value, key = { it.mediaId }) { movie ->
+            items(currentList.value, key = { it.mediaId }) { movie ->
                 SwipeToDismissItem(
                     modifier = Modifier.animateItemPlacement(),
                     onDismiss = {
                         watchListViewModel.removeFromWatchList(movie.mediaId)
                         totalDismissed += 1
+                        // FIXME: Find another way to fix swipe after searching
+                        // searchViewModel.searchParam.value = ""
+                        // searchViewModel.previousSearch.value = ""
                     }) {
                     SearchResultItem(
                         title = movie.title,
@@ -168,7 +186,7 @@ fun WatchList(
         }
 
         var openDialog by remember { mutableStateOf(true) }
-        if (totalDismissed == 3 && openDialog && myWatchList.value.size > 1) {
+        if (totalDismissed == 3 && openDialog && currentList.value.size > 1) {
             AlertDialog(
                 title = { Text(text = "Delete All") },
                 text = { Text(text = "Would you like to clear your watch list?") },
@@ -202,7 +220,7 @@ fun SwipeToDismissItem(
     onDismiss: () -> Unit,
     swippable: @Composable () -> Unit,
 ) {
-    val dismissState = DismissState(initialValue = DismissValue.Default,
+    val dismissState = rememberDismissState(initialValue = DismissValue.Default,
         confirmStateChange = {
             if (it == DismissValue.DismissedToStart) {
                 onDismiss()
