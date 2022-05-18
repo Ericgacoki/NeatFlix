@@ -19,7 +19,4 @@ interface MoviesDao {
 
     @Query("SELECT * FROM watch_list_table ORDER BY addedOn DESC")
     fun getFullWatchList(): Flow<List<MyListMovie>>
-
-    @Query("SELECT * FROM watch_list_table WHERE title LIKE :searchParam ORDER BY addedOn DESC")
-    fun searchWatchList(searchParam: String): List<MyListMovie>
 }
