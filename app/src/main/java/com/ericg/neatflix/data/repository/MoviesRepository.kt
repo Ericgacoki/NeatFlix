@@ -5,7 +5,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.ericg.neatflix.data.response.CastResponse
 import com.ericg.neatflix.model.APIService
-import com.ericg.neatflix.model.Cast
 import com.ericg.neatflix.model.Movie
 import com.ericg.neatflix.paging.*
 import com.ericg.neatflix.util.Resource
@@ -13,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class MoviesRepository @Inject constructor(private val api: APIService) {
-    fun getTrendingMovies(): Flow<PagingData<Movie>>{
+    fun getTrendingMovies(): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 20),
             pagingSourceFactory = {
@@ -21,7 +20,8 @@ class MoviesRepository @Inject constructor(private val api: APIService) {
             }
         ).flow
     }
-    fun getPopularMovies(): Flow<PagingData<Movie>>{
+
+    fun getPopularMovies(): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 20),
             pagingSourceFactory = {
@@ -30,7 +30,7 @@ class MoviesRepository @Inject constructor(private val api: APIService) {
         ).flow
     }
 
-    fun getTopRatedMovies(): Flow<PagingData<Movie>>{
+    fun getTopRatedMovies(): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 20),
             pagingSourceFactory = {
@@ -39,7 +39,7 @@ class MoviesRepository @Inject constructor(private val api: APIService) {
         ).flow
     }
 
-    fun getNowPlayingMovies(): Flow<PagingData<Movie>>{
+    fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 20),
             pagingSourceFactory = {
@@ -48,7 +48,7 @@ class MoviesRepository @Inject constructor(private val api: APIService) {
         ).flow
     }
 
-    fun getUpcomingMovies(): Flow<PagingData<Movie>>{
+    fun getUpcomingMovies(): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 20),
             pagingSourceFactory = {
@@ -56,7 +56,17 @@ class MoviesRepository @Inject constructor(private val api: APIService) {
             }
         ).flow
     }
-    fun getSimilarMovies(movieId: Int): Flow<PagingData<Movie>>{
+
+    fun getBackInTheDaysMovies(): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 20),
+            pagingSourceFactory = {
+                BackInTheDaysMoviesSource(api = api)
+            }
+        ).flow
+    }
+
+    fun getSimilarMovies(movieId: Int): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 20),
             pagingSourceFactory = {
@@ -65,11 +75,20 @@ class MoviesRepository @Inject constructor(private val api: APIService) {
         ).flow
     }
 
+    fun getRecommendedMovies(movieId: Int): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(enablePlaceholders = false, pageSize = 20),
+            pagingSourceFactory = {
+                RecommendedMoviesSource(api = api, movieId = movieId)
+            }
+        ).flow
+    }
+
     /** Non-paging data */
-    suspend fun getMovieCast(movieId: Int): Resource<CastResponse>{
+    suspend fun getMovieCast(movieId: Int): Resource<CastResponse> {
         val response = try {
             api.getMovieCast(movieId = movieId)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             return Resource.Error("Error when loading movie cast")
         }
         return Resource.Success(response)
