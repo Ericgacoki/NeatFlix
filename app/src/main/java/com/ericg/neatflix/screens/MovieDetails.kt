@@ -77,9 +77,7 @@ fun MovieDetails(
         mutableStateOf(currentMovie)
     }
 
-
     val date = SimpleDateFormat.getDateTimeInstance().format(Date())
-
     val watchListMovie = MyListMovie(
         mediaId = movie.id,
         imagePath = movie.posterPath,
