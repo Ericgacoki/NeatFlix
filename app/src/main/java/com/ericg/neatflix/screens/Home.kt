@@ -5,6 +5,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -19,15 +20,14 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale.Companion.Crop
 import androidx.compose.ui.layout.ContentScale.Companion.Fit
 import androidx.compose.ui.res.painterResource
@@ -53,7 +53,9 @@ import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.util.Constants.BASE_BACKDROP_IMAGE_URL
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
+import com.ericg.neatflix.util.collectAsStateLifecycleAware
 import com.ericg.neatflix.viewmodel.HomeViewModel
+import com.ericg.neatflix.viewmodel.WatchListViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
@@ -66,7 +68,8 @@ import java.io.IOException
 @Composable
 fun Home(
     navigator: DestinationsNavigator?,
-    viewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    watchListViewModel: WatchListViewModel = hiltViewModel()
 ) {
     Column(
         modifier = Modifier
@@ -74,7 +77,7 @@ fun Home(
             .background(Color(0xFF180E36))
     ) {
         ProfileAndSearchBar(navigator!!)
-        NestedScroll(navigator = navigator, viewModel)
+        NestedScroll(navigator = navigator, homeViewModel, watchListViewModel)
     }
 }
 
@@ -97,7 +100,6 @@ fun ProfileAndSearchBar(
                 modifier = Modifier
                     .size(53.dp)
                     .clip(CircleShape)
-                // TODO: Return this "boarder" when actual user icon is added
                 // .background(AppOnPrimaryColor)
             )
             Box(
@@ -205,16 +207,30 @@ fun ProfileAndSearchBar(
 @Composable
 fun NestedScroll(
     navigator: DestinationsNavigator,
-    viewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    watchListViewModel: WatchListViewModel
 ) {
-    val trendingMovies = viewModel.trendingMoviesState.value.collectAsLazyPagingItems()
-    val popularMovies = viewModel.popularMoviesState.value.collectAsLazyPagingItems()
-    val topRatedMovies = viewModel.topRatedMoviesState.value.collectAsLazyPagingItems()
-    val nowPlayingMovies = viewModel.nowPlayingMoviesState.value.collectAsLazyPagingItems()
-    val upcomingMovies = viewModel.upcomingMoviesState.value.collectAsLazyPagingItems()
+    val trendingMovies = homeViewModel.trendingMoviesState.value.collectAsLazyPagingItems()
+    val popularMovies = homeViewModel.popularMoviesState.value.collectAsLazyPagingItems()
+    val topRatedMovies = homeViewModel.topRatedMoviesState.value.collectAsLazyPagingItems()
+    val nowPlayingMovies = homeViewModel.nowPlayingMoviesState.value.collectAsLazyPagingItems()
+    val upcomingMovies = homeViewModel.upcomingMoviesState.value.collectAsLazyPagingItems()
+    val backInTheDays = homeViewModel.backInTheDaysMoviesState.value.collectAsLazyPagingItems()
+    val recommended = homeViewModel.recommendedMovies.value.collectAsLazyPagingItems()
+    val myWatchList =
+        watchListViewModel.watchList.value.collectAsStateLifecycleAware(initial = emptyList())
+
+    LaunchedEffect(key1 = myWatchList.value.size) {
+        if (myWatchList.value.isNotEmpty()) {
+            homeViewModel.randomMovieId =
+                myWatchList.value[(0..myWatchList.value.lastIndex).random()].mediaId
+            if (recommended.itemCount == 0) {
+                homeViewModel.getRecommendedMovies(movieId = homeViewModel.randomMovieId!!)
+            }
+        }
+    }
 
     val listState: LazyListState = rememberLazyListState()
-
     LazyColumn(
         state = listState,
         modifier = Modifier
@@ -231,7 +247,7 @@ fun NestedScroll(
             )
         }
         item {
-            val genres = viewModel.movieGenres
+            val genres = homeViewModel.movieGenres
 
             LazyRow(
                 modifier = Modifier
@@ -241,10 +257,10 @@ fun NestedScroll(
                 items(count = genres.size) {
                     SelectableGenreChip(
                         genre = genres[it].name,
-                        selected = genres[it].name == viewModel.selectedGenre.value
+                        selected = genres[it].name == homeViewModel.selectedGenre.value
                     ) {
-                        if (viewModel.selectedGenre.value != genres[it].name) {
-                            viewModel.setSelectedGenre(genre = genres[it])
+                        if (homeViewModel.selectedGenre.value != genres[it].name) {
+                            homeViewModel.filterBySetSelectedGenre(genre = genres[it])
                         }
                     }
                 }
@@ -266,7 +282,7 @@ fun NestedScroll(
                 navigator = navigator,
                 pagingItems = trendingMovies,
                 onErrorClick = {
-                    viewModel.refreshAll()
+                    homeViewModel.refreshAll()
                 }
             )
         }
@@ -285,7 +301,7 @@ fun NestedScroll(
                 navigator = navigator,
                 pagingItems = popularMovies,
                 onErrorClick = {
-                    viewModel.refreshAll()
+                    homeViewModel.refreshAll()
                 }
             )
         }
@@ -304,7 +320,7 @@ fun NestedScroll(
                 navigator = navigator,
                 pagingItems = topRatedMovies,
                 onErrorClick = {
-                    viewModel.refreshAll()
+                    homeViewModel.refreshAll()
                 }
             )
         }
@@ -323,7 +339,7 @@ fun NestedScroll(
                 navigator = navigator,
                 pagingItems = nowPlayingMovies,
                 onErrorClick = {
-                    viewModel.refreshAll()
+                    homeViewModel.refreshAll()
                 }
             )
         }
@@ -342,66 +358,52 @@ fun NestedScroll(
                 navigator = navigator,
                 pagingItems = upcomingMovies,
                 onErrorClick = {
-                    viewModel.refreshAll()
-                }
-            )
-        }
-/*
-        item {
-            Text(
-                text = "Watch List",
-                fontSize = 24.sp,
-                color = AppOnPrimaryColor,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 4.dp, top = 14.dp, bottom = 4.dp)
-            )
-        }
-        item {
-            ScrollableMovieItems(
-                navigator = navigator,
-                pagingItems = topRatedMovies, // watchList -> from room db
-                onErrorClick = {
-                    viewModel.refreshAll()
-                }
-            )
-        }
-        item {
-            Text(
-                text = "Recommended",
-                fontSize = 24.sp,
-                color = AppOnPrimaryColor,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 4.dp, top = 14.dp, bottom = 4.dp)
-            )
-        }
-        item {
-            ScrollableMovieItems(
-                navigator = navigator,
-                pagingItems = topRatedMovies, // recommended -> fetched using a random id from watchlist and/or from the current genre
-                onErrorClick = {
-                    viewModel.refreshAll()
+                    homeViewModel.refreshAll()
                 }
             )
         }
 
-        item {
-            Text(
-                text = "Back in the days",
-                fontSize = 24.sp,
-                color = AppOnPrimaryColor,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 4.dp, top = 14.dp, bottom = 4.dp)
-            )
+        if (recommended.itemCount != 0) {
+            item {
+                ShowAboutThisCategory(
+                    name = "For You",
+                    description = "Recommendation based on your watchlist"
+                )
+            }
+
+            item {
+                ScrollableMovieItems(
+                    navigator = navigator,
+                    pagingItems = recommended,
+                    onErrorClick = {
+                        homeViewModel.refreshAll()
+                        if (myWatchList.value.isNotEmpty()) {
+                            val randomMovieId =
+                                myWatchList.value[(0..myWatchList.value.lastIndex).random()].mediaId
+                            homeViewModel.getRecommendedMovies(movieId = randomMovieId, null)
+                        }
+                    }
+                )
+            }
         }
-        item {
-            ScrollableMovieItems(
-                navigator = navigator,
-                pagingItems = topRatedMovies, // backInTheDays
-                onErrorClick = {
-                    viewModel.refreshAll()
-                }
-            )
-        }*/
+
+        if (backInTheDays.itemCount != 0) {
+            item {
+                ShowAboutThisCategory(
+                    name = "Back in the Days",
+                    description = "A list of very old movies"
+                )
+            }
+            item {
+                ScrollableMovieItems(
+                    navigator = navigator,
+                    pagingItems = backInTheDays,
+                    onErrorClick = {
+                        homeViewModel.refreshAll()
+                    }
+                )
+            }
+        }
 
         item {
             Spacer(modifier = Modifier.height(8.dp))
@@ -466,7 +468,7 @@ fun MovieItem(
                 maxLines = 1,
                 color = AppOnPrimaryColor,
                 overflow = TextOverflow.Ellipsis,
-                fontWeight = FontWeight.Normal,
+                fontWeight = Normal,
                 textAlign = TextAlign.Start
             )
         }
@@ -481,6 +483,7 @@ private fun trimTitle(text: String) = if (text.length <= 26) text else {
 @Composable
 private fun ScrollableMovieItems(
     landscape: Boolean = false,
+    showBadge: Boolean = false,
     navigator: DestinationsNavigator,
     pagingItems: LazyPagingItems<Movie>,
     onErrorClick: () -> Unit
@@ -492,11 +495,12 @@ private fun ScrollableMovieItems(
             .height(if (!landscape) 215.dp else 195.dp)
     ) {
         when (pagingItems.loadState.refresh) {
-            is LoadState.Loading ->
+            is LoadState.Loading -> {
                 // TODO("Use Lotti File")
                 CircularProgressIndicator(
                     modifier = Modifier.width(40.dp)
                 )
+            }
             is LoadState.NotLoading -> {
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
                     items(pagingItems) { movie ->
@@ -600,3 +604,54 @@ fun SelectableGenreChip(
     }
 }
 
+@Composable
+fun ShowAboutThisCategory(name: String, description: String) {
+    var showAboutThisCategory by remember { mutableStateOf(false) }
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = name,
+            fontSize = 24.sp,
+            color = AppOnPrimaryColor,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(
+                start = 4.dp, top = 14.dp,
+                end = 8.dp, bottom = 4.dp
+            )
+        )
+        IconButton(
+            modifier = Modifier.padding(top = 14.dp, bottom = 4.dp),
+            onClick = { showAboutThisCategory = showAboutThisCategory.not() }) {
+            Icon(
+                imageVector = if (showAboutThisCategory) Icons.Filled.KeyboardArrowUp else Icons.Filled.Info,
+                tint = AppOnPrimaryColor,
+                contentDescription = "Info Icon"
+            )
+        }
+    }
+
+    AnimatedVisibility(visible = showAboutThisCategory) {
+        Box(
+            contentAlignment = Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp)
+                .border(
+                    width = 1.dp, color = ButtonColor,
+                    shape = RoundedCornerShape(4.dp)
+                )
+                .background(ButtonColor.copy(alpha = 0.25F))
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = description,
+                    color = AppOnPrimaryColor
+                )
+            }
+        }
+    }
+}
