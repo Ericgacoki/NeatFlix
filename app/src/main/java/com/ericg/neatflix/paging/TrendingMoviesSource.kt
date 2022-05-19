@@ -2,7 +2,7 @@ package com.ericg.neatflix.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.ericg.neatflix.model.APIService
+import com.ericg.neatflix.data.remote.APIService
 import com.ericg.neatflix.model.Movie
 import retrofit2.HttpException
 import java.io.IOException
