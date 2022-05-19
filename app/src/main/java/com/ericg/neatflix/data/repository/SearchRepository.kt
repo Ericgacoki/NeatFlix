@@ -4,7 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.ericg.neatflix.paging.SearchMovieSource
-import com.ericg.neatflix.model.APIService
+import com.ericg.neatflix.data.remote.APIService
 import com.ericg.neatflix.model.Movie
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
