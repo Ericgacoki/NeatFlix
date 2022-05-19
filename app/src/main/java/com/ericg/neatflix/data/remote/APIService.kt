@@ -1,8 +1,8 @@
-package com.ericg.neatflix.model
+package com.ericg.neatflix.data.remote
 
-import com.ericg.neatflix.BuildConfig import com.ericg.neatflix.data.response.CastResponse
-import com.ericg.neatflix.data.response.GenreResponse
-import com.ericg.neatflix.data.response.MoviesResponse
+import com.ericg.neatflix.BuildConfig import com.ericg.neatflix.data.remote.response.CastResponse
+import com.ericg.neatflix.data.remote.response.GenreResponse
+import com.ericg.neatflix.data.remote.response.MoviesResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
