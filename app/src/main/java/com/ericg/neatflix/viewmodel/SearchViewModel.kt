@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.ericg.neatflix.data.repository.SearchRepository
-import com.ericg.neatflix.model.APIService
 import com.ericg.neatflix.model.Movie
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
