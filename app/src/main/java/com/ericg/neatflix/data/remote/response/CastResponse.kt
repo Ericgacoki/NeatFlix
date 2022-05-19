@@ -1,4 +1,4 @@
-package com.ericg.neatflix.data.response
+package com.ericg.neatflix.data.remote.response
 
 import com.ericg.neatflix.model.Cast
 import com.google.gson.annotations.SerializedName

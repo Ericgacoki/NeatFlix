@@ -3,8 +3,8 @@ package com.ericg.neatflix.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.ericg.neatflix.data.response.CastResponse
-import com.ericg.neatflix.model.APIService
+import com.ericg.neatflix.data.remote.response.CastResponse
+import com.ericg.neatflix.data.remote.APIService
 import com.ericg.neatflix.model.Movie
 import com.ericg.neatflix.paging.*
 import com.ericg.neatflix.util.Resource

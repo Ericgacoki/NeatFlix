@@ -1,7 +1,7 @@
 package com.ericg.neatflix.data.repository
 
-import com.ericg.neatflix.data.response.GenreResponse
-import com.ericg.neatflix.model.APIService
+import com.ericg.neatflix.data.remote.response.GenreResponse
+import com.ericg.neatflix.data.remote.APIService
 import com.ericg.neatflix.util.Resource
 import java.lang.Exception
 import javax.inject.Inject
