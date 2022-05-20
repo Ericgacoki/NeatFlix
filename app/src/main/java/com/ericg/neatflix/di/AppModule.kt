@@ -7,7 +7,7 @@ import com.ericg.neatflix.data.repository.GenreRepository
 import com.ericg.neatflix.data.repository.MoviesRepository
 import com.ericg.neatflix.data.repository.SearchRepository
 import com.ericg.neatflix.data.repository.WatchListRepository
-import com.ericg.neatflix.model.APIService
+import com.ericg.neatflix.data.remote.APIService
 import com.ericg.neatflix.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
