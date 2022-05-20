@@ -3,19 +3,23 @@ package com.ericg.neatflix.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.ericg.neatflix.data.remote.APIService
-import com.ericg.neatflix.model.Movie
+import com.ericg.neatflix.model.Film
+import com.ericg.neatflix.util.FilmType
 import retrofit2.HttpException
 import java.io.IOException
 
-class TopRatedMoviesSource(private val api: APIService) : PagingSource<Int, Movie>() {
-    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+class TopRatedFilmSource(private val api: APIService, private val filmType: FilmType) :
+    PagingSource<Int, Film>() {
+    override fun getRefreshKey(state: PagingState<Int, Film>): Int? {
         return state.anchorPosition
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Film> {
         return try {
             val nextPage = params.key ?: 1
-            val topRatedMovies = api.getTopRatedMovies(page = nextPage)
+            val topRatedMovies =
+                if (filmType == FilmType.MOVIE) api.getTopRatedMovies(page = nextPage)
+                else api.getTopRatedTvShows(page = nextPage)
 
             LoadResult.Page(
                 data = topRatedMovies.results,
