@@ -7,9 +7,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,12 +22,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ericg.neatflix.R
 import com.ericg.neatflix.screens.destinations.WatchListDestination
 import com.ericg.neatflix.sharedComposables.BackButton
+import com.ericg.neatflix.sharedComposables.CustomSwitch
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
+import com.ericg.neatflix.viewmodel.PrefsViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
@@ -36,7 +40,8 @@ import com.skydoves.landscapist.coil.CoilImage
 @Destination
 @Composable
 fun Profile(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    prefsViewModel: PrefsViewModel = hiltViewModel()
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -53,15 +58,16 @@ fun Profile(
             imageBoarder,
             translucentBr,
             btnWatchList,
+            settingsBox,
             appVersion
         ) = createRefs()
 
         BackButton(
             modifier = Modifier
-            .constrainAs(backButton) {
-                start.linkTo(parent.start, margin = 10.dp)
-                top.linkTo(parent.top, margin = 16.dp)
-            }) {
+                .constrainAs(backButton) {
+                    start.linkTo(parent.start, margin = 10.dp)
+                    top.linkTo(parent.top, margin = 16.dp)
+                }) {
             navigator.navigateUp()
         }
 
@@ -162,13 +168,13 @@ fun Profile(
         )
 
         fun userName(name: String): String {
-            return if (name.length <= 10) name else {
-                name.removeRange(9..name.lastIndex) + "..."
+            return if (name.length <= 16) name else {
+                name.removeRange(15..name.lastIndex) + "..."
             }
         }
 
         Text(
-            text = userName(" "),
+            text = userName("NeatFlix User"),
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             color = AppOnPrimaryColor,
@@ -218,6 +224,97 @@ fun Profile(
                 fontSize = 14.sp,
                 color = AppOnPrimaryColor.copy(alpha = 0.5F)
             )
+        }
+
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .fillMaxWidth()
+                .clip(shape = RoundedCornerShape(12.dp))
+                .background(Color(0XFF423460).copy(alpha = 0.46F))
+                .heightIn(min = 100.dp)
+                .constrainAs(settingsBox) {
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(appVersion.top)
+                    top.linkTo(profilePhoto.bottom)
+                }
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = "Preferences",
+                    modifier = Modifier.padding(vertical = 12.dp),
+                    fontSize = 18.sp,
+                    color = AppOnPrimaryColor,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(
+                    modifier = Modifier
+                        .height((0.5).dp)
+                        .fillMaxWidth(1F)
+                        .background(AppOnPrimaryColor.copy(alpha = 0.15F))
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp, bottom = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Enable Adult Search",
+                        fontSize = 18.sp,
+                        color = AppOnPrimaryColor,
+                        fontWeight = FontWeight.Light
+                    )
+
+                    val enableAdultSearch =
+                        prefsViewModel.includeAdult.value.collectAsState(initial = true)
+
+                    CustomSwitch(
+                        checkable = true,
+                        checked = enableAdultSearch.value ?: true,
+                        onCheckedChange = {
+                            prefsViewModel.updateIncludeAdult(
+                                enableAdultSearch.value?.not() ?: false
+                            )
+                        })
+                }
+                Spacer(
+                    modifier = Modifier
+                        .height((0.5).dp)
+                        .fillMaxWidth(0.8F)
+                        .background(AppOnPrimaryColor.copy(alpha = 0.12F))
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier
+                        .padding(bottom = 12.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Use Device Theme",
+                        fontSize = 18.sp,
+                        color = AppOnPrimaryColor,
+                        fontWeight = FontWeight.Light
+                    )
+
+                    CustomSwitch(
+                        checkable = remember { false },
+                        checked = false,
+                        onCheckedChange = {
+
+                        })
+                }
+            }
         }
     }
 }

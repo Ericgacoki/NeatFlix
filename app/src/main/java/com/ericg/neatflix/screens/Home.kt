@@ -43,7 +43,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.ericg.neatflix.R
-import com.ericg.neatflix.model.Movie
+import com.ericg.neatflix.model.Film
 import com.ericg.neatflix.screens.destinations.MovieDetailsDestination
 import com.ericg.neatflix.screens.destinations.ProfileDestination
 import com.ericg.neatflix.screens.destinations.SearchScreenDestination
@@ -53,6 +53,7 @@ import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.util.Constants.BASE_BACKDROP_IMAGE_URL
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
+import com.ericg.neatflix.util.FilmType
 import com.ericg.neatflix.util.collectAsStateLifecycleAware
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.ericg.neatflix.viewmodel.WatchListViewModel
@@ -76,14 +77,15 @@ fun Home(
             .fillMaxSize()
             .background(Color(0xFF180E36))
     ) {
-        ProfileAndSearchBar(navigator!!)
+        ProfileAndSearchBar(navigator!!, homeViewModel)
         NestedScroll(navigator = navigator, homeViewModel, watchListViewModel)
     }
 }
 
 @Composable
 fun ProfileAndSearchBar(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    homeViewModel: HomeViewModel
 ) {
     Row(
         modifier = Modifier
@@ -138,18 +140,18 @@ fun ProfileAndSearchBar(
                 contentDescription = "logo"
             )
 
-            val filmCategories = listOf("Movies", "Tv Shows")
-            var selectedFilmCategory by remember { mutableStateOf(filmCategories[0]) }
+            val filmTypes = listOf(FilmType.MOVIE, FilmType.TVSHOW)
+            val selectedFilmType = homeViewModel.selectedFilmType.value
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                filmCategories.forEachIndexed { index, filmType ->
+                filmTypes.forEachIndexed { index, filmType ->
                     Text(
-                        text = filmType,
-                        fontWeight = if (selectedFilmCategory == filmCategories[index]) FontWeight.Bold else Light,
-                        fontSize = if (selectedFilmCategory == filmCategories[index]) 24.sp else 16.sp,
-                        color = if (selectedFilmCategory == filmCategories[index])
+                        text = if (filmType == FilmType.MOVIE) "Movies" else "Tv Shows",
+                        fontWeight = if (selectedFilmType == filmTypes[index]) FontWeight.Bold else Light,
+                        fontSize = if (selectedFilmType == filmTypes[index]) 24.sp else 16.sp,
+                        color = if (selectedFilmType == filmTypes[index])
                             AppOnPrimaryColor else Color.LightGray.copy(alpha = 0.78F),
                         modifier = Modifier
                             .padding(start = 4.dp, end = 4.dp, top = 8.dp)
@@ -157,16 +159,19 @@ fun ProfileAndSearchBar(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ) {
-                                selectedFilmCategory = filmCategories[index]
+                                if (homeViewModel.selectedFilmType.value != filmTypes[index]) {
+                                    homeViewModel.selectedFilmType.value = filmTypes[index]
+                                    homeViewModel.getFilmGenre()
+                                    homeViewModel.refreshAll(null)
+                                }
                             }
-
                     )
                 }
             }
 
             val animOffset = animateDpAsState(
-                targetValue = when (filmCategories.indexOf(selectedFilmCategory)) {
-                    0 -> (-30).dp
+                targetValue = when (filmTypes.indexOf(selectedFilmType)) {
+                    0 -> (-35).dp
                     else -> 30.dp
                 },
                 animationSpec = spring(
@@ -181,8 +186,7 @@ fun ProfileAndSearchBar(
                     .offset(x = animOffset.value)
                     .clip(RoundedCornerShape(4.dp))
                     .background(AppOnPrimaryColor)
-            ) {
-            }
+            )
         }
 
         IconButton(
@@ -210,13 +214,13 @@ fun NestedScroll(
     homeViewModel: HomeViewModel,
     watchListViewModel: WatchListViewModel
 ) {
-    val trendingMovies = homeViewModel.trendingMoviesState.value.collectAsLazyPagingItems()
-    val popularMovies = homeViewModel.popularMoviesState.value.collectAsLazyPagingItems()
-    val topRatedMovies = homeViewModel.topRatedMoviesState.value.collectAsLazyPagingItems()
-    val nowPlayingMovies = homeViewModel.nowPlayingMoviesState.value.collectAsLazyPagingItems()
+    val trendingFilms = homeViewModel.trendingMoviesState.value.collectAsLazyPagingItems()
+    val popularFilms = homeViewModel.popularFilmsState.value.collectAsLazyPagingItems()
+    val topRatedFilms = homeViewModel.topRatedFilmState.value.collectAsLazyPagingItems()
+    val nowPlayingFilms = homeViewModel.nowPlayingMoviesState.value.collectAsLazyPagingItems()
     val upcomingMovies = homeViewModel.upcomingMoviesState.value.collectAsLazyPagingItems()
     val backInTheDays = homeViewModel.backInTheDaysMoviesState.value.collectAsLazyPagingItems()
-    val recommended = homeViewModel.recommendedMovies.value.collectAsLazyPagingItems()
+    val recommendedFilms = homeViewModel.recommendedMovies.value.collectAsLazyPagingItems()
     val myWatchList =
         watchListViewModel.watchList.value.collectAsStateLifecycleAware(initial = emptyList())
 
@@ -224,8 +228,8 @@ fun NestedScroll(
         if (myWatchList.value.isNotEmpty()) {
             homeViewModel.randomMovieId =
                 myWatchList.value[(0..myWatchList.value.lastIndex).random()].mediaId
-            if (recommended.itemCount == 0) {
-                homeViewModel.getRecommendedMovies(movieId = homeViewModel.randomMovieId!!)
+            if (recommendedFilms.itemCount == 0) {
+                homeViewModel.getRecommendedFilms(movieId = homeViewModel.randomMovieId!!)
             }
         }
     }
@@ -247,7 +251,7 @@ fun NestedScroll(
             )
         }
         item {
-            val genres = homeViewModel.movieGenres
+            val genres = homeViewModel.filmGenres
 
             LazyRow(
                 modifier = Modifier
@@ -257,12 +261,14 @@ fun NestedScroll(
                 items(count = genres.size) {
                     SelectableGenreChip(
                         genre = genres[it].name,
-                        selected = genres[it].name == homeViewModel.selectedGenre.value
-                    ) {
-                        if (homeViewModel.selectedGenre.value != genres[it].name) {
-                            homeViewModel.filterBySetSelectedGenre(genre = genres[it])
+                        selected = genres[it].name == homeViewModel.selectedGenre.value.name,
+                        onclick = {
+                            if (homeViewModel.selectedGenre.value.name != genres[it].name) {
+                                homeViewModel.selectedGenre.value = genres[it]
+                                homeViewModel.filterBySetSelectedGenre(genre = genres[it])
+                            }
                         }
-                    }
+                    )
                 }
             }
         }
@@ -280,7 +286,7 @@ fun NestedScroll(
             ScrollableMovieItems(
                 landscape = true,
                 navigator = navigator,
-                pagingItems = trendingMovies,
+                pagingItems = trendingFilms,
                 onErrorClick = {
                     homeViewModel.refreshAll()
                 }
@@ -299,7 +305,7 @@ fun NestedScroll(
         item {
             ScrollableMovieItems(
                 navigator = navigator,
-                pagingItems = popularMovies,
+                pagingItems = popularFilms,
                 onErrorClick = {
                     homeViewModel.refreshAll()
                 }
@@ -318,7 +324,7 @@ fun NestedScroll(
         item {
             ScrollableMovieItems(
                 navigator = navigator,
-                pagingItems = topRatedMovies,
+                pagingItems = topRatedFilms,
                 onErrorClick = {
                     homeViewModel.refreshAll()
                 }
@@ -337,33 +343,36 @@ fun NestedScroll(
         item {
             ScrollableMovieItems(
                 navigator = navigator,
-                pagingItems = nowPlayingMovies,
+                pagingItems = nowPlayingFilms,
                 onErrorClick = {
                     homeViewModel.refreshAll()
                 }
             )
         }
 
-        item {
-            Text(
-                text = "Upcoming",
-                fontSize = 24.sp,
-                color = AppOnPrimaryColor,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 4.dp, top = 14.dp, bottom = 4.dp)
-            )
-        }
-        item {
-            ScrollableMovieItems(
-                navigator = navigator,
-                pagingItems = upcomingMovies,
-                onErrorClick = {
-                    homeViewModel.refreshAll()
-                }
-            )
+        if (homeViewModel.selectedFilmType.value == FilmType.MOVIE) {
+            item {
+                Text(
+                    text = "Upcoming",
+                    fontSize = 24.sp,
+                    color = AppOnPrimaryColor,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 4.dp, top = 14.dp, bottom = 4.dp)
+                )
+            }
+
+            item {
+                ScrollableMovieItems(
+                    navigator = navigator,
+                    pagingItems = upcomingMovies,
+                    onErrorClick = {
+                        homeViewModel.refreshAll()
+                    }
+                )
+            }
         }
 
-        if (recommended.itemCount != 0) {
+        if (recommendedFilms.itemCount != 0) {
             item {
                 ShowAboutCategory(
                     name = "For You",
@@ -374,13 +383,13 @@ fun NestedScroll(
             item {
                 ScrollableMovieItems(
                     navigator = navigator,
-                    pagingItems = recommended,
+                    pagingItems = recommendedFilms,
                     onErrorClick = {
                         homeViewModel.refreshAll()
                         if (myWatchList.value.isNotEmpty()) {
                             val randomMovieId =
                                 myWatchList.value[(0..myWatchList.value.lastIndex).random()].mediaId
-                            homeViewModel.getRecommendedMovies(movieId = randomMovieId, null)
+                            homeViewModel.getRecommendedFilms(movieId = randomMovieId)
                         }
                     }
                 )
@@ -391,7 +400,7 @@ fun NestedScroll(
             item {
                 ShowAboutCategory(
                     name = "Back in the Days",
-                    description = "A list of very old movies"
+                    description = "A list of very old films \uD83E\uDD2D"
                 )
             }
             item {
@@ -485,7 +494,7 @@ private fun ScrollableMovieItems(
     landscape: Boolean = false,
     showStickyBadge: Boolean = false,
     navigator: DestinationsNavigator,
-    pagingItems: LazyPagingItems<Movie>,
+    pagingItems: LazyPagingItems<Film>,
     onErrorClick: () -> Unit
 ) {
     Box(
@@ -500,21 +509,21 @@ private fun ScrollableMovieItems(
             }
             is LoadState.NotLoading -> {
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(pagingItems) { movie ->
+                    items(pagingItems) { film ->
                         val imagePath =
-                            if (landscape) "$BASE_BACKDROP_IMAGE_URL/${movie!!.backdropPath}"
-                            else "$BASE_POSTER_IMAGE_URL/${movie!!.posterPath}"
+                            if (landscape) "$BASE_BACKDROP_IMAGE_URL/${film!!.backdropPath}"
+                            else "$BASE_POSTER_IMAGE_URL/${film!!.posterPath}"
 
                         MovieItem(
                             landscape = landscape,
                             imageUrl = imagePath,
-                            title = movie.title,
+                            title = film.title,
                             modifier = Modifier
                                 .width(if (landscape) 215.dp else 130.dp)
                                 .height(if (landscape) 161.25.dp else 195.dp)
                         ) {
                             navigator.navigate(
-                                direction = MovieDetailsDestination(movie)
+                                direction = MovieDetailsDestination(film)
                             ) {
                                 launchSingleTop = true
                             }
