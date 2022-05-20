@@ -1,6 +1,5 @@
 package com.ericg.neatflix.screens
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -14,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ericg.neatflix.R
 import com.ericg.neatflix.screens.destinations.HomeDestination
@@ -23,7 +21,6 @@ import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
-import timber.log.Timber
 
 @OptIn(ExperimentalAnimationApi::class)
 @Destination(start = true)
@@ -73,10 +70,4 @@ fun SplashScreen(
             }
         }
     }
-}
-
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun SplashScreenPrev() {
-    SplashScreen(navigator = null)
 }
