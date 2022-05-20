@@ -3,11 +3,12 @@ package com.ericg.neatflix.di
 import android.app.Application
 import androidx.room.Room
 import com.ericg.neatflix.data.local.WatchListDatabase
+import com.ericg.neatflix.data.preferences.UserPreferences
+import com.ericg.neatflix.data.remote.APIService
 import com.ericg.neatflix.data.repository.GenreRepository
-import com.ericg.neatflix.data.repository.MoviesRepository
+import com.ericg.neatflix.data.repository.FilmRepository
 import com.ericg.neatflix.data.repository.SearchRepository
 import com.ericg.neatflix.data.repository.WatchListRepository
-import com.ericg.neatflix.data.remote.APIService
 import com.ericg.neatflix.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -54,7 +55,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideMoviesRepository(api: APIService) = MoviesRepository(api = api)
+    fun provideMoviesRepository(api: APIService) = FilmRepository(api = api)
 
     @Singleton
     @Provides
@@ -77,5 +78,10 @@ object AppModule {
             WatchListDatabase::class.java,
             "watch_list_table"
         ).fallbackToDestructiveMigration().build()
+    }
+    @Provides
+    @Singleton
+    fun providesDataStore(application: Application): UserPreferences{
+        return UserPreferences(application.applicationContext)
     }
 }
