@@ -350,7 +350,7 @@ fun MovieDetails(
                     dropOff = 0.65F,
                     tilt = 20F
                 ),
-                previewPlaceholder = R.drawable.dont_look_up,
+                previewPlaceholder = R.drawable.popcorn,
                 contentScale = Crop,
                 circularReveal = CircularReveal(duration = 1000),
                 contentDescription = "movie poster"
@@ -441,7 +441,7 @@ fun MovieDetails(
                                     )
                                 }
                             },
-                            previewPlaceholder = R.drawable.dont_look_up,
+                            previewPlaceholder = R.drawable.popcorn,
                             contentScale = Crop,
                             circularReveal = CircularReveal(duration = 1000),
                             modifier = Modifier
@@ -491,7 +491,7 @@ fun CastMember(cast: Cast?) {
                     )
                 }
             },
-            previewPlaceholder = R.drawable.timothee,
+            previewPlaceholder = R.drawable.ic_user,
             contentScale = Crop,
             circularReveal = CircularReveal(duration = 1000),
             contentDescription = "cast image"

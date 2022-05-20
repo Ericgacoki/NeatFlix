@@ -61,7 +61,7 @@ fun SearchResultItem(
             CoilImage(
                 imageModel = posterImage,
                 circularReveal = CircularReveal(duration = 1000),
-                previewPlaceholder = R.drawable.manifest,
+                previewPlaceholder = R.drawable.popcorn,
                 shimmerParams = ShimmerParams(
                     baseColor = AppPrimaryColor,
                     highlightColor = ButtonColor,

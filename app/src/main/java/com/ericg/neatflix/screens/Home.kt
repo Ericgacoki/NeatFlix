@@ -461,7 +461,7 @@ fun MovieItem(
                     )
                 }
             },
-            previewPlaceholder = R.drawable.dont_look_up,
+            previewPlaceholder = R.drawable.popcorn,
             contentScale = Crop,
             circularReveal = CircularReveal(duration = 1000),
             modifier = modifier.clip(RoundedCornerShape(8.dp)),
