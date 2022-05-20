@@ -93,7 +93,9 @@ fun SignUpOrLogInScreen(
             Text(text = "Sign up", color = AppOnPrimaryColor)
         }
         Button(
-            onClick = {},
+            onClick = {
+
+            },
             modifier = Modifier
                 .padding(horizontal = 28.dp)
                 .fillMaxWidth()
@@ -108,10 +110,4 @@ fun SignUpOrLogInScreen(
             Text(text = "Log in", color = AppOnPrimaryColor)
         }
     }
-}
-
-@Preview(device = Devices.PIXEL)
-@Composable
-fun SignUpOrLogInPrev() {
-    // SignUpOrLogInScreen()
 }

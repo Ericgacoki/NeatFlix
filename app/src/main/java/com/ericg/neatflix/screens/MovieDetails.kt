@@ -389,7 +389,7 @@ fun MovieDetails(
             item {
                 LazyRow(modifier = Modifier.padding(4.dp)) {
                     movieCastList.forEach { cast ->
-                        item { CastCrew(cast = cast) }
+                        item { CastMember(cast = cast) }
                     }
                 }
             }
@@ -447,7 +447,7 @@ fun MovieDetails(
 }
 
 @Composable
-fun CastCrew(cast: Cast?) {
+fun CastMember(cast: Cast?) {
     Column(
         modifier = Modifier.padding(end = 8.dp, top = 2.dp, bottom = 2.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -590,4 +590,3 @@ fun ExpandableText(
         }
     }
 }
-
