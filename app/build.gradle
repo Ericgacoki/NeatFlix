@@ -139,6 +139,9 @@ dependencies {
     // Pagination
     implementation "androidx.paging:paging-compose:1.0.0-alpha14"
 
+    //Prefs Datastore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
     // Room
     def room_version = "2.4.2"
     implementation "androidx.room:room-runtime:$room_version"
