@@ -15,17 +15,17 @@ fun LoopReverseLottieLoader(
     enableMergePaths: Boolean = true,
 ) {
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(lottieFile))
-    val shouldReverse = remember { mutableStateOf(false) }
+    val reverse = remember { mutableStateOf(false) }
     val anim = rememberLottieAnimatable()
-    if (shouldReverse.value.not())
+    if (reverse.value.not())
         LaunchedEffect(key1 = composition) {
             anim.animate(composition = composition, speed = 1f)
-            shouldReverse.value = true
+            reverse.value = true
         }
-    if (shouldReverse.value) {
+    if (reverse.value) {
         LaunchedEffect(composition) {
             anim.animate(composition = composition, speed = -1f)
-            shouldReverse.value = false
+            reverse.value = false
         }
     }
 
@@ -40,7 +40,7 @@ fun LoopReverseLottieLoader(
 
 @Composable
 fun LottieLoader(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     @RawRes lottieFile: Int
 ) {
     val composition by rememberLottieComposition(
