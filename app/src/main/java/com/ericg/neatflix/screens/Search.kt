@@ -22,6 +22,7 @@ import androidx.paging.compose.items
 import com.ericg.neatflix.R
 import com.ericg.neatflix.screens.destinations.MovieDetailsDestination
 import com.ericg.neatflix.sharedComposables.BackButton
+import com.ericg.neatflix.sharedComposables.LoopReverseLottieLoader
 import com.ericg.neatflix.sharedComposables.SearchBar
 import com.ericg.neatflix.sharedComposables.SearchResultItem
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
@@ -39,7 +40,6 @@ fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-
     val searchResult = viewModel.searchMoviesState.value.collectAsLazyPagingItems()
 
     Column(
@@ -77,8 +77,7 @@ fun SearchScreen(
             })
 
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(vertical = 12.dp)
         ) {
             when (searchResult.loadState.refresh) {
@@ -107,7 +106,7 @@ fun SearchScreen(
                     if (searchResult.itemCount == 0) {
                         item {
                             Box(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier.fillMaxWidth(),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Image(
@@ -122,7 +121,7 @@ fun SearchScreen(
 
                 is LoadState.Loading -> item {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator()
@@ -131,7 +130,7 @@ fun SearchScreen(
 
                 else -> item {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
