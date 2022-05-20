@@ -5,11 +5,13 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Movie(
+data class Film(
     @SerializedName("adult")
     val adult: Boolean,
     @SerializedName("backdrop_path")
     val backdropPath: String?,
+    @SerializedName("poster_path")
+    val posterPath: String?,
     @SerializedName("genre_ids")
     val genreIds: List<Int>?,
     @SerializedName("genres")
@@ -28,13 +30,11 @@ data class Movie(
     val overview: String,
     @SerializedName("popularity")
     val popularity: Double,
-    @SerializedName("poster_path")
-    val posterPath: String?,
-    @SerializedName("release_date")
+    @SerializedName("release_date", alternate = ["first_air_date"])
     val releaseDate: String,
     @SerializedName("runtime")
     val runtime: Int?,
-    @SerializedName("title")
+    @SerializedName("title", alternate = ["name"])
     val title: String,
     @SerializedName("video")
     val video: Boolean,
