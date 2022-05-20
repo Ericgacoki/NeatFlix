@@ -11,9 +11,10 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.ericg.neatflix.data.repository.GenreRepository
-import com.ericg.neatflix.data.repository.MoviesRepository
+import com.ericg.neatflix.data.repository.FilmRepository
 import com.ericg.neatflix.model.Genre
-import com.ericg.neatflix.model.Movie
+import com.ericg.neatflix.model.Film
+import com.ericg.neatflix.util.FilmType
 import com.ericg.neatflix.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -25,171 +26,177 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val moviesRepository: MoviesRepository,
+    private val filmRepository: FilmRepository,
     private val genreRepository: GenreRepository
 ) : ViewModel() {
-    private var _movieGenres = mutableStateListOf(Genre(null, "All"))
-    val movieGenres: SnapshotStateList<Genre> = _movieGenres
+    private var _filmGenres = mutableStateListOf(Genre(null, "All"))
+    val filmGenres: SnapshotStateList<Genre> = _filmGenres
 
-    var selectedGenre = mutableStateOf("All")
+    var selectedGenre: MutableState<Genre> = mutableStateOf(Genre(null, "All"))
+    var selectedFilmType: MutableState<FilmType> = mutableStateOf(FilmType.MOVIE)
 
-    private var _trendingMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
-    val trendingMoviesState: State<Flow<PagingData<Movie>>> = _trendingMovies
+    private var _trendingMovies = mutableStateOf<Flow<PagingData<Film>>>(emptyFlow())
+    val trendingMoviesState: State<Flow<PagingData<Film>>> = _trendingMovies
 
-    private var _popularMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
-    val popularMoviesState: State<Flow<PagingData<Movie>>> = _popularMovies
+    private var _popularFilms = mutableStateOf<Flow<PagingData<Film>>>(emptyFlow())
+    val popularFilmsState: State<Flow<PagingData<Film>>> = _popularFilms
 
-    private var _topRatedMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
-    val topRatedMoviesState: State<Flow<PagingData<Movie>>> = _topRatedMovies
+    private var _topRatedFilm = mutableStateOf<Flow<PagingData<Film>>>(emptyFlow())
+    val topRatedFilmState: State<Flow<PagingData<Film>>> = _topRatedFilm
 
-    private var _nowPlayingMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
-    val nowPlayingMoviesState: State<Flow<PagingData<Movie>>> = _nowPlayingMovies
+    private var _nowPlayingFilm = mutableStateOf<Flow<PagingData<Film>>>(emptyFlow())
+    val nowPlayingMoviesState: State<Flow<PagingData<Film>>> = _nowPlayingFilm
 
-    private var _upcomingMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
-    val upcomingMoviesState: State<Flow<PagingData<Movie>>> = _upcomingMovies
+    private var _upcomingFilms = mutableStateOf<Flow<PagingData<Film>>>(emptyFlow())
+    val upcomingMoviesState: State<Flow<PagingData<Film>>> = _upcomingFilms
 
-    private var _backInTheDaysMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
-    val backInTheDaysMoviesState: State<Flow<PagingData<Movie>>> = _backInTheDaysMovies
+    private var _backInTheDaysFilms = mutableStateOf<Flow<PagingData<Film>>>(emptyFlow())
+    val backInTheDaysMoviesState: State<Flow<PagingData<Film>>> = _backInTheDaysFilms
 
-    private var _recommendedMovies = mutableStateOf<Flow<PagingData<Movie>>>(emptyFlow())
-    val recommendedMovies: MutableState<Flow<PagingData<Movie>>> = _recommendedMovies
+    private var _recommendedFilms = mutableStateOf<Flow<PagingData<Film>>>(emptyFlow())
+    val recommendedMovies: MutableState<Flow<PagingData<Film>>> = _recommendedFilms
     var randomMovieId: Int? = null
 
     init {
-        refreshAll(null)
+        refreshAll()
     }
 
-    fun refreshAll(genreId: Int? = null) {
-        if (movieGenres.size == 1) {
-            getMoviesGenre()
+    fun refreshAll(
+        genreId: Int? = selectedGenre.value.id,
+        filmType: FilmType = selectedFilmType.value
+    ) {
+        if (filmGenres.size == 1) {
+            getFilmGenre(selectedFilmType.value)
         }
         if (genreId == null) {
-            selectedGenre.value = "All"
+            selectedGenre.value = Genre(null, "All")
         }
-        getTrendingMovies(genreId)
-        getPopularMovies(genreId)
-        getTopRatedMovies(genreId)
-        getNowPlayingMovies(genreId)
-        getUpcomingMovies(genreId)
-        getBackInTheDaysMovies(genreId)
-        randomMovieId?.let { id -> getRecommendedMovies(movieId = id, genreId) }
+        getTrendingFilms(genreId, filmType)
+        getPopularFilms(genreId, filmType)
+        getTopRatedFilm(genreId, filmType)
+        getNowPlayingFilms(genreId, filmType)
+        getUpcomingFilms(genreId)
+        getBackInTheDaysFilms(genreId, filmType)
+        randomMovieId?.let { id -> getRecommendedFilms(movieId = id, genreId, filmType) }
     }
 
     fun filterBySetSelectedGenre(genre: Genre) {
-        selectedGenre.value = genre.name
+        selectedGenre.value = genre
         refreshAll(genre.id)
     }
 
-    private fun getMoviesGenre() {
+    fun getFilmGenre(filmType: FilmType = selectedFilmType.value) {
         viewModelScope.launch {
-            when (val results = genreRepository.getMoviesGenre()) {
+            val defaultGenre = Genre(null, "All")
+            when (val results = genreRepository.getMoviesGenre(filmType)) {
                 is Resource.Success -> {
+                    _filmGenres.clear()
+                    _filmGenres.add(defaultGenre)
+                    selectedGenre.value = defaultGenre
                     results.data?.genres?.forEach {
-                        _movieGenres.add(it)
+                        _filmGenres.add(it)
                     }
                 }
                 is Resource.Error -> {
                     Timber.e("Error loading Genres")
                 }
-                else -> {
-
-                }
+                else -> { }
             }
         }
     }
 
-    private fun getTrendingMovies(genreId: Int?) {
+    private fun getTrendingFilms(genreId: Int?, filmType: FilmType) {
         viewModelScope.launch {
             _trendingMovies.value = if (genreId != null) {
-                moviesRepository.getTrendingMovies().map { results ->
+                filmRepository.getTrendingFilms(filmType).map { results ->
                     results.filter { movie ->
                         movie.genreIds!!.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                moviesRepository.getTrendingMovies().cachedIn(viewModelScope)
+                filmRepository.getTrendingFilms(filmType).cachedIn(viewModelScope)
             }
         }
     }
 
-    private fun getPopularMovies(genreId: Int?) {
+    private fun getPopularFilms(genreId: Int?, filmType: FilmType) {
         viewModelScope.launch {
-            _popularMovies.value = if (genreId != null) {
-                moviesRepository.getPopularMovies().map { results ->
+            _popularFilms.value = if (genreId != null) {
+                filmRepository.getPopularFilms(filmType).map { results ->
                     results.filter { movie ->
                         movie.genreIds!!.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                moviesRepository.getPopularMovies().cachedIn(viewModelScope)
+                filmRepository.getPopularFilms(filmType).cachedIn(viewModelScope)
             }
         }
     }
 
-    private fun getTopRatedMovies(genreId: Int?) {
+    private fun getTopRatedFilm(genreId: Int?, filmType: FilmType) {
         viewModelScope.launch {
-            _topRatedMovies.value = if (genreId != null) {
-                moviesRepository.getTopRatedMovies().map { results ->
+            _topRatedFilm.value = if (genreId != null) {
+                filmRepository.getTopRatedFilm(filmType).map { results ->
                     results.filter { movie ->
                         movie.genreIds!!.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                moviesRepository.getTopRatedMovies().cachedIn(viewModelScope)
+                filmRepository.getTopRatedFilm(filmType).cachedIn(viewModelScope)
             }
         }
     }
 
-    private fun getNowPlayingMovies(genreId: Int?) {
+    private fun getNowPlayingFilms(genreId: Int?, filmType: FilmType) {
         viewModelScope.launch {
-            _nowPlayingMovies.value = if (genreId != null) {
-                moviesRepository.getNowPlayingMovies().map { results ->
+            _nowPlayingFilm.value = if (genreId != null) {
+                filmRepository.getNowPlayingFilms(filmType).map { results ->
                     results.filter { movie ->
                         movie.genreIds!!.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                moviesRepository.getNowPlayingMovies().cachedIn(viewModelScope)
+                filmRepository.getNowPlayingFilms(filmType).cachedIn(viewModelScope)
             }
         }
     }
 
-    fun getRecommendedMovies(movieId: Int, genreId: Int? = null) {
+    fun getRecommendedFilms(movieId: Int, genreId: Int? = null, filmType: FilmType = selectedFilmType.value) {
         viewModelScope.launch {
-            _recommendedMovies.value = if (genreId != null) {
-                moviesRepository.getRecommendedMovies(movieId).map { result ->
+            _recommendedFilms.value = if (genreId != null) {
+                filmRepository.getRecommendedFilms(movieId, filmType).map { result ->
                     result.filter { movie -> movie.genreIds!!.contains(genreId) }
                 }.cachedIn(viewModelScope)
             } else {
-                moviesRepository.getRecommendedMovies(movieId).cachedIn(viewModelScope)
+                filmRepository.getRecommendedFilms(movieId, filmType).cachedIn(viewModelScope)
             }
         }
     }
 
-    private fun getUpcomingMovies(genreId: Int?) {
+    private fun getUpcomingFilms(genreId: Int?) {
         viewModelScope.launch {
-            _upcomingMovies.value = if (genreId != null) {
-                moviesRepository.getUpcomingMovies().map { results ->
+            _upcomingFilms.value = if (genreId != null) {
+                filmRepository.getUpcomingTvShows().map { results ->
                     results.filter { movie ->
                         movie.genreIds!!.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                moviesRepository.getUpcomingMovies().cachedIn(viewModelScope)
+                filmRepository.getUpcomingTvShows().cachedIn(viewModelScope)
             }
         }
     }
 
-    private fun getBackInTheDaysMovies(genreId: Int?) {
+    private fun getBackInTheDaysFilms(genreId: Int?, filmType: FilmType) {
         viewModelScope.launch {
-            _backInTheDaysMovies.value = if (genreId != null) {
-                moviesRepository.getBackInTheDaysMovies().map { results ->
+            _backInTheDaysFilms.value = if (genreId != null) {
+                filmRepository.getBackInTheDaysFilms(filmType).map { results ->
                     results.filter { movie ->
                         movie.genreIds!!.contains(genreId)
                     }
                 }.cachedIn(viewModelScope)
             } else {
-                moviesRepository.getBackInTheDaysMovies().cachedIn(viewModelScope)
+                filmRepository.getBackInTheDaysFilms(filmType).cachedIn(viewModelScope)
             }
         }
     }

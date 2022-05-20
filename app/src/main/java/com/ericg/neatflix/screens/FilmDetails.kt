@@ -10,7 +10,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.*
@@ -41,7 +43,8 @@ import androidx.paging.compose.items
 import com.ericg.neatflix.R
 import com.ericg.neatflix.data.local.MyListMovie
 import com.ericg.neatflix.model.Cast
-import com.ericg.neatflix.model.Movie
+import com.ericg.neatflix.model.Film
+import com.ericg.neatflix.model.Genre
 import com.ericg.neatflix.sharedComposables.MovieGenreChip
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
@@ -60,7 +63,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -71,30 +73,31 @@ fun MovieDetails(
     homeViewModel: HomeViewModel = hiltViewModel(),
     detailsViewModel: DetailsViewModel = hiltViewModel(),
     watchListViewModel: WatchListViewModel = hiltViewModel(),
-    currentMovie: Movie
+    currentFilm: Film
 ) {
-    var movie by remember {
-        mutableStateOf(currentMovie)
+    var film by remember {
+        mutableStateOf(currentFilm)
     }
 
     val date = SimpleDateFormat.getDateTimeInstance().format(Date())
     val watchListMovie = MyListMovie(
-        mediaId = movie.id,
-        imagePath = movie.posterPath,
-        title = movie.title,
-        releaseDate = movie.releaseDate,
-        rating = movie.voteAverage,
+        mediaId = film.id,
+        imagePath = film.posterPath,
+        title = film.title,
+        releaseDate = film.releaseDate,
+        rating = film.voteAverage,
         addedOn = date
     )
 
     val addedToList = watchListViewModel.addedToWatchList.value
-    val similarMovies = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
+    val similarFilms = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
     val movieCastList = detailsViewModel.movieCast.value
+    val filmType = homeViewModel.selectedFilmType.value
 
-    LaunchedEffect(key1 = movie) {
-        detailsViewModel.getSimilarMovies(movieId = movie.id)
-        detailsViewModel.getMovieCast(movieId = movie.id)
-        watchListViewModel.exists(mediaId = movie.id)
+    LaunchedEffect(key1 = film) {
+        detailsViewModel.getSimilarFilms(filmId = film.id, filmType)
+        detailsViewModel.getFilmCast(filmId = film.id, filmType)
+        watchListViewModel.exists(mediaId = film.id)
     }
 
     Column(
@@ -116,7 +119,7 @@ fun MovieDetails(
             ) = createRefs()
 
             CoilImage(
-                imageModel = "$BASE_BACKDROP_IMAGE_URL/${movie.backdropPath}",
+                imageModel = "$BASE_BACKDROP_IMAGE_URL/${film.backdropPath}",
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
@@ -208,10 +211,20 @@ fun MovieDetails(
                 },
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start
             ) {
-                Text(
-                    text = movie.title,
+
+                /*Text(
+                    text = if (film.mediaType == "tv") "Series" else "Movie",
                     modifier = Modifier
-                        .padding(start = 4.dp, bottom = 8.dp)
+                        .clip(shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp))
+                        .background(Color(0XFFC9F964).copy(alpha = 0.75F))
+                        .padding(if (film.mediaType == "tv") 2.dp else 0.dp),
+                    fontSize = 12.sp,
+                )*/
+
+                Text(
+                    text = film.title,
+                    modifier = Modifier
+                        .padding(top = 2.dp, start = 4.dp, bottom = 8.dp)
                         .fillMaxWidth(0.5F),
                     maxLines = 2,
                     fontSize = 18.sp,
@@ -220,7 +233,7 @@ fun MovieDetails(
                 )
 
                 Text(
-                    text = movie.releaseDate,
+                    text = film.releaseDate,
                     modifier = Modifier.padding(start = 4.dp, bottom = 8.dp),
                     fontSize = 15.sp,
                     fontWeight = Light,
@@ -228,7 +241,7 @@ fun MovieDetails(
                 )
 
                 RatingBar(
-                    value = (movie.voteAverage / 2).toFloat(),
+                    value = (film.voteAverage / 2).toFloat(),
                     modifier = Modifier.padding(horizontal = 6.dp),
                     config = RatingBarConfig()
                         .style(RatingBarStyle.Normal)
@@ -256,16 +269,16 @@ fun MovieDetails(
                         modifier = Modifier
                             .border(
                                 1.dp,
-                                color = if (movie.adult) Color(0xFFFF6F6F) else Color.White.copy(
+                                color = if (film.adult) Color(0xFFFF6F6F) else Color.White.copy(
                                     alpha = 0.78F
                                 )
                             )
-                            .background(if (movie.adult) Color(0xFFFF6F6F).copy(alpha = 0.14F) else Color.Transparent)
+                            .background(if (film.adult) Color(0xFFFF6F6F).copy(alpha = 0.14F) else Color.Transparent)
                             .padding(4.dp)
                     ) {
                         val color: Color
                         Text(
-                            text = if (movie.adult) {
+                            text = if (film.adult) {
                                 color = Color(0xFFFF6F6F)
                                 "18+"
                             } else {
@@ -279,22 +292,20 @@ fun MovieDetails(
                     }
 
                     val context = LocalContext.current
-                    val scope = rememberCoroutineScope()
+                    // val scope = rememberCoroutineScope()
                     IconButton(onClick = {
                         if (addedToList != 0) {
                             watchListViewModel.removeFromWatchList(watchListMovie.mediaId)
-                            scope.launch {
-                                Toast.makeText(
-                                    context, "Removed from watchlist", LENGTH_SHORT
-                                ).show()
-                            }
+                            Toast.makeText(
+                                context, "Removed from watchlist", LENGTH_SHORT
+                            ).show()
+
                         } else {
                             watchListViewModel.addToWatchList(watchListMovie)
-                            scope.launch {
-                                Toast.makeText(
-                                    context, "Added to watchlist", LENGTH_SHORT
-                                ).show()
-                            }
+                            Toast.makeText(
+                                context, "Added to watchlist", LENGTH_SHORT
+                            ).show()
+
                         }
                     }) {
                         Icon(
@@ -310,7 +321,7 @@ fun MovieDetails(
             }
 
             CoilImage(
-                imageModel = "$BASE_POSTER_IMAGE_URL/${movie.posterPath}",
+                imageModel = "$BASE_POSTER_IMAGE_URL/${film.posterPath}",
                 modifier = Modifier
                     .padding(16.dp)
                     .clip(RoundedCornerShape(4.dp))
@@ -351,10 +362,11 @@ fun MovieDetails(
                 .padding(top = (96).dp, bottom = 4.dp, start = 4.dp, end = 4.dp)
                 .fillMaxWidth()
         ) {
-            val movieGenres = homeViewModel.movieGenres.filter { genre ->
-                movie.genreIds!!.contains(genre.id)
+            val filmGenres: List<Genre> = homeViewModel.filmGenres.filter { genre ->
+                return@filter if (film.genreIds.isNullOrEmpty()) false else
+                    film.genreIds!!.contains(genre.id)
             }
-            movieGenres.forEach { genre ->
+            filmGenres.forEach { genre ->
                 item {
                     MovieGenreChip(
                         background = ButtonColor,
@@ -366,7 +378,7 @@ fun MovieDetails(
         }
 
         ExpandableText(
-            text = movie.overview,
+            text = film.overview,
             modifier = Modifier
                 .padding(top = 3.dp, bottom = 4.dp, start = 4.dp, end = 4.dp)
                 .fillMaxWidth()
@@ -394,18 +406,20 @@ fun MovieDetails(
                 }
             }
             item {
-                Text(
-                    text = "Similar",
-                    fontWeight = Bold,
-                    fontSize = 18.sp,
-                    color = AppOnPrimaryColor,
-                    modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
-                )
+                if (similarFilms.itemCount != 0) {
+                    Text(
+                        text = "Similar",
+                        fontWeight = Bold,
+                        fontSize = 18.sp,
+                        color = AppOnPrimaryColor,
+                        modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 4.dp)
+                    )
+                }
             }
 
             item {
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(similarMovies) { thisMovie ->
+                    items(similarFilms) { thisMovie ->
                         CoilImage(
                             imageModel = "${BASE_POSTER_IMAGE_URL}/${thisMovie!!.posterPath}",
                             shimmerParams = ShimmerParams(
@@ -435,7 +449,7 @@ fun MovieDetails(
                                 .clip(RoundedCornerShape(8.dp))
                                 .size(130.dp, 195.dp)
                                 .clickable {
-                                    movie = thisMovie
+                                    film = thisMovie
                                 },
                             contentDescription = "Movie item"
                         )
