@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -48,6 +47,7 @@ import com.ericg.neatflix.model.Movie
 import com.ericg.neatflix.screens.destinations.MovieDetailsDestination
 import com.ericg.neatflix.screens.destinations.ProfileDestination
 import com.ericg.neatflix.screens.destinations.SearchScreenDestination
+import com.ericg.neatflix.sharedComposables.LoopReverseLottieLoader
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
@@ -365,7 +365,7 @@ fun NestedScroll(
 
         if (recommended.itemCount != 0) {
             item {
-                ShowAboutThisCategory(
+                ShowAboutCategory(
                     name = "For You",
                     description = "Recommendation based on your watchlist"
                 )
@@ -389,7 +389,7 @@ fun NestedScroll(
 
         if (backInTheDays.itemCount != 0) {
             item {
-                ShowAboutThisCategory(
+                ShowAboutCategory(
                     name = "Back in the Days",
                     description = "A list of very old movies"
                 )
@@ -483,7 +483,7 @@ private fun trimTitle(text: String) = if (text.length <= 26) text else {
 @Composable
 private fun ScrollableMovieItems(
     landscape: Boolean = false,
-    showBadge: Boolean = false,
+    showStickyBadge: Boolean = false,
     navigator: DestinationsNavigator,
     pagingItems: LazyPagingItems<Movie>,
     onErrorClick: () -> Unit
@@ -496,10 +496,7 @@ private fun ScrollableMovieItems(
     ) {
         when (pagingItems.loadState.refresh) {
             is LoadState.Loading -> {
-                // TODO("Use Lotti File")
-                CircularProgressIndicator(
-                    modifier = Modifier.width(40.dp)
-                )
+                LoopReverseLottieLoader(lottieFile = R.raw.loader)
             }
             is LoadState.NotLoading -> {
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
@@ -605,7 +602,7 @@ fun SelectableGenreChip(
 }
 
 @Composable
-fun ShowAboutThisCategory(name: String, description: String) {
+fun ShowAboutCategory(name: String, description: String) {
     var showAboutThisCategory by remember { mutableStateOf(false) }
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
@@ -648,6 +645,7 @@ fun ShowAboutThisCategory(name: String, description: String) {
                     .fillMaxWidth()
             ) {
                 Text(
+                    modifier = Modifier.padding(vertical = 4.dp),
                     text = description,
                     color = AppOnPrimaryColor
                 )
