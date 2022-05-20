@@ -8,6 +8,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface APIService {
+    /** Movies*/
     @GET("trending/movie/day")
     suspend fun getTrendingMovies(
         @Query("page") page: Int = 0,
@@ -87,4 +88,7 @@ interface APIService {
         @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
         @Query("language") language: String = "en"
     ): MoviesResponse
+
+    /** Tv Shows*/
+
 }

@@ -43,7 +43,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providesAPI(okHttpClient: OkHttpClient): APIService {
+    fun providesAPIService(okHttpClient: OkHttpClient): APIService {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
