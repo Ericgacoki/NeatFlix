@@ -36,7 +36,7 @@ import com.ericg.neatflix.model.Genre as MovieGenre
 fun SearchResultItem(
     title: String?,
     posterImage: String?,
-    genres: List<MovieGenre>,
+    genres: List<MovieGenre>?,
     rating: Double,
     releaseYear: String?,
     onClick: () -> Unit?
@@ -130,7 +130,7 @@ fun SearchResultItem(
                 LazyRow(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    genres.forEach {
+                    genres?.forEach {
                         item {
                             MovieGenreChip(genre = it.name)
                         }

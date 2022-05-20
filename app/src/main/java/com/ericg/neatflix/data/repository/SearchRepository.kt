@@ -3,20 +3,20 @@ package com.ericg.neatflix.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.ericg.neatflix.paging.SearchMovieSource
 import com.ericg.neatflix.data.remote.APIService
-import com.ericg.neatflix.model.Movie
+import com.ericg.neatflix.model.Film
+import com.ericg.neatflix.paging.SearchFilmSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class SearchRepository @Inject constructor(
     private val api: APIService
 ) {
-    fun multiSearch(searchParams: String): Flow<PagingData<Movie>> {
+    fun multiSearch(searchParams: String, includeAdult: Boolean): Flow<PagingData<Film>> {
         return Pager(
             config = PagingConfig(enablePlaceholders = false, pageSize = 20),
             pagingSourceFactory = {
-                SearchMovieSource(api = api, searchParams = searchParams)
+                SearchFilmSource(api = api, searchParams = searchParams, includeAdult)
             }
         ).flow
     }

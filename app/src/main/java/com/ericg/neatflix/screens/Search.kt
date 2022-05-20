@@ -22,12 +22,12 @@ import androidx.paging.compose.items
 import com.ericg.neatflix.R
 import com.ericg.neatflix.screens.destinations.MovieDetailsDestination
 import com.ericg.neatflix.sharedComposables.BackButton
-import com.ericg.neatflix.sharedComposables.LoopReverseLottieLoader
 import com.ericg.neatflix.sharedComposables.SearchBar
 import com.ericg.neatflix.sharedComposables.SearchResultItem
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
+import com.ericg.neatflix.util.collectAsStateLifecycleAware
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.ericg.neatflix.viewmodel.SearchViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -37,10 +37,12 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun SearchScreen(
     navigator: DestinationsNavigator,
-    viewModel: SearchViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel(),
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val searchResult = viewModel.searchMoviesState.value.collectAsLazyPagingItems()
+    val searchResult = searchViewModel.searchMoviesState.value.collectAsLazyPagingItems()
+    val includeAdult =
+        searchViewModel.includeAdult.value.collectAsStateLifecycleAware(initial = true)
 
     Column(
         modifier = Modifier
@@ -73,7 +75,7 @@ fun SearchScreen(
         SearchBar(
             autoFocus = true,
             onSearch = {
-                viewModel.searchRemoteMovie()
+                searchViewModel.searchRemoteMovie(includeAdult.value ?: true)
             })
 
         LazyColumn(
@@ -82,22 +84,22 @@ fun SearchScreen(
         ) {
             when (searchResult.loadState.refresh) {
                 is LoadState.NotLoading -> {
-                    items(searchResult) { movie ->
+                    items(searchResult) { film ->
                         val focus = LocalFocusManager.current
 
                         SearchResultItem(
-                            title = movie!!.title,
-                            posterImage = "$BASE_POSTER_IMAGE_URL/${movie.posterPath}",
-                            genres = homeViewModel.movieGenres.filter { genre ->
-                                movie.genreIds!!.contains(genre.id)
+                            title = film!!.title,
+                            posterImage = "$BASE_POSTER_IMAGE_URL/${film.posterPath}",
+                            genres = homeViewModel.filmGenres.filter { genre ->
+                                return@filter if (film.genreIds.isNullOrEmpty()) false else
+                                    film.genreIds.contains(genre.id)
                             },
-                            rating = movie.voteAverage,
-                            releaseYear = movie.releaseDate
+                            rating = film.voteAverage,
+                            releaseYear = film.releaseDate
                         ) {
                             focus.clearFocus()
                             navigator.navigate(
-                                direction = MovieDetailsDestination(movie)
-
+                                direction = MovieDetailsDestination(film)
                             ) {
                                 launchSingleTop = true
                             }
