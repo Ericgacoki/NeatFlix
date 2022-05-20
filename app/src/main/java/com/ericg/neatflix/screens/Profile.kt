@@ -5,9 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +45,7 @@ fun Profile(
     ) {
         val (
             backButton,
+            editButton,
             profileHeading,
             userName,
             topBgImage,
@@ -54,16 +56,26 @@ fun Profile(
             appVersion
         ) = createRefs()
 
-        Box(
+        BackButton(
             modifier = Modifier
-                .constrainAs(backButton) {
-                    start.linkTo(parent.start, margin = 10.dp)
+            .constrainAs(backButton) {
+                start.linkTo(parent.start, margin = 10.dp)
+                top.linkTo(parent.top, margin = 16.dp)
+            }) {
+            navigator.navigateUp()
+        }
+
+        FloatingActionButton(
+            modifier = Modifier
+                .size(42.dp)
+                .constrainAs(editButton) {
+                    end.linkTo(parent.end, margin = 10.dp)
                     top.linkTo(parent.top, margin = 16.dp)
-                }
-        ) {
-            BackButton {
-                navigator.navigateUp()
-            }
+                },
+            backgroundColor = ButtonColor,
+            contentColor = AppOnPrimaryColor,
+            onClick = { }) {
+            Icon(imageVector = Icons.Rounded.Edit, contentDescription = "edit profile")
         }
 
         Text(
@@ -201,7 +213,7 @@ fun Profile(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "v: 0.0.1-alpha [dummy profile]",
+                text = "v: 1.0-beta [dummy profile]",
                 fontWeight = FontWeight.Light,
                 fontSize = 14.sp,
                 color = AppOnPrimaryColor.copy(alpha = 0.5F)
