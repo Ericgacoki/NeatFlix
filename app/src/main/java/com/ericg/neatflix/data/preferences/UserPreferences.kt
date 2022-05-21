@@ -9,6 +9,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+/** A calm reminder. This class is injected. Do not instantiate it directly.*/
 class UserPreferences(private val context: Context) {
     private companion object {
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "preferences")

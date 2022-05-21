@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.ericg.neatflix.data.remote.APIService
 import com.ericg.neatflix.model.Film
+import com.ericg.neatflix.model.Search
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -11,13 +12,13 @@ class SearchFilmSource(
     private val api: APIService,
     private val searchParams: String,
     private val includeAdult: Boolean
-) : PagingSource<Int, Film>() {
-    override fun getRefreshKey(state: PagingState<Int, Film>): Int? = state.anchorPosition
+) : PagingSource<Int, Search>() {
+    override fun getRefreshKey(state: PagingState<Int, Search>): Int? = state.anchorPosition
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Film> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Search> {
         return try {
             val nextPage = params.key ?: 1
-            val searchMovies = api.searchMovie(
+            val searchMovies = api.multiSearch(
                 page = nextPage,
                 searchParams = searchParams,
                 includeAdult = includeAdult

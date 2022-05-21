@@ -5,6 +5,7 @@ package com.ericg.neatflix.data.remote
 import com.ericg.neatflix.BuildConfig import com.ericg.neatflix.data.remote.response.CastResponse
 import com.ericg.neatflix.data.remote.response.GenreResponse
 import com.ericg.neatflix.data.remote.response.FilmResponse
+import com.ericg.neatflix.data.remote.response.MultiSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -82,14 +83,14 @@ interface APIService {
         @Query("language") language: String = "en"
     ): GenreResponse
 
-    @GET("search/movie")
-    suspend fun searchMovie(
+    @GET("search/multi")
+    suspend fun multiSearch(
         @Query("query") searchParams: String,
         @Query("page") page: Int = 0,
         @Query("include_adult") includeAdult: Boolean = true,
         @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
         @Query("language") language: String = "en"
-    ): FilmResponse
+    ): MultiSearchResponse
     /** **Tv Shows**
      *
      * [Note]: **MovieResponse** and **TvShowResponse** attributes are combined based
@@ -112,15 +113,6 @@ interface APIService {
         @Query("page") page: Int = 0,
         @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en-US"
-    ): FilmResponse
-
-    @GET("search/tv") // currently not in use.
-    suspend fun searchTvShow(
-        @Query("query") searchParams: String,
-        @Query("page") page: Int = 0,
-        @Query("include_adult") includeAdult: Boolean = true,
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
-        @Query("language") language: String = "en"
     ): FilmResponse
 
     @GET("trending/tv/day")

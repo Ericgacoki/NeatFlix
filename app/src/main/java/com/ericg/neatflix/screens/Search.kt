@@ -20,6 +20,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.ericg.neatflix.R
+import com.ericg.neatflix.model.Film
 import com.ericg.neatflix.screens.destinations.MovieDetailsDestination
 import com.ericg.neatflix.sharedComposables.BackButton
 import com.ericg.neatflix.sharedComposables.SearchBar
@@ -40,7 +41,7 @@ fun SearchScreen(
     searchViewModel: SearchViewModel = hiltViewModel(),
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val searchResult = searchViewModel.searchMoviesState.value.collectAsLazyPagingItems()
+    val searchResult = searchViewModel.multiSearchState.value.collectAsLazyPagingItems()
     val includeAdult =
         searchViewModel.includeAdult.value.collectAsStateLifecycleAware(initial = true)
 
@@ -86,29 +87,50 @@ fun SearchScreen(
                 is LoadState.NotLoading -> {
                     items(searchResult) { film ->
                         val focus = LocalFocusManager.current
-
                         SearchResultItem(
                             title = film!!.title,
+                            mediaType = film.mediaType,
                             posterImage = "$BASE_POSTER_IMAGE_URL/${film.posterPath}",
                             genres = homeViewModel.filmGenres.filter { genre ->
                                 return@filter if (film.genreIds.isNullOrEmpty()) false else
                                     film.genreIds.contains(genre.id)
                             },
-                            rating = film.voteAverage,
-                            releaseYear = film.releaseDate
-                        ) {
-                            focus.clearFocus()
-                            navigator.navigate(
-                                direction = MovieDetailsDestination(film)
-                            ) {
-                                launchSingleTop = true
-                            }
-                        }
+                            rating = (film.voteAverage ?: 0) as Double,
+                            releaseYear = film.releaseDate,
+                            onClick = {
+                                val navFilm = Film(
+                                    adult = film.adult ?: false,
+                                    backdropPath = film.backdropPath,
+                                    posterPath = film.posterPath,
+                                    genreIds = film.genreIds,
+                                    genres = film.genres,
+                                    mediaType = film.mediaType,
+                                    id = film.id ?: 0,
+                                    imdbId = film.imdbId,
+                                    originalLanguage = film.originalLanguage ?: "",
+                                    overview = film.overview ?: "",
+                                    popularity = film.popularity ?: 0F.toDouble(),
+                                    releaseDate = film.releaseDate ?: "",
+                                    runtime = film.runtime,
+                                    title = film.title ?: "",
+                                    video = film.video ?: false,
+                                    voteAverage = film.voteAverage ?: 0F.toDouble(),
+                                    voteCount = film.voteCount ?: 0
+                                )
+                                focus.clearFocus()
+                                navigator.navigate(
+                                    direction = MovieDetailsDestination(navFilm)
+                                ) {
+                                    launchSingleTop = true
+                                }
+                            })
                     }
                     if (searchResult.itemCount == 0) {
                         item {
                             Box(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 60.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Image(
@@ -132,7 +154,9 @@ fun SearchScreen(
 
                 else -> item {
                     Box(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 60.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(

@@ -7,8 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +34,7 @@ import com.ericg.neatflix.model.Genre as MovieGenre
 @Composable
 fun SearchResultItem(
     title: String?,
+    mediaType: String?,
     posterImage: String?,
     genres: List<MovieGenre>?,
     rating: Double,
@@ -85,6 +85,30 @@ fun SearchResultItem(
                     .padding(all = 8.dp)
                     .fillMaxSize()
             ) {
+                var paddingValue by remember { mutableStateOf(2) }
+                Text(
+                    text = when (mediaType) {
+                        "tv" -> {
+                            paddingValue = 2
+                            "Series"
+                        }
+                        "movie" -> {
+                            paddingValue = 2
+                            "Movie"
+                        }
+                        else -> {
+                            paddingValue = 0
+                            ""
+                        }
+                    },
+                    modifier = Modifier
+                        .clip(shape = RoundedCornerShape(size = 4.dp))
+                        // .background(Color(0XFFC9F964).copy(alpha = 0.75F))
+                        .background(Color.LightGray.copy(alpha = 0.2F))
+                        .padding(paddingValue.dp),
+                    color = AppOnPrimaryColor.copy(alpha = 0.78F),
+                    fontSize = 12.sp,
+                )
                 Text(
                     text = title ?: "",
                     modifier = Modifier.fillMaxWidth(),

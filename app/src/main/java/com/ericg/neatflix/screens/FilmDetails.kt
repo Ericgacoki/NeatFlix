@@ -131,12 +131,13 @@ fun MovieDetails(
                 failure = {
                     Box(
                         contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(2.dp)
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_image_failed),
-                            tint = Color(0xFFFF6F6F),
-                            contentDescription = null
+                        Image(
+                            painter = painterResource(id = R.drawable.backdrop_not_available),
+                            contentDescription = "no image"
                         )
                     }
                 },
@@ -212,14 +213,29 @@ fun MovieDetails(
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start
             ) {
 
-                /*Text(
-                    text = if (film.mediaType == "tv") "Series" else "Movie",
+                var paddingValue by remember { mutableStateOf(2) }
+                Text(
+                    text = when (film.mediaType) {
+                        "tv" -> {
+                            paddingValue = 2
+                            "Series"
+                        }
+                        "movie" -> {
+                            paddingValue = 2
+                            "Movie"
+                        }
+                        else -> {
+                            paddingValue = 0
+                            ""
+                        }
+                    },
                     modifier = Modifier
-                        .clip(shape = RoundedCornerShape(topEnd = 4.dp, bottomEnd = 4.dp))
-                        .background(Color(0XFFC9F964).copy(alpha = 0.75F))
-                        .padding(if (film.mediaType == "tv") 2.dp else 0.dp),
+                        .clip(shape = RoundedCornerShape(size = 4.dp))
+                        .background(Color.DarkGray.copy(alpha = 0.5F))
+                        .padding(paddingValue.dp),
+                    color = AppOnPrimaryColor.copy(alpha = 0.78F),
                     fontSize = 12.sp,
-                )*/
+                )
 
                 Text(
                     text = film.title,
@@ -336,10 +352,9 @@ fun MovieDetails(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_image_failed),
-                            tint = Color(0xFFFF6F6F),
-                            contentDescription = null
+                        Image(
+                            painter = painterResource(id = R.drawable.image_not_available),
+                            contentDescription = "no image"
                         )
                     }
                 },
@@ -434,10 +449,9 @@ fun MovieDetails(
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier.fillMaxSize()
                                 ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_image_failed),
-                                        tint = Color(0xFFFF6F6F),
-                                        contentDescription = null
+                                    Image(
+                                        painter = painterResource(id = R.drawable.image_not_available),
+                                        contentDescription = "no image"
                                     )
                                 }
                             },

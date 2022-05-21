@@ -164,22 +164,23 @@ fun WatchList(
                 .fillMaxSize(),
             contentPadding = PaddingValues(vertical = 12.dp)
         ) {
-            items(currentList.value, key = { it.mediaId }) { movie ->
+            items(currentList.value, key = { it.mediaId }) { film ->
                 SwipeToDismissItem(
                     modifier = Modifier.animateItemPlacement(),
                     onDismiss = {
-                        watchListViewModel.removeFromWatchList(movie.mediaId)
+                        watchListViewModel.removeFromWatchList(film.mediaId)
                         totalDismissed += 1
                         // FIXME: Find another way to fix swipe after searching
                         // searchViewModel.searchParam.value = ""
                         // searchViewModel.previousSearch.value = ""
                     }) {
                     SearchResultItem(
-                        title = movie.title,
-                        posterImage = "${Constants.BASE_POSTER_IMAGE_URL}/${movie.imagePath}",
+                        title = film.title,
+                        mediaType = null,
+                        posterImage = "${Constants.BASE_POSTER_IMAGE_URL}/${film.imagePath}",
                         genres = emptyList(),
-                        rating = movie.rating,
-                        releaseYear = movie.releaseDate
+                        rating = film.rating,
+                        releaseYear = film.releaseDate
                     ) { }
                 }
             }

@@ -452,12 +452,17 @@ fun MovieItem(
             failure = {
                 Box(
                     contentAlignment = Center,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .border(
+                            width = 1.dp,
+                            color = Color.LightGray,
+                            shape = RoundedCornerShape(8.dp)
+                        )
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_image_failed),
-                        tint = Color(0xFFFF6F6F),
-                        contentDescription = null
+                    Image(
+                        painter = painterResource(id = R.drawable.image_not_available),
+                        contentDescription = "no image"
                     )
                 }
             },
