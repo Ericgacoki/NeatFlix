@@ -33,7 +33,6 @@ android {
         }
 
         buildConfigField("String", "NEATFLIX_API_KEY", apikeyProperties['NEATFLIX_API_KEY'])
-        buildConfigField("String", "MUVIZ_API_KEY", apikeyProperties['MUVIZ_API_KEY'])
     }
 
     buildTypes {

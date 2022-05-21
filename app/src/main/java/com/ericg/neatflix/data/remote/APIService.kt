@@ -74,12 +74,12 @@ interface APIService {
     @GET("movie/{movie_id}/credits")
     suspend fun getMovieCast(
         @Path("movie_id") filmId: Int,
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY
     ): CastResponse
 
     @GET("genre/movie/list")
     suspend fun getMovieGenres(
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en"
     ): GenreResponse
 
@@ -88,7 +88,7 @@ interface APIService {
         @Query("query") searchParams: String,
         @Query("page") page: Int = 0,
         @Query("include_adult") includeAdult: Boolean = true,
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en"
     ): MultiSearchResponse
     /** **Tv Shows**
@@ -97,14 +97,14 @@ interface APIService {
      * on the fact that you can extract them at runtime by fetching what you need!*/
     @GET("genre/tv/list")
     suspend fun getTvShowGenres(
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY,
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en-US"
     ): GenreResponse
 
     @GET("tv/{tv_id}/credits")
     suspend fun getTvShowCast(
         @Path("tv_id") filmId: Int,
-        @Query("api_key") apiKey: String = BuildConfig.MUVIZ_API_KEY
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY
     ): CastResponse
 
     @GET("tv/{tv_id}/similar")
