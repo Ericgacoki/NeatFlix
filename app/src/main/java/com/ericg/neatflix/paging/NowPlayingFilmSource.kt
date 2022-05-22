@@ -17,7 +17,7 @@ class NowPlayingFilmSource(private val api: APIService, private val filmType: Fi
             val nextPage = params.key ?: 1
             val nowPlayingMovies =
                 if (filmType == FilmType.MOVIE) api.getNowPlayingMovies(page = nextPage)
-                else api.getNowPlayingTvShows(page = nextPage)
+                else api.getOnTheAirTvShows(page = nextPage)
 
             LoadResult.Page(
                 data = nowPlayingMovies.results,
