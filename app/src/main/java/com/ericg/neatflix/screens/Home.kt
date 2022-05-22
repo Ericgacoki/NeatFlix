@@ -400,7 +400,7 @@ fun NestedScroll(
             item {
                 ShowAboutCategory(
                     name = "Back in the Days",
-                    description = "A list of very old films \uD83E\uDD2D"
+                    description = "Films released between 1940 and 1980"
                 )
             }
             item {
@@ -445,7 +445,7 @@ fun MovieItem(
             shimmerParams = ShimmerParams(
                 baseColor = AppPrimaryColor,
                 highlightColor = ButtonColor,
-                durationMillis = 350,
+                durationMillis = 500,
                 dropOff = 0.65F,
                 tilt = 20F
             ),

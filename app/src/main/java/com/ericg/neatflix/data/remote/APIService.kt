@@ -2,9 +2,10 @@
 
 package com.ericg.neatflix.data.remote
 
-import com.ericg.neatflix.BuildConfig import com.ericg.neatflix.data.remote.response.CastResponse
-import com.ericg.neatflix.data.remote.response.GenreResponse
+import com.ericg.neatflix.BuildConfig
+import com.ericg.neatflix.data.remote.response.CastResponse
 import com.ericg.neatflix.data.remote.response.FilmResponse
+import com.ericg.neatflix.data.remote.response.GenreResponse
 import com.ericg.neatflix.data.remote.response.MultiSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -63,12 +64,14 @@ interface APIService {
         @Query("language") language: String = "en"
     ): FilmResponse
 
-    @GET("discover/movie")
+    @GET("discover/movie?")
     suspend fun getBackInTheDaysMovies(
         @Query("page") page: Int = 0,
+        @Query("primary_release_date.gte") gteReleaseDate: String = "1940-01-01",
+        @Query("primary_release_date.lte") lteReleaseDate: String = "1981-01-01",
         @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en",
-        @Query("sort_by") sortBy: String = "release_date.asc"
+        @Query("sort_by") sortBy: String = "vote_count.desc"
     ): FilmResponse
 
     @GET("movie/{movie_id}/credits")
@@ -137,8 +140,8 @@ interface APIService {
         @Query("language") language: String = "en-US"
     ): FilmResponse
 
-    @GET("tv/on_the_air") // had to use the closest endpoint to /now_playing
-    suspend fun getNowPlayingTvShows(
+    @GET("tv/on_the_air")
+    suspend fun getOnTheAirTvShows(
         @Query("page") page: Int = 0,
         @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en-US"
@@ -152,11 +155,13 @@ interface APIService {
         @Query("language") language: String = "en-US"
     ): FilmResponse
 
-    @GET("discover/tv")
+    @GET("discover/tv?")
     suspend fun getBackInTheDaysTvShows(
         @Query("page") page: Int = 0,
+        @Query("first_air_date.gte") gteFirstAirDate: String = "1940-01-01",
+        @Query("first_air_date.lte") lteFirstAirDate: String = "1981-01-01",
         @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en-US",
-        @Query("sort_by") sortBy: String = "release_date.asc"
+        @Query("sort_by") sortBy: String = "vote_count.desc"
     ): FilmResponse
 }

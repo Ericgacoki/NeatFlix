@@ -65,7 +65,7 @@ fun SearchResultItem(
                 shimmerParams = ShimmerParams(
                     baseColor = AppPrimaryColor,
                     highlightColor = ButtonColor,
-                    durationMillis = 350,
+                    durationMillis = 500,
                     dropOff = 0.65F,
                     tilt = 20F
                 ),
