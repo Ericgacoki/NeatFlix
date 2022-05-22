@@ -400,7 +400,7 @@ fun NestedScroll(
             item {
                 ShowAboutCategory(
                     name = "Back in the Days",
-                    description = "A list of very old films \uD83E\uDD2D"
+                    description = "Films released between 1940 and 1980"
                 )
             }
             item {
