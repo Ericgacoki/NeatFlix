@@ -4,7 +4,7 @@ An android app built using [Jetpack Compose](https://developer.android.com/jetpa
 
 <p align="center"> <img src="media/header.png" width="750"> </p>
 
-[<img src="media/download.png" width="380px"/>](https://docs.google.com/uc?export=download&id=1v7FYWvhgoUXQI4vCt0y9UR5wtRnxzY1T)
+[<img src="media/download.png" width="380px"/>](https://docs.google.com/uc?export=download&id=1ilcELnAY4XqCoDOFJdAqy7_FVO1NIm8h)
 
 ---
 # Setup Requirements
