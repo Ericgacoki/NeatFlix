@@ -2,7 +2,6 @@
 .gradle
 .idea
 apikey.properties
-gradle.properties
 /local.properties
 .DS_Store
 /build
