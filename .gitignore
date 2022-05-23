@@ -10,5 +10,3 @@ apikey.properties
 .cxx
 local.properties
 /app/src/main/res/values/secrets.xml
-/app/schemas/com.ericg.neatflix.data.local.WatchListDatabase/1.json
-/app/schemas/com.ericg.neatflix.data.local.WatchListDatabase/2.json
