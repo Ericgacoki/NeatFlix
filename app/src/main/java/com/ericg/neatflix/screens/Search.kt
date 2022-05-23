@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -28,7 +29,6 @@ import com.ericg.neatflix.sharedComposables.SearchResultItem
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
-import com.ericg.neatflix.util.collectAsStateLifecycleAware
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.ericg.neatflix.viewmodel.SearchViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -43,7 +43,7 @@ fun SearchScreen(
 ) {
     val searchResult = searchViewModel.multiSearchState.value.collectAsLazyPagingItems()
     val includeAdult =
-        searchViewModel.includeAdult.value.collectAsStateLifecycleAware(initial = true)
+        searchViewModel.includeAdult.value.collectAsState(initial = true)
 
     Column(
         modifier = Modifier

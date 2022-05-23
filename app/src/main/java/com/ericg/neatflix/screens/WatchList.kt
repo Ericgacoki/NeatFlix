@@ -33,7 +33,6 @@ import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.util.Constants
-import com.ericg.neatflix.util.collectAsStateLifecycleAware
 import com.ericg.neatflix.viewmodel.SearchViewModel
 import com.ericg.neatflix.viewmodel.WatchListViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -50,8 +49,7 @@ fun WatchList(
 ) {
     var totalDismissed by remember { mutableStateOf(0) }
 
-    val myWatchList = watchListViewModel.watchList.value
-        .collectAsStateLifecycleAware(initial = emptyList())
+    val myWatchList = watchListViewModel.watchList.value.collectAsState(initial = emptyList())
 
     var currentList: State<List<MyListMovie>> by remember { mutableStateOf(myWatchList) }
     if (searchViewModel.searchParamState.value.isEmpty()) {

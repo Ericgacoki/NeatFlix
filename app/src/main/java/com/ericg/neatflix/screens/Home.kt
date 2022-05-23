@@ -54,7 +54,6 @@ import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.util.Constants.BASE_BACKDROP_IMAGE_URL
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
 import com.ericg.neatflix.util.FilmType
-import com.ericg.neatflix.util.collectAsStateLifecycleAware
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.ericg.neatflix.viewmodel.WatchListViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -221,8 +220,7 @@ fun NestedScroll(
     val upcomingMovies = homeViewModel.upcomingMoviesState.value.collectAsLazyPagingItems()
     val backInTheDays = homeViewModel.backInTheDaysMoviesState.value.collectAsLazyPagingItems()
     val recommendedFilms = homeViewModel.recommendedMovies.value.collectAsLazyPagingItems()
-    val myWatchList =
-        watchListViewModel.watchList.value.collectAsStateLifecycleAware(initial = emptyList())
+    val myWatchList = watchListViewModel.watchList.value.collectAsState(initial = emptyList())
 
     LaunchedEffect(key1 = myWatchList.value.size) {
         if (myWatchList.value.isNotEmpty()) {
