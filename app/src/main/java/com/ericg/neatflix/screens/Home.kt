@@ -219,6 +219,7 @@ fun NestedScroll(
     val nowPlayingFilms = homeViewModel.nowPlayingMoviesState.value.collectAsLazyPagingItems()
     val upcomingMovies = homeViewModel.upcomingMoviesState.value.collectAsLazyPagingItems()
     val backInTheDays = homeViewModel.backInTheDaysMoviesState.value.collectAsLazyPagingItems()
+    val selectedFilmType = homeViewModel.selectedFilmType.value
     val recommendedFilms = homeViewModel.recommendedMovies.value.collectAsLazyPagingItems()
     val myWatchList = watchListViewModel.watchList.value.collectAsState(initial = emptyList())
 
@@ -285,6 +286,7 @@ fun NestedScroll(
                 landscape = true,
                 navigator = navigator,
                 pagingItems = trendingFilms,
+                selectedFilmType = selectedFilmType,
                 onErrorClick = {
                     homeViewModel.refreshAll()
                 }
@@ -304,6 +306,7 @@ fun NestedScroll(
             ScrollableMovieItems(
                 navigator = navigator,
                 pagingItems = popularFilms,
+                selectedFilmType = selectedFilmType,
                 onErrorClick = {
                     homeViewModel.refreshAll()
                 }
@@ -323,6 +326,7 @@ fun NestedScroll(
             ScrollableMovieItems(
                 navigator = navigator,
                 pagingItems = topRatedFilms,
+                selectedFilmType = selectedFilmType,
                 onErrorClick = {
                     homeViewModel.refreshAll()
                 }
@@ -342,6 +346,7 @@ fun NestedScroll(
             ScrollableMovieItems(
                 navigator = navigator,
                 pagingItems = nowPlayingFilms,
+                selectedFilmType = selectedFilmType,
                 onErrorClick = {
                     homeViewModel.refreshAll()
                 }
@@ -363,6 +368,7 @@ fun NestedScroll(
                 ScrollableMovieItems(
                     navigator = navigator,
                     pagingItems = upcomingMovies,
+                    selectedFilmType = selectedFilmType,
                     onErrorClick = {
                         homeViewModel.refreshAll()
                     }
@@ -382,6 +388,7 @@ fun NestedScroll(
                 ScrollableMovieItems(
                     navigator = navigator,
                     pagingItems = recommendedFilms,
+                    selectedFilmType = selectedFilmType,
                     onErrorClick = {
                         homeViewModel.refreshAll()
                         if (myWatchList.value.isNotEmpty()) {
@@ -405,6 +412,7 @@ fun NestedScroll(
                 ScrollableMovieItems(
                     navigator = navigator,
                     pagingItems = backInTheDays,
+                    selectedFilmType = selectedFilmType,
                     onErrorClick = {
                         homeViewModel.refreshAll()
                     }
@@ -495,7 +503,7 @@ private fun trimTitle(text: String) = if (text.length <= 26) text else {
 @Composable
 private fun ScrollableMovieItems(
     landscape: Boolean = false,
-    showStickyBadge: Boolean = false,
+    selectedFilmType: FilmType,
     navigator: DestinationsNavigator,
     pagingItems: LazyPagingItems<Film>,
     onErrorClick: () -> Unit
@@ -526,7 +534,7 @@ private fun ScrollableMovieItems(
                                 .height(if (landscape) 161.25.dp else 195.dp)
                         ) {
                             navigator.navigate(
-                                direction = MovieDetailsDestination(film)
+                                direction = MovieDetailsDestination(film, selectedFilmType = selectedFilmType)
                             ) {
                                 launchSingleTop = true
                             }
