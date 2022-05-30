@@ -29,6 +29,7 @@ import com.ericg.neatflix.sharedComposables.SearchResultItem
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
+import com.ericg.neatflix.util.FilmType
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.ericg.neatflix.viewmodel.SearchViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -119,7 +120,10 @@ fun SearchScreen(
                                 )
                                 focus.clearFocus()
                                 navigator.navigate(
-                                    direction = MovieDetailsDestination(navFilm)
+                                    direction = MovieDetailsDestination(
+                                        navFilm,
+                                        if (navFilm.mediaType == "tv") FilmType.TVSHOW else FilmType.MOVIE
+                                    )
                                 ) {
                                     launchSingleTop = true
                                 }
