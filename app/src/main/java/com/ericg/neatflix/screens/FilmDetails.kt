@@ -51,6 +51,7 @@ import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ericg.neatflix.ui.theme.ButtonColor
 import com.ericg.neatflix.util.Constants.BASE_BACKDROP_IMAGE_URL
 import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
+import com.ericg.neatflix.util.FilmType
 import com.ericg.neatflix.viewmodel.DetailsViewModel
 import com.ericg.neatflix.viewmodel.HomeViewModel
 import com.ericg.neatflix.viewmodel.WatchListViewModel
@@ -63,6 +64,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -73,11 +75,13 @@ fun MovieDetails(
     homeViewModel: HomeViewModel = hiltViewModel(),
     detailsViewModel: DetailsViewModel = hiltViewModel(),
     watchListViewModel: WatchListViewModel = hiltViewModel(),
-    currentFilm: Film
+    currentFilm: Film,
+    selectedFilmType: FilmType
 ) {
     var film by remember {
         mutableStateOf(currentFilm)
     }
+    val filmType: FilmType = remember { selectedFilmType }
 
     val date = SimpleDateFormat.getDateTimeInstance().format(Date())
     val watchListMovie = MyListMovie(
@@ -92,7 +96,6 @@ fun MovieDetails(
     val addedToList = watchListViewModel.addedToWatchList.value
     val similarFilms = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
     val movieCastList = detailsViewModel.movieCast.value
-    val filmType = homeViewModel.selectedFilmType.value
 
     LaunchedEffect(key1 = film) {
         detailsViewModel.getSimilarFilms(filmId = film.id, filmType)
@@ -213,26 +216,15 @@ fun MovieDetails(
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start
             ) {
 
-                var paddingValue by remember { mutableStateOf(2) }
                 Text(
-                    text = when (film.mediaType) {
-                        "tv" -> {
-                            paddingValue = 2
-                            "Series"
-                        }
-                        "movie" -> {
-                            paddingValue = 2
-                            "Movie"
-                        }
-                        else -> {
-                            paddingValue = 0
-                            ""
-                        }
+                    text = when (filmType) {
+                        FilmType.TVSHOW -> "Series"
+                        FilmType.MOVIE -> "Movie"
                     },
                     modifier = Modifier
                         .clip(shape = RoundedCornerShape(size = 4.dp))
                         .background(Color.DarkGray.copy(alpha = 0.5F))
-                        .padding(paddingValue.dp),
+                        .padding(2.dp),
                     color = AppOnPrimaryColor.copy(alpha = 0.78F),
                     fontSize = 12.sp,
                 )
