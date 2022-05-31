@@ -5,7 +5,7 @@ buildscript {
         timberVersion = "5.0.1"
         ratingBarVersion = "1.2.3"
         landscapistVersion = "1.4.9"
-        constraintlayoutVersion = "1.0.0"
+        constraintlayoutVersion = "1.0.1"
         hiltVersion = "2.41"
     }
     dependencies {
