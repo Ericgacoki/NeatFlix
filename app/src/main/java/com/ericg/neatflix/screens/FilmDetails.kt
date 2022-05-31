@@ -15,6 +15,8 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.PlayCircleOutline
+import androidx.compose.material.icons.rounded.Reviews
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +33,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.Light
-import androidx.compose.ui.text.font.FontWeight.Companion.Normal
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -64,7 +65,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -216,23 +216,41 @@ fun MovieDetails(
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start
             ) {
 
-                Text(
-                    text = when (filmType) {
-                        FilmType.TVSHOW -> "Series"
-                        FilmType.MOVIE -> "Movie"
-                    },
-                    modifier = Modifier
-                        .clip(shape = RoundedCornerShape(size = 4.dp))
-                        .background(Color.DarkGray.copy(alpha = 0.5F))
-                        .padding(2.dp),
-                    color = AppOnPrimaryColor.copy(alpha = 0.78F),
-                    fontSize = 12.sp,
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = when (filmType) {
+                            FilmType.TVSHOW -> "Series"
+                            FilmType.MOVIE -> "Movie"
+                        },
+                        modifier = Modifier
+                            .clip(shape = RoundedCornerShape(size = 4.dp))
+                            .background(Color.DarkGray.copy(alpha = 0.65F))
+                            .padding(2.dp),
+                        color = AppOnPrimaryColor.copy(alpha = 0.78F),
+                        fontSize = 12.sp,
+                    )
+                    Text(
+                        text = when (film.adult) {
+                            true -> "18+"
+                            else -> "PG"
+                        },
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .clip(shape = RoundedCornerShape(size = 4.dp))
+                            .background(Color.DarkGray.copy(alpha = 0.65F))
+                            .padding(2.dp),
+                        color = AppOnPrimaryColor.copy(alpha = 0.78F),
+                        fontSize = 12.sp,
+                    )
+                }
 
                 Text(
                     text = film.title,
                     modifier = Modifier
-                        .padding(top = 2.dp, start = 4.dp, bottom = 8.dp)
+                        .padding(top = 2.dp, start = 4.dp, bottom = 4.dp)
                         .fillMaxWidth(0.5F),
                     maxLines = 2,
                     fontSize = 18.sp,
@@ -242,7 +260,7 @@ fun MovieDetails(
 
                 Text(
                     text = film.releaseDate,
-                    modifier = Modifier.padding(start = 4.dp, bottom = 8.dp),
+                    modifier = Modifier.padding(start = 4.dp, bottom = 4.dp),
                     fontSize = 15.sp,
                     fontWeight = Light,
                     color = Color.White.copy(alpha = 0.56F)
@@ -250,7 +268,7 @@ fun MovieDetails(
 
                 RatingBar(
                     value = (film.voteAverage / 2).toFloat(),
-                    modifier = Modifier.padding(horizontal = 6.dp),
+                    modifier = Modifier.padding(start = 6.dp, bottom = 4.dp, top = 4.dp),
                     config = RatingBarConfig()
                         .style(RatingBarStyle.Normal)
                         .isIndicator(true)
@@ -266,44 +284,32 @@ fun MovieDetails(
                 )
 
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(start = 4.dp, bottom = 8.dp)
                         .fillMaxWidth(0.42F),
                 ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .border(
-                                1.dp,
-                                color = if (film.adult) Color(0xFFFF6F6F) else Color.White.copy(
-                                    alpha = 0.78F
-                                )
-                            )
-                            .background(if (film.adult) Color(0xFFFF6F6F).copy(alpha = 0.14F) else Color.Transparent)
-                            .padding(4.dp)
-                    ) {
-                        val color: Color
-                        Text(
-                            text = if (film.adult) {
-                                color = Color(0xFFFF6F6F)
-                                "18+"
-                            } else {
-                                color = Color.White.copy(alpha = 0.56F)
-                                "PG"
-                            },
-                            fontSize = 14.sp,
-                            fontWeight = Normal,
-                            color = color
+                    Icon(
+                        imageVector = Icons.Rounded.Reviews,
+                        tint = AppOnPrimaryColor,
+                        modifier = Modifier.padding(end = 10.dp),
+                        contentDescription = "reviews icon"
+                    )
+
+                    IconButton(onClick = { }) {
+                        Icon(
+                            imageVector = Icons.Rounded.PlayCircleOutline,
+                            tint = AppOnPrimaryColor,
+                            contentDescription = "play icon"
                         )
                     }
 
                     val context = LocalContext.current
-                    // val scope = rememberCoroutineScope()
                     IconButton(onClick = {
                         if (addedToList != 0) {
                             watchListViewModel.removeFromWatchList(watchListMovie.mediaId)
+
                             Toast.makeText(
                                 context, "Removed from watchlist", LENGTH_SHORT
                             ).show()
@@ -313,7 +319,6 @@ fun MovieDetails(
                             Toast.makeText(
                                 context, "Added to watchlist", LENGTH_SHORT
                             ).show()
-
                         }
                     }) {
                         Icon(
