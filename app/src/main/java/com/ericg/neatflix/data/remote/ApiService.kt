@@ -3,15 +3,13 @@
 package com.ericg.neatflix.data.remote
 
 import com.ericg.neatflix.BuildConfig
-import com.ericg.neatflix.data.remote.response.CastResponse
-import com.ericg.neatflix.data.remote.response.FilmResponse
-import com.ericg.neatflix.data.remote.response.GenreResponse
-import com.ericg.neatflix.data.remote.response.MultiSearchResponse
+import com.ericg.neatflix.data.remote.response.*
+import com.ericg.neatflix.util.FilmType
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface APIService {
+interface ApiService {
     /** **Movies** */
     @GET("trending/movie/day")
     suspend fun getTrendingMovies(
@@ -94,6 +92,7 @@ interface APIService {
         @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en"
     ): MultiSearchResponse
+
     /** **Tv Shows**
      *
      * [Note]: **MovieResponse** and **TvShowResponse** attributes are combined based
@@ -164,4 +163,14 @@ interface APIService {
         @Query("language") language: String = "en-US",
         @Query("sort_by") sortBy: String = "vote_count.desc"
     ): FilmResponse
+
+    /** Reviews*/
+    @GET("{film_path}/{film_id}/reviews?")
+    suspend fun getMovieReviews(
+        @Path("film_id") filmId: Int,
+        @Path("film_path") filmPath: String,
+        @Query("page") page: Int = 0,
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
+        @Query("language") language: String = "en-US"
+    ): ReviewsResponse
 }

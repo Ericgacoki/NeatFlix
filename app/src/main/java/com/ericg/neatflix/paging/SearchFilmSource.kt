@@ -2,14 +2,13 @@ package com.ericg.neatflix.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.ericg.neatflix.data.remote.APIService
-import com.ericg.neatflix.model.Film
+import com.ericg.neatflix.data.remote.ApiService
 import com.ericg.neatflix.model.Search
 import retrofit2.HttpException
 import java.io.IOException
 
 class SearchFilmSource(
-    private val api: APIService,
+    private val api: ApiService,
     private val searchParams: String,
     private val includeAdult: Boolean
 ) : PagingSource<Int, Search>() {
