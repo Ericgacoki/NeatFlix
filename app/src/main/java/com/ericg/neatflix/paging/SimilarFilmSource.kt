@@ -2,14 +2,14 @@ package com.ericg.neatflix.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.ericg.neatflix.data.remote.APIService
+import com.ericg.neatflix.data.remote.ApiService
 import com.ericg.neatflix.model.Film
 import com.ericg.neatflix.util.FilmType
 import retrofit2.HttpException
 import java.io.IOException
 
 class SimilarFilmSource(
-    private val api: APIService,
+    private val api: ApiService,
     val filmId: Int,
     private val filmType: FilmType
 ) :
