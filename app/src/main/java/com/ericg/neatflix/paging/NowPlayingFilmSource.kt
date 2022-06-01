@@ -2,13 +2,13 @@ package com.ericg.neatflix.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.ericg.neatflix.data.remote.APIService
+import com.ericg.neatflix.data.remote.ApiService
 import com.ericg.neatflix.model.Film
 import com.ericg.neatflix.util.FilmType
 import retrofit2.HttpException
 import java.io.IOException
 
-class NowPlayingFilmSource(private val api: APIService, private val filmType: FilmType) :
+class NowPlayingFilmSource(private val api: ApiService, private val filmType: FilmType) :
     PagingSource<Int, Film>() {
     override fun getRefreshKey(state: PagingState<Int, Film>): Int? = state.anchorPosition
 
