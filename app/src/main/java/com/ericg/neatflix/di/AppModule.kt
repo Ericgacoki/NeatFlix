@@ -4,11 +4,8 @@ import android.app.Application
 import androidx.room.Room
 import com.ericg.neatflix.data.local.WatchListDatabase
 import com.ericg.neatflix.data.preferences.UserPreferences
-import com.ericg.neatflix.data.remote.APIService
-import com.ericg.neatflix.data.repository.GenreRepository
-import com.ericg.neatflix.data.repository.FilmRepository
-import com.ericg.neatflix.data.repository.SearchRepository
-import com.ericg.neatflix.data.repository.WatchListRepository
+import com.ericg.neatflix.data.remote.ApiService
+import com.ericg.neatflix.data.repository.*
 import com.ericg.neatflix.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -44,31 +41,35 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providesAPIService(okHttpClient: OkHttpClient): APIService {
+    fun providesAPIService(okHttpClient: OkHttpClient): ApiService {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
-            .create(APIService::class.java)
+            .create(ApiService::class.java)
     }
 
     @Singleton
     @Provides
-    fun provideMoviesRepository(api: APIService) = FilmRepository(api = api)
+    fun provideMoviesRepository(api: ApiService) = FilmRepository(api = api)
 
     @Singleton
     @Provides
-    fun provideSearchRepository(api: APIService) = SearchRepository(api = api)
+    fun provideSearchRepository(api: ApiService) = SearchRepository(api = api)
 
     @Singleton
     @Provides
-    fun providesGenresRepository(api: APIService) = GenreRepository(api)
+    fun providesGenresRepository(api: ApiService) = GenreRepository(api)
 
     @Singleton
     @Provides
     fun providesWatchListRepository(watchListDatabase: WatchListDatabase) =
         WatchListRepository(database = watchListDatabase)
+
+    @Singleton
+    @Provides
+    fun providesReviewsRepository(api: ApiService): ReviewsRepository = ReviewsRepository(api)
 
     @Provides
     @Singleton
@@ -79,9 +80,10 @@ object AppModule {
             "watch_list_table"
         ).fallbackToDestructiveMigration().build()
     }
+
     @Provides
     @Singleton
-    fun providesDataStore(application: Application): UserPreferences{
+    fun providesDataStore(application: Application): UserPreferences {
         return UserPreferences(application.applicationContext)
     }
 }
