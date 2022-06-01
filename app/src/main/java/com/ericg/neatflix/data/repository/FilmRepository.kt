@@ -3,7 +3,7 @@ package com.ericg.neatflix.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.ericg.neatflix.data.remote.APIService
+import com.ericg.neatflix.data.remote.ApiService
 import com.ericg.neatflix.data.remote.response.CastResponse
 import com.ericg.neatflix.model.Film
 import com.ericg.neatflix.paging.*
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FilmRepository @Inject constructor(
-    private val api: APIService
+    private val api: ApiService
 ) {
     fun getTrendingFilms(filmType: FilmType): Flow<PagingData<Film>> {
         return Pager(
