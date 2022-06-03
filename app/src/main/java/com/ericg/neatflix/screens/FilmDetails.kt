@@ -12,9 +12,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.PlayCircleOutline
 import androidx.compose.material.icons.rounded.Reviews
 import androidx.compose.runtime.*
@@ -28,10 +29,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.Light
-import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -42,6 +41,8 @@ import com.ericg.neatflix.model.Cast
 import com.ericg.neatflix.model.Film
 import com.ericg.neatflix.model.Genre
 import com.ericg.neatflix.screens.destinations.ReviewsScreenDestination
+import com.ericg.neatflix.screens.destinations.WatchProvidersScreenDestination
+import com.ericg.neatflix.sharedComposables.BackButton
 import com.ericg.neatflix.sharedComposables.ExpandableText
 import com.ericg.neatflix.sharedComposables.MovieGenreChip
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
@@ -154,35 +155,12 @@ fun MovieDetails(
                 contentDescription = "Header backdrop image",
             )
 
-            ConstraintLayout(
-                modifier = Modifier
-                    .size(42.dp)
-                    .clip(CircleShape)
-                    .background(ButtonColor.copy(alpha = 0.78F))
-                    .constrainAs(backButton) {
-                        top.linkTo(parent.top, margin = 16.dp)
-                        start.linkTo(parent.start, margin = 10.dp)
-                    }
-            ) {
-                val (icon) = createRefs()
-                IconButton(onClick = {
-                    navigator.navigateUp()
+            BackButton(modifier = Modifier
+                .constrainAs(backButton) {
+                    top.linkTo(parent.top, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 10.dp)
                 }) {
-                    Icon(
-                        imageVector = Icons.Rounded.ArrowBack,
-                        contentDescription = "back button",
-                        tint = AppOnPrimaryColor,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(6.dp)
-                            .constrainAs(icon) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }
-                    )
-                }
+                navigator.navigateUp()
             }
 
             Box(
@@ -239,7 +217,11 @@ fun MovieDetails(
                         modifier = Modifier
                             .padding(start = 8.dp)
                             .clip(shape = RoundedCornerShape(size = 4.dp))
-                            .background(Color.DarkGray.copy(alpha = 0.65F))
+                            .background(
+                                if (film.adult) Color(0xFFFF7070) else Color.DarkGray.copy(
+                                    alpha = 0.65F
+                                )
+                            )
                             .padding(2.dp),
                         color = AppOnPrimaryColor.copy(alpha = 0.78F),
                         fontSize = 12.sp,
@@ -308,59 +290,14 @@ fun MovieDetails(
                             },
                         contentDescription = "reviews icon"
                     )
-
-                    var openDialog by remember { mutableStateOf(false) }
-                    when (openDialog) {
-                        true -> {
-                            AlertDialog(
-                                title = { Text(text = "Available On ${watchProvider?.provider?.rent?.size ?: 0} Providers") },
-                                text = {
-                                    // TODO: Create a watch providers screen -> show 3 column grid
-                                    LazyRow(
-                                        modifier = Modifier
-                                            .padding(start = 4.dp)
-                                            .fillMaxWidth()
-                                            .padding(end = 8.dp)
-                                    ) {
-                                        watchProvider?.let {
-                                            watchProvider.provider.rent.forEach { rent ->
-                                                item {
-                                                    ShowWatchProvider(
-                                                        name = rent.providerName,
-                                                        logoPath = rent.logoPath
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
-                                shape = RoundedCornerShape(8.dp),
-                                confirmButton = {
-                                    TextButton(onClick = {
-                                        watchListViewModel.deleteWatchList()
-                                        openDialog = openDialog.not()
-                                    }) {
-                                        Text(text = "Ok")
-                                    }
-                                },
-                                dismissButton = { },
-                                backgroundColor = ButtonColor,
-                                contentColor = AppOnPrimaryColor,
-                                properties = DialogProperties(
-                                    dismissOnBackPress = true,
-                                    dismissOnClickOutside = false
-                                ),
-                                onDismissRequest = {
-                                    openDialog = openDialog.not()
-                                })
-                        }
-                        false -> {
-
-                        }
-                    }
-
                     IconButton(onClick = {
-                        openDialog = true
+                        navigator.navigate(
+                            WatchProvidersScreenDestination(
+                                filmId = film.id,
+                                filmType = filmType,
+                                filmTitle = film.title
+                            )
+                        )
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.PlayCircleOutline,
@@ -582,51 +519,6 @@ fun CastMember(cast: Cast?) {
             maxLines = 1,
             color = AppOnPrimaryColor.copy(alpha = 0.45F),
             fontSize = 12.sp,
-        )
-    }
-}
-
-@Composable
-fun ShowWatchProvider(name: String?, logoPath: String?) {
-    Column(
-        modifier = Modifier.padding(start = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CoilImage(
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(70.dp),
-            imageModel = "$BASE_POSTER_IMAGE_URL/$logoPath",
-            shimmerParams = ShimmerParams(
-                baseColor = AppPrimaryColor,
-                highlightColor = ButtonColor,
-                durationMillis = 500,
-                dropOff = 0.65F,
-                tilt = 20F
-            ),
-            failure = {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Icon(
-                        modifier = Modifier.size(70.dp),
-                        painter = painterResource(id = R.drawable.ic_user),
-                        tint = Color.LightGray,
-                        contentDescription = null
-                    )
-                }
-            },
-            previewPlaceholder = R.drawable.ic_user,
-            contentScale = Crop,
-            circularReveal = CircularReveal(duration = 1000),
-            contentDescription = "cast image"
-        )
-        Text(
-            text = name?.let { trimName(name) } ?: "",
-            fontWeight = SemiBold,
-            fontSize = 16.sp,
-            color = AppOnPrimaryColor
         )
     }
 }
