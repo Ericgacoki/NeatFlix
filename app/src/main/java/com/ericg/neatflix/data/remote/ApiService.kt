@@ -173,4 +173,13 @@ interface ApiService {
         @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
         @Query("language") language: String = "en-US"
     ): ReviewsResponse
+
+    /** Watch providers (US only)*/
+
+    @GET("{film_path}/{film_id}/watch/providers?")
+    suspend fun getWatchProviders(
+        @Path("film_path") filmPath: String,
+        @Path("film_id") filmId: Int,
+        @Query("api_key") apiKey: String = BuildConfig.NEATFLIX_API_KEY,
+    ): WatchProviderResponse
 }

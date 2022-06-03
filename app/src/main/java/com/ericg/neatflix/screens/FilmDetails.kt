@@ -12,9 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.PlayCircleOutline
@@ -30,8 +28,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.Light
+import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -92,12 +92,14 @@ fun MovieDetails(
 
     val addedToList = watchListViewModel.addedToWatchList.value
     val similarFilms = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
-    val movieCastList = detailsViewModel.movieCast.value
+    val filmCastList = detailsViewModel.filmCast.value
+    val watchProvider = detailsViewModel.watchProviders.value
 
     LaunchedEffect(key1 = film) {
         detailsViewModel.getSimilarFilms(filmId = film.id, filmType)
         detailsViewModel.getFilmCast(filmId = film.id, filmType)
         watchListViewModel.exists(mediaId = film.id)
+        detailsViewModel.getWatchProviders(film.id, selectedFilmType)
     }
 
     Column(
@@ -295,7 +297,7 @@ fun MovieDetails(
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
-                            ){
+                            ) {
                                 navigator.navigate(
                                     ReviewsScreenDestination(
                                         filmId = film.id,
@@ -307,7 +309,59 @@ fun MovieDetails(
                         contentDescription = "reviews icon"
                     )
 
-                    IconButton(onClick = { }) {
+                    var openDialog by remember { mutableStateOf(false) }
+                    when (openDialog) {
+                        true -> {
+                            AlertDialog(
+                                title = { Text(text = "Available On ${watchProvider?.provider?.rent?.size ?: 0} Providers") },
+                                text = {
+                                    // TODO: Create a watch providers screen -> show 3 column grid
+                                    LazyRow(
+                                        modifier = Modifier
+                                            .padding(start = 4.dp)
+                                            .fillMaxWidth()
+                                            .padding(end = 8.dp)
+                                    ) {
+                                        watchProvider?.let {
+                                            watchProvider.provider.rent.forEach { rent ->
+                                                item {
+                                                    ShowWatchProvider(
+                                                        name = rent.providerName,
+                                                        logoPath = rent.logoPath
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                shape = RoundedCornerShape(8.dp),
+                                confirmButton = {
+                                    TextButton(onClick = {
+                                        watchListViewModel.deleteWatchList()
+                                        openDialog = openDialog.not()
+                                    }) {
+                                        Text(text = "Ok")
+                                    }
+                                },
+                                dismissButton = { },
+                                backgroundColor = ButtonColor,
+                                contentColor = AppOnPrimaryColor,
+                                properties = DialogProperties(
+                                    dismissOnBackPress = true,
+                                    dismissOnClickOutside = false
+                                ),
+                                onDismissRequest = {
+                                    openDialog = openDialog.not()
+                                })
+                        }
+                        false -> {
+
+                        }
+                    }
+
+                    IconButton(onClick = {
+                        openDialog = true
+                    }) {
                         Icon(
                             imageVector = Icons.Rounded.PlayCircleOutline,
                             tint = AppOnPrimaryColor,
@@ -410,7 +464,7 @@ fun MovieDetails(
             horizontalAlignment = Alignment.Start
         ) {
             item {
-                AnimatedVisibility(visible = (movieCastList.isNotEmpty())) {
+                AnimatedVisibility(visible = (filmCastList.isNotEmpty())) {
                     Text(
                         text = "Cast",
                         fontWeight = Bold,
@@ -422,7 +476,7 @@ fun MovieDetails(
             }
             item {
                 LazyRow(modifier = Modifier.padding(4.dp)) {
-                    movieCastList.forEach { cast ->
+                    filmCastList.forEach { cast ->
                         item { CastMember(cast = cast) }
                     }
                 }
@@ -528,6 +582,51 @@ fun CastMember(cast: Cast?) {
             maxLines = 1,
             color = AppOnPrimaryColor.copy(alpha = 0.45F),
             fontSize = 12.sp,
+        )
+    }
+}
+
+@Composable
+fun ShowWatchProvider(name: String?, logoPath: String?) {
+    Column(
+        modifier = Modifier.padding(start = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CoilImage(
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(70.dp),
+            imageModel = "$BASE_POSTER_IMAGE_URL/$logoPath",
+            shimmerParams = ShimmerParams(
+                baseColor = AppPrimaryColor,
+                highlightColor = ButtonColor,
+                durationMillis = 500,
+                dropOff = 0.65F,
+                tilt = 20F
+            ),
+            failure = {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        modifier = Modifier.size(70.dp),
+                        painter = painterResource(id = R.drawable.ic_user),
+                        tint = Color.LightGray,
+                        contentDescription = null
+                    )
+                }
+            },
+            previewPlaceholder = R.drawable.ic_user,
+            contentScale = Crop,
+            circularReveal = CircularReveal(duration = 1000),
+            contentDescription = "cast image"
+        )
+        Text(
+            text = name?.let { trimName(name) } ?: "",
+            fontWeight = SemiBold,
+            fontSize = 16.sp,
+            color = AppOnPrimaryColor
         )
     }
 }

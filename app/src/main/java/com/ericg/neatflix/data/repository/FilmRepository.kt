@@ -5,11 +5,13 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.ericg.neatflix.data.remote.ApiService
 import com.ericg.neatflix.data.remote.response.CastResponse
+import com.ericg.neatflix.data.remote.response.WatchProviderResponse
 import com.ericg.neatflix.model.Film
 import com.ericg.neatflix.paging.*
 import com.ericg.neatflix.util.FilmType
 import com.ericg.neatflix.util.Resource
 import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 import javax.inject.Inject
 
 class FilmRepository @Inject constructor(
@@ -95,6 +97,21 @@ class FilmRepository @Inject constructor(
         } catch (e: Exception) {
             return Resource.Error("Error when loading movie cast")
         }
+        return Resource.Success(response)
+    }
+
+    suspend fun getWatchProviders(
+        filmType: FilmType, filmId: Int
+    ): Resource<WatchProviderResponse> {
+        val response = try {
+            if (filmType == FilmType.MOVIE) api.getWatchProviders(
+                filmPath = "movie", filmId = filmId
+            )
+            else api.getWatchProviders(filmPath = "tv", filmId = filmId)
+        } catch (e: Exception) {
+            return Resource.Error("Error when loading providers")
+        }
+        Timber.d("WATCH", response)
         return Resource.Success(response)
     }
 }
