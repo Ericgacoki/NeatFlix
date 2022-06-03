@@ -16,7 +16,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.PlayCircleOutline
 import androidx.compose.material.icons.rounded.Reviews
 import androidx.compose.runtime.*
@@ -42,6 +41,8 @@ import com.ericg.neatflix.model.Cast
 import com.ericg.neatflix.model.Film
 import com.ericg.neatflix.model.Genre
 import com.ericg.neatflix.screens.destinations.ReviewsScreenDestination
+import com.ericg.neatflix.screens.destinations.WatchProvidersScreenDestination
+import com.ericg.neatflix.sharedComposables.BackButton
 import com.ericg.neatflix.sharedComposables.ExpandableText
 import com.ericg.neatflix.sharedComposables.MovieGenreChip
 import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
@@ -92,12 +93,14 @@ fun MovieDetails(
 
     val addedToList = watchListViewModel.addedToWatchList.value
     val similarFilms = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
-    val movieCastList = detailsViewModel.movieCast.value
+    val filmCastList = detailsViewModel.filmCast.value
+    val watchProvider = detailsViewModel.watchProviders.value
 
     LaunchedEffect(key1 = film) {
         detailsViewModel.getSimilarFilms(filmId = film.id, filmType)
         detailsViewModel.getFilmCast(filmId = film.id, filmType)
         watchListViewModel.exists(mediaId = film.id)
+        detailsViewModel.getWatchProviders(film.id, selectedFilmType)
     }
 
     Column(
@@ -152,35 +155,12 @@ fun MovieDetails(
                 contentDescription = "Header backdrop image",
             )
 
-            ConstraintLayout(
-                modifier = Modifier
-                    .size(42.dp)
-                    .clip(CircleShape)
-                    .background(ButtonColor.copy(alpha = 0.78F))
-                    .constrainAs(backButton) {
-                        top.linkTo(parent.top, margin = 16.dp)
-                        start.linkTo(parent.start, margin = 10.dp)
-                    }
-            ) {
-                val (icon) = createRefs()
-                IconButton(onClick = {
-                    navigator.navigateUp()
+            BackButton(modifier = Modifier
+                .constrainAs(backButton) {
+                    top.linkTo(parent.top, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 10.dp)
                 }) {
-                    Icon(
-                        imageVector = Icons.Rounded.ArrowBack,
-                        contentDescription = "back button",
-                        tint = AppOnPrimaryColor,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(6.dp)
-                            .constrainAs(icon) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }
-                    )
-                }
+                navigator.navigateUp()
             }
 
             Box(
@@ -237,7 +217,11 @@ fun MovieDetails(
                         modifier = Modifier
                             .padding(start = 8.dp)
                             .clip(shape = RoundedCornerShape(size = 4.dp))
-                            .background(Color.DarkGray.copy(alpha = 0.65F))
+                            .background(
+                                if (film.adult) Color(0xFFFF7070) else Color.DarkGray.copy(
+                                    alpha = 0.65F
+                                )
+                            )
                             .padding(2.dp),
                         color = AppOnPrimaryColor.copy(alpha = 0.78F),
                         fontSize = 12.sp,
@@ -295,7 +279,7 @@ fun MovieDetails(
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
-                            ){
+                            ) {
                                 navigator.navigate(
                                     ReviewsScreenDestination(
                                         filmId = film.id,
@@ -306,8 +290,15 @@ fun MovieDetails(
                             },
                         contentDescription = "reviews icon"
                     )
-
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {
+                        navigator.navigate(
+                            WatchProvidersScreenDestination(
+                                filmId = film.id,
+                                filmType = filmType,
+                                filmTitle = film.title
+                            )
+                        )
+                    }) {
                         Icon(
                             imageVector = Icons.Rounded.PlayCircleOutline,
                             tint = AppOnPrimaryColor,
@@ -410,7 +401,7 @@ fun MovieDetails(
             horizontalAlignment = Alignment.Start
         ) {
             item {
-                AnimatedVisibility(visible = (movieCastList.isNotEmpty())) {
+                AnimatedVisibility(visible = (filmCastList.isNotEmpty())) {
                     Text(
                         text = "Cast",
                         fontWeight = Bold,
@@ -422,7 +413,7 @@ fun MovieDetails(
             }
             item {
                 LazyRow(modifier = Modifier.padding(4.dp)) {
-                    movieCastList.forEach { cast ->
+                    filmCastList.forEach { cast ->
                         item { CastMember(cast = cast) }
                     }
                 }

@@ -73,9 +73,7 @@ fun ReviewsScreen(
                 .padding(horizontal = 10.dp, vertical = 16.dp)
                 .fillMaxWidth(fraction = 0.60F)
         ) {
-            val focusManager = LocalFocusManager.current
             BackButton {
-                focusManager.clearFocus()
                 navigator.navigateUp()
             }
 
