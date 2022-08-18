@@ -53,7 +53,6 @@ class DetailsViewModel @Inject constructor(val repository: FilmRepository) : Vie
         viewModelScope.launch {
             repository.getWatchProviders(filmType = filmType, filmId = filmId).also {
                 if (it is Resource.Success) {
-                    Timber.e("WATCHON: ${it.data!!.results}")
                     _watchProviders.value = it.data!!.results
                 }
             }
