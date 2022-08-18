@@ -94,7 +94,6 @@ fun MovieDetails(
     val addedToList = watchListViewModel.addedToWatchList.value
     val similarFilms = detailsViewModel.similarMovies.value.collectAsLazyPagingItems()
     val filmCastList = detailsViewModel.filmCast.value
-    val watchProvider = detailsViewModel.watchProviders.value
 
     LaunchedEffect(key1 = film) {
         detailsViewModel.getSimilarFilms(filmId = film.id, filmType)
