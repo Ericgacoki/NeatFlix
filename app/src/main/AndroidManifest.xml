@@ -3,6 +3,7 @@
     package="com.ericg.neatflix">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
     <application
         android:name="com.ericg.neatflix.util.baseclass.NeatFlixApp"
