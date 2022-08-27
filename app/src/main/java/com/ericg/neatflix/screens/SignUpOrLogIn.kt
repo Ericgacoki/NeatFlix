@@ -38,7 +38,7 @@ fun SignUpOrLogInScreen(
     ) {
         val (banner, logo, title, slogan, btnSignUp, btnLogIn) = createRefs()
         Image(
-            painter = painterResource(id = R.drawable.movie_banner),
+            painter = painterResource(id = R.drawable.popcorn),
             modifier = Modifier
                 .fillMaxWidth()
                 // .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))

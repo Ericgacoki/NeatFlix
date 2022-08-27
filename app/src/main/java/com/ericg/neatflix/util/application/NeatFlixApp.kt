@@ -1,4 +1,4 @@
-package com.ericg.neatflix.util.baseclass
+package com.ericg.neatflix.util.application
 
 import android.app.Application
 import com.facebook.stetho.Stetho
@@ -11,7 +11,5 @@ class NeatFlixApp : Application() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
         Stetho.initializeWithDefaults(this)
-
-        Timber.i("Initialized Timber and Stetho ✅")
     }
 }

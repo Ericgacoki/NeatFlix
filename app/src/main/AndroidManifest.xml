@@ -3,10 +3,9 @@
     package="com.ericg.neatflix">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
     <application
-        android:name="com.ericg.neatflix.util.baseclass.NeatFlixApp"
+        android:name="com.ericg.neatflix.util.application.NeatFlixApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
