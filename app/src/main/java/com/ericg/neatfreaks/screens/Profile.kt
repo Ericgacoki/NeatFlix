@@ -174,7 +174,7 @@ fun Profile(
         }
 
         Text(
-            text = userName("NeatFlix User"),
+            text = userName("NeatFreaks User"),
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             color = AppOnPrimaryColor,
