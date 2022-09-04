@@ -15,7 +15,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.ericg.neatfreaks"
+        applicationId "com.ericg.neatflix"
         minSdk 26
         targetSdk 32
         versionCode 4
