@@ -20,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.ericg.neatfreaks.R
 import com.ericg.neatfreaks.model.Film
 import com.ericg.neatfreaks.screens.destinations.MovieDetailsDestination
 import com.ericg.neatfreaks.sharedComposables.BackButton
@@ -33,7 +34,6 @@ import com.ericg.neatfreaks.viewmodel.HomeViewModel
 import com.ericg.neatfreaks.viewmodel.SearchViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ericg.neatfreaks.R
 
 @Destination
 @Composable
@@ -148,11 +148,13 @@ fun SearchScreen(
                 }
 
                 is LoadState.Loading -> item {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
+                    if (searchViewModel.searchParam.value.isNotEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
                     }
                 }
 
