@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ericg.neatflix">
+    package="com.ericg.neatfreaks">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.ericg.neatflix.util.application.NeatFlixApp"
+        android:name="com.ericg.neatfreaks.util.application.NeatFreaksApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.NeatFlix">
+        android:theme="@style/Theme.NeatFreaks">
         <activity
-            android:name=".screens.MainActivity"
+            android:name="com.ericg.neatfreaks.screens.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.NeatFlix">
+            android:theme="@style/Theme.NeatFreaks">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data
-                android:name="API_KEY"
-                android:value="1234">
-            </meta-data>
         </activity>
     </application>
 </manifest>

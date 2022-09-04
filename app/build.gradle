@@ -15,11 +15,11 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.ericg.neatflix"
+        applicationId "com.ericg.neatfreaks"
         minSdk 26
         targetSdk 32
-        versionCode 3
-        versionName "v1.0.1"
+        versionCode 4
+        versionName "v1.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -32,7 +32,7 @@ android {
             }
         }
 
-        buildConfigField("String", "NEATFLIX_API_KEY", apikeyProperties['NEATFLIX_API_KEY'])
+        buildConfigField("String", "NEATFREAKS_API_KEY", apikeyProperties['NEATFREAKS_API_KEY'])
     }
 
     buildTypes {

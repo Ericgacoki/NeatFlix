@@ -10,3 +10,4 @@ apikey.properties
 .cxx
 local.properties
 /app/src/main/res/values/secrets.xml
+/app/release/app-release.aab
