@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.ui.theme
+package com.ericg.neatflix.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
