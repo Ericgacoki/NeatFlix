@@ -1,15 +1,15 @@
-package com.ericg.neatfreaks.data.repository
+package com.ericg.neatflix.data.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.ericg.neatfreaks.data.remote.ApiService
-import com.ericg.neatfreaks.data.remote.response.CastResponse
-import com.ericg.neatfreaks.data.remote.response.WatchProviderResponse
-import com.ericg.neatfreaks.model.Film
-import com.ericg.neatfreaks.paging.*
-import com.ericg.neatfreaks.util.FilmType
-import com.ericg.neatfreaks.util.Resource
+import com.ericg.neatflix.data.remote.ApiService
+import com.ericg.neatflix.data.remote.response.CastResponse
+import com.ericg.neatflix.data.remote.response.WatchProviderResponse
+import com.ericg.neatflix.model.Film
+import com.ericg.neatflix.paging.*
+import com.ericg.neatflix.util.FilmType
+import com.ericg.neatflix.util.Resource
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import javax.inject.Inject

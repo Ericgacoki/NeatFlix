@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.util
+package com.ericg.neatflix.util
 
 enum class FilmType {
     MOVIE, TVSHOW
