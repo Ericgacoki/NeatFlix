@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.ui.theme
+package com.ericg.neatflix.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

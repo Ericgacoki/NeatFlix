@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.screens
+package com.ericg.neatflix.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -14,10 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.ericg.neatfreaks.R
-import com.ericg.neatfreaks.screens.destinations.HomeDestination
-import com.ericg.neatfreaks.sharedComposables.LottieLoader
-import com.ericg.neatfreaks.ui.theme.AppPrimaryColor
+import com.ericg.neatflix.R
+import com.ericg.neatflix.screens.destinations.HomeDestination
+import com.ericg.neatflix.sharedComposables.LottieLoader
+import com.ericg.neatflix.ui.theme.AppPrimaryColor
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
@@ -64,7 +64,7 @@ fun SplashScreen(
                     modifier = Modifier
                         .widthIn(max = 170.dp)
                         .alpha(0.78F),
-                    painter = painterResource(id = R.drawable.neat_freaks_image),
+                    painter = painterResource(id = R.drawable.neatflix_name),
                     contentDescription = null
                 )
             }
