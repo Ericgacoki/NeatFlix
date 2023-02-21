@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.sharedComposables
+package com.ericg.neatflix.sharedComposables
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -22,10 +22,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ericg.neatfreaks.R
-import com.ericg.neatfreaks.ui.theme.AppOnPrimaryColor
-import com.ericg.neatfreaks.ui.theme.ButtonColor
-import com.ericg.neatfreaks.viewmodel.SearchViewModel
+import com.ericg.neatflix.R
+import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
+import com.ericg.neatflix.ui.theme.ButtonColor
+import com.ericg.neatflix.viewmodel.SearchViewModel
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterialApi::class)

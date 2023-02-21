@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.screens
+package com.ericg.neatflix.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,18 +20,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.ericg.neatfreaks.R
-import com.ericg.neatfreaks.model.Film
-import com.ericg.neatfreaks.screens.destinations.MovieDetailsDestination
-import com.ericg.neatfreaks.sharedComposables.BackButton
-import com.ericg.neatfreaks.sharedComposables.SearchBar
-import com.ericg.neatfreaks.sharedComposables.SearchResultItem
-import com.ericg.neatfreaks.ui.theme.AppOnPrimaryColor
-import com.ericg.neatfreaks.ui.theme.AppPrimaryColor
-import com.ericg.neatfreaks.util.Constants.BASE_POSTER_IMAGE_URL
-import com.ericg.neatfreaks.util.FilmType
-import com.ericg.neatfreaks.viewmodel.HomeViewModel
-import com.ericg.neatfreaks.viewmodel.SearchViewModel
+import com.ericg.neatflix.model.Film
+import com.ericg.neatflix.R
+import com.ericg.neatflix.screens.destinations.MovieDetailsDestination
+import com.ericg.neatflix.sharedComposables.BackButton
+import com.ericg.neatflix.sharedComposables.SearchBar
+import com.ericg.neatflix.sharedComposables.SearchResultItem
+import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
+import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import com.ericg.neatflix.util.Constants.BASE_POSTER_IMAGE_URL
+import com.ericg.neatflix.util.FilmType
+import com.ericg.neatflix.viewmodel.HomeViewModel
+import com.ericg.neatflix.viewmodel.SearchViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 

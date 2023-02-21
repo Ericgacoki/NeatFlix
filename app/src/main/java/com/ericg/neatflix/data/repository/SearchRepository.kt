@@ -1,11 +1,11 @@
-package com.ericg.neatfreaks.data.repository
+package com.ericg.neatflix.data.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.ericg.neatfreaks.data.remote.ApiService
-import com.ericg.neatfreaks.model.Search
-import com.ericg.neatfreaks.paging.SearchFilmSource
+import com.ericg.neatflix.data.remote.ApiService
+import com.ericg.neatflix.model.Search
+import com.ericg.neatflix.paging.SearchFilmSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
