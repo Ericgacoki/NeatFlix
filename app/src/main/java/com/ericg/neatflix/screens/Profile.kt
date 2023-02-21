@@ -219,7 +219,7 @@ fun Profile(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "version: 1.0 [dummy profile]",
+                text = "version: 1.0-rc [dummy profile]",
                 fontWeight = FontWeight.Light,
                 fontSize = 14.sp,
                 color = AppOnPrimaryColor.copy(alpha = 0.5F)
