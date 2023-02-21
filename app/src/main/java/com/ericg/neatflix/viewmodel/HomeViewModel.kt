@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.viewmodel
+package com.ericg.neatflix.viewmodel
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -10,12 +10,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
-import com.ericg.neatfreaks.data.repository.GenreRepository
-import com.ericg.neatfreaks.data.repository.FilmRepository
-import com.ericg.neatfreaks.model.Genre
-import com.ericg.neatfreaks.model.Film
-import com.ericg.neatfreaks.util.FilmType
-import com.ericg.neatfreaks.util.Resource
+import com.ericg.neatflix.data.repository.GenreRepository
+import com.ericg.neatflix.data.repository.FilmRepository
+import com.ericg.neatflix.model.Genre
+import com.ericg.neatflix.model.Film
+import com.ericg.neatflix.util.FilmType
+import com.ericg.neatflix.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow

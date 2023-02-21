@@ -1,9 +1,9 @@
-package com.ericg.neatfreaks.data.repository
+package com.ericg.neatflix.data.repository
 
-import com.ericg.neatfreaks.data.remote.response.GenreResponse
-import com.ericg.neatfreaks.data.remote.ApiService
-import com.ericg.neatfreaks.util.FilmType
-import com.ericg.neatfreaks.util.Resource
+import com.ericg.neatflix.data.remote.response.GenreResponse
+import com.ericg.neatflix.data.remote.ApiService
+import com.ericg.neatflix.util.FilmType
+import com.ericg.neatflix.util.Resource
 import java.lang.Exception
 import javax.inject.Inject
 

@@ -1,6 +1,6 @@
-package com.ericg.neatfreaks.data.remote.response
+package com.ericg.neatflix.data.remote.response
 
-import com.ericg.neatfreaks.model.Genre
+import com.ericg.neatflix.model.Genre
 import com.google.gson.annotations.SerializedName
 
 data class GenreResponse(
