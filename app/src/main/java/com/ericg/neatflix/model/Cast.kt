@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.model
+package com.ericg.neatflix.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

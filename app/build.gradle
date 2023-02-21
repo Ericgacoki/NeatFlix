@@ -12,12 +12,12 @@ def apikeyProperties = new Properties()
 apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.ericg.neatflix"
         minSdk 26
-        targetSdk 32
+        targetSdk 33
         versionCode 4
         versionName "v1.0.2"
 
@@ -32,7 +32,7 @@ android {
             }
         }
 
-        buildConfigField("String", "NEATFREAKS_API_KEY", apikeyProperties['NEATFREAKS_API_KEY'])
+        buildConfigField("String", "NEATFLIX_API_KEY", apikeyProperties['NEATFLIX_API_KEY'])
     }
 
     buildTypes {
