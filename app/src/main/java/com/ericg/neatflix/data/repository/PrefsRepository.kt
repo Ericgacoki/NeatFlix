@@ -1,6 +1,6 @@
-package com.ericg.neatfreaks.data.repository
+package com.ericg.neatflix.data.repository
 
-import com.ericg.neatfreaks.data.preferences.UserPreferences
+import com.ericg.neatflix.data.preferences.UserPreferences
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
