@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.data.preferences
+package com.ericg.neatflix.data.preferences
 
 import android.content.Context
 import androidx.datastore.core.DataStore
