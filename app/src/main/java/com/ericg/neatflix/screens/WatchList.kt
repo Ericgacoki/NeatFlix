@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.screens
+package com.ericg.neatflix.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -23,18 +23,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ericg.neatfreaks.R
-import com.ericg.neatfreaks.data.local.MyListMovie
-import com.ericg.neatfreaks.screens.destinations.HomeDestination
-import com.ericg.neatfreaks.sharedComposables.BackButton
-import com.ericg.neatfreaks.sharedComposables.SearchBar
-import com.ericg.neatfreaks.sharedComposables.SearchResultItem
-import com.ericg.neatfreaks.ui.theme.AppOnPrimaryColor
-import com.ericg.neatfreaks.ui.theme.AppPrimaryColor
-import com.ericg.neatfreaks.ui.theme.ButtonColor
-import com.ericg.neatfreaks.util.Constants
-import com.ericg.neatfreaks.viewmodel.SearchViewModel
-import com.ericg.neatfreaks.viewmodel.WatchListViewModel
+import com.ericg.neatflix.R
+import com.ericg.neatflix.data.local.MyListMovie
+import com.ericg.neatflix.screens.destinations.HomeDestination
+import com.ericg.neatflix.sharedComposables.BackButton
+import com.ericg.neatflix.sharedComposables.SearchBar
+import com.ericg.neatflix.sharedComposables.SearchResultItem
+import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
+import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import com.ericg.neatflix.ui.theme.ButtonColor
+import com.ericg.neatflix.util.Constants
+import com.ericg.neatflix.viewmodel.SearchViewModel
+import com.ericg.neatflix.viewmodel.WatchListViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import timber.log.Timber

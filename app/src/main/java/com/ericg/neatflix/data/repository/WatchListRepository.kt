@@ -1,7 +1,7 @@
-package com.ericg.neatfreaks.data.repository
+package com.ericg.neatflix.data.repository
 
-import com.ericg.neatfreaks.data.local.MyListMovie
-import com.ericg.neatfreaks.data.local.WatchListDatabase
+import com.ericg.neatflix.data.local.MyListMovie
+import com.ericg.neatflix.data.local.WatchListDatabase
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
