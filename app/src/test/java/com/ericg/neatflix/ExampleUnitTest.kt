@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks
+package com.ericg.neatflix
 
 import org.junit.Test
 

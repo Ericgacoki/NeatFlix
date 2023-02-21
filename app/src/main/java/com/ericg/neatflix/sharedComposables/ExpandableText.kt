@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.sharedComposables
+package com.ericg.neatflix.sharedComposables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.sp
-import com.ericg.neatfreaks.ui.theme.AppOnPrimaryColor
+import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
 
 @Composable
 fun ExpandableText(
