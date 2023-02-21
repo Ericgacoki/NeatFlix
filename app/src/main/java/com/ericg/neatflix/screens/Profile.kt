@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.screens
+package com.ericg.neatflix.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,14 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ericg.neatfreaks.R
-import com.ericg.neatfreaks.screens.destinations.WatchListDestination
-import com.ericg.neatfreaks.sharedComposables.BackButton
-import com.ericg.neatfreaks.sharedComposables.CustomSwitch
-import com.ericg.neatfreaks.ui.theme.AppOnPrimaryColor
-import com.ericg.neatfreaks.ui.theme.AppPrimaryColor
-import com.ericg.neatfreaks.ui.theme.ButtonColor
-import com.ericg.neatfreaks.viewmodel.PrefsViewModel
+import com.ericg.neatflix.R
+import com.ericg.neatflix.screens.destinations.WatchListDestination
+import com.ericg.neatflix.sharedComposables.BackButton
+import com.ericg.neatflix.sharedComposables.CustomSwitch
+import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
+import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import com.ericg.neatflix.ui.theme.ButtonColor
+import com.ericg.neatflix.viewmodel.PrefsViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
@@ -174,7 +174,7 @@ fun Profile(
         }
 
         Text(
-            text = userName("NeatFreaks User"),
+            text = userName("NeatFlix User"),
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             color = AppOnPrimaryColor,
@@ -212,7 +212,7 @@ fun Profile(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.neat_freaks_image),
+                painter = painterResource(id = R.drawable.neatflix_name),
                 modifier = Modifier.widthIn(max = 100.dp),
                 alpha = 0.78F,
                 contentDescription = null

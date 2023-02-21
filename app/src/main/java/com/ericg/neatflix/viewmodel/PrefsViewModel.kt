@@ -1,10 +1,10 @@
-package com.ericg.neatfreaks.viewmodel
+package com.ericg.neatflix.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ericg.neatfreaks.data.repository.PrefsRepository
+import com.ericg.neatflix.data.repository.PrefsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch

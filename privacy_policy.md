@@ -1,6 +1,6 @@
 **Privacy Policy**
 
-Eric built the Neatfreaks app as a Free app. This SERVICE is provided by Eric at no cost and is
+Eric built the Neatflix app as a Free app. This SERVICE is provided by Eric at no cost and is
 intended for use as is.
 
 This page is used to inform visitors regarding my policies with the collection, use, and disclosure
@@ -12,7 +12,7 @@ Service. I will not use or share your information with anyone except as describe
 Policy.
 
 The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which
-are accessible at Neatfreaks unless otherwise defined in this Privacy Policy.
+are accessible at Neatflix unless otherwise defined in this Privacy Policy.
 
 **Information Collection and Use**
 
