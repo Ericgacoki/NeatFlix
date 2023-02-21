@@ -1,12 +1,12 @@
-package com.ericg.neatfreaks.di
+package com.ericg.neatflix.di
 
 import android.app.Application
 import androidx.room.Room
-import com.ericg.neatfreaks.data.local.WatchListDatabase
-import com.ericg.neatfreaks.data.preferences.UserPreferences
-import com.ericg.neatfreaks.data.remote.ApiService
-import com.ericg.neatfreaks.data.repository.*
-import com.ericg.neatfreaks.util.Constants.BASE_URL
+import com.ericg.neatflix.data.local.WatchListDatabase
+import com.ericg.neatflix.data.preferences.UserPreferences
+import com.ericg.neatflix.data.remote.ApiService
+import com.ericg.neatflix.data.repository.*
+import com.ericg.neatflix.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
