@@ -1,10 +1,10 @@
-package com.ericg.neatfreaks.paging
+package com.ericg.neatflix.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.ericg.neatfreaks.data.remote.ApiService
-import com.ericg.neatfreaks.data.remote.response.Review
-import com.ericg.neatfreaks.util.FilmType
+import com.ericg.neatflix.data.remote.ApiService
+import com.ericg.neatflix.data.remote.response.Review
+import com.ericg.neatflix.util.FilmType
 import retrofit2.HttpException
 import java.io.IOException
 

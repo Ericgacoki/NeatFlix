@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.screens
+package com.ericg.neatflix.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,14 +25,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.ericg.neatfreaks.data.remote.response.Review
-import com.ericg.neatfreaks.sharedComposables.BackButton
-import com.ericg.neatfreaks.ui.theme.AppOnPrimaryColor
-import com.ericg.neatfreaks.ui.theme.AppPrimaryColor
-import com.ericg.neatfreaks.ui.theme.ButtonColor
-import com.ericg.neatfreaks.util.Constants
-import com.ericg.neatfreaks.util.FilmType
-import com.ericg.neatfreaks.viewmodel.ReviewsViewModel
+import com.ericg.neatflix.R
+import com.ericg.neatflix.data.remote.response.Review
+import com.ericg.neatflix.sharedComposables.BackButton
+import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
+import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import com.ericg.neatflix.ui.theme.ButtonColor
+import com.ericg.neatflix.util.Constants
+import com.ericg.neatflix.util.FilmType
+import com.ericg.neatflix.viewmodel.ReviewsViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
 import com.gowtham.ratingbar.RatingBarStyle
@@ -42,7 +43,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
-import com.ericg.neatfreaks.R
 
 @Destination
 @Composable
