@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.data.local
+package com.ericg.neatflix.data.local
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
