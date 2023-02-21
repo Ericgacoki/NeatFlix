@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.sharedComposables
+package com.ericg.neatflix.sharedComposables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,10 +18,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ericg.neatfreaks.R
-import com.ericg.neatfreaks.ui.theme.AppOnPrimaryColor
-import com.ericg.neatfreaks.ui.theme.AppPrimaryColor
-import com.ericg.neatfreaks.ui.theme.ButtonColor
+import com.ericg.neatflix.R
+import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
+import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import com.ericg.neatflix.ui.theme.ButtonColor
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
 import com.gowtham.ratingbar.RatingBarStyle
@@ -29,7 +29,7 @@ import com.gowtham.ratingbar.StepSize
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
-import com.ericg.neatfreaks.model.Genre as MovieGenre
+import com.ericg.neatflix.model.Genre as MovieGenre
 
 @Composable
 fun SearchResultItem(
