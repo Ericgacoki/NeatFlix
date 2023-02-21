@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.sharedComposables
+package com.ericg.neatflix.sharedComposables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

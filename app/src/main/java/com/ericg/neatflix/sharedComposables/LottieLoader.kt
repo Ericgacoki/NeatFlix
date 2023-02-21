@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.sharedComposables
+package com.ericg.neatflix.sharedComposables
 
 import androidx.annotation.RawRes
 import androidx.compose.runtime.*
