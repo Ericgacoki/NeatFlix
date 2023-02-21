@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.screens
+package com.ericg.neatflix.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -20,14 +20,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ericg.neatfreaks.R
-import com.ericg.neatfreaks.sharedComposables.BackButton
-import com.ericg.neatfreaks.ui.theme.AppOnPrimaryColor
-import com.ericg.neatfreaks.ui.theme.AppPrimaryColor
-import com.ericg.neatfreaks.ui.theme.ButtonColor
-import com.ericg.neatfreaks.util.Constants
-import com.ericg.neatfreaks.util.FilmType
-import com.ericg.neatfreaks.viewmodel.DetailsViewModel
+import com.ericg.neatflix.R
+import com.ericg.neatflix.sharedComposables.BackButton
+import com.ericg.neatflix.ui.theme.AppOnPrimaryColor
+import com.ericg.neatflix.ui.theme.AppPrimaryColor
+import com.ericg.neatflix.ui.theme.ButtonColor
+import com.ericg.neatflix.util.Constants
+import com.ericg.neatflix.util.FilmType
+import com.ericg.neatflix.viewmodel.DetailsViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.CircularReveal

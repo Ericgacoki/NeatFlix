@@ -1,4 +1,4 @@
-package com.ericg.neatfreaks.data.remote.response
+package com.ericg.neatflix.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 
