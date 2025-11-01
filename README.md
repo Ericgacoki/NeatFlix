@@ -53,7 +53,7 @@ and supports coroutines out of the box.
 requests on the data layer for Entities and understands Kotlin non-nullable 
 and default parameters.
 - [OkHttp Logging Interceptor](https://github.com/square/okhttp/blob/master/okhttp-logging-interceptor/README.md) - Logs HTTP request and response data.
-- [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) - Library Support for coroutines.
+- [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) - Library Support for coroutines
 - [Flows](https://developer.android.com/kotlin/flow) - Flows are built on top of coroutines and can provide multiple values. A flow is conceptually a stream of data that can be computed asynchronously.
 - [Timber](https://github.com/JakeWharton/timber) - Library for easier logging.
 - [Stetho]() - Stetho is a sophisticated debug bridge for Android applications. When enabled, developers have access to the Chrome Developer Tools feature natively part of the Chrome desktop browser.
